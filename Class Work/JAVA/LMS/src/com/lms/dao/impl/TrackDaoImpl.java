@@ -10,7 +10,7 @@ import com.lms.model.Track;
 import com.lms.utility.DBUtility;
 
 public class TrackDaoImpl implements TrackDao{
-	DBUtility db = new DBUtility();
+	DBUtility db =DBUtility.getInstance();
 
 	@Override
 	public List<Track> getAll() {

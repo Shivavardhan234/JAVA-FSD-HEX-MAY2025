@@ -2,6 +2,7 @@ package com.lms.service;
 import com.lms.model.*;
 import java.util.*;
 import com.lms.dao.*;
+import com.lms.enums.Role;
 import com.lms.exception.InvalidIdException;
 import com.lms.exception.InvalidInputException;
 public class LearnerService {
@@ -31,11 +32,14 @@ public class LearnerService {
 		return ;
 		
 	}
-	public void addLearner(String name, String email) throws  InvalidInputException{
+	public void addLearner(String name, String email,String username, String password) throws  InvalidInputException{
 		LearnerDao dao= new LearnerDaoImpl();
 		Learner l=new Learner();
 		l.setName(name);
 		l.setEmail(email);
+		int user_id =(int)(Math.random()*10000000);
+		User user=new User(user_id,username,password,Role.LEARNER);
+		l.setUser(user);
 		
 		dao.addLearner(l);
 		return ;

@@ -9,6 +9,14 @@ public class DBUtility {
 	private  String  PASSWORD="Shivavardhan@t2s";
 	private  String driver="com.mysql.cj.jdbc.Driver.class";
 	private  Connection conn;
+	private static DBUtility db= new DBUtility();
+	
+	
+	private DBUtility() {};
+	
+	public static DBUtility getInstance() {
+		return db;
+	}
 	
 	
 	public  Connection connect() {

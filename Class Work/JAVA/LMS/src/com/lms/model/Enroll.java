@@ -3,12 +3,14 @@ package com.lms.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.lms.utility.Coupon;
+
 public class Enroll {
 
 	private int enrollmentId;
 	private LocalDate dateOfEnroll ;
 	private BigDecimal feePaid;
-	private String cuponUsed;
+	private Coupon cuponUsed;
 	
 	private Learner learner;
 	private Course course;
@@ -16,7 +18,7 @@ public class Enroll {
 	public Enroll() {};
 	
 	
-	public Enroll( int enrollmentId, LocalDate dateOfEnroll , BigDecimal feePaid, String cuponUsed, Learner learner, Course course) {
+	public Enroll( int enrollmentId, LocalDate dateOfEnroll , BigDecimal feePaid, Coupon cuponUsed, Learner learner, Course course) {
 		this.enrollmentId=enrollmentId;
 		this.dateOfEnroll = dateOfEnroll;
 		this.feePaid= feePaid;
@@ -47,7 +49,7 @@ public class Enroll {
 	}
 
 
-	public String getCuponUsed() {
+	public Coupon getCuponUsed() {
 		return cuponUsed;
 	}
 
@@ -77,7 +79,7 @@ public class Enroll {
 	}
 
 
-	public void setCuponUsed(String cuponUsed) {
+	public void setCuponUsed(Coupon cuponUsed) {
 		this.cuponUsed = cuponUsed;
 	}
 

@@ -9,7 +9,7 @@ import com.lms.model.Enroll;
 import com.lms.utility.DBUtility;
 
 public class EnrollDaoImpl implements EnrollDao {
-	private DBUtility db = new DBUtility();
+	private DBUtility db = DBUtility.getInstance();
 
 	@Override
 	public void addEnrollment(Enroll enroll) {
@@ -22,7 +22,7 @@ public class EnrollDaoImpl implements EnrollDao {
 			ps.setInt(1, enroll.getEnrollmentId());
 			ps.setString(2, enroll.getDateOfEnroll().toString());
 			ps.setBigDecimal(3, enroll.getFeePaid());
-			ps.setString(4, enroll.getCuponUsed());
+			ps.setString(4, String.valueOf(enroll.getCuponUsed()));
 			ps.setInt(5, enroll.getLearner().getId());
 			ps.setInt(6, enroll.getCourse().getCourseId());
 			ps.executeUpdate();

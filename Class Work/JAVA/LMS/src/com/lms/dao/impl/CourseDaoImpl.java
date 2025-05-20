@@ -12,7 +12,7 @@ import com.lms.model.Course;
 import com.lms.model.Track;
 import com.lms.utility.DBUtility;
 public class CourseDaoImpl implements CourseDao {
-	DBUtility db = new DBUtility();
+	DBUtility db = DBUtility.getInstance();
 	
 	
 	@Override
