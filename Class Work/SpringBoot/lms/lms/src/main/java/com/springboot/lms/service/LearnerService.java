@@ -1,6 +1,7 @@
 package com.springboot.lms.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -38,7 +39,16 @@ public class LearnerService {
 	}
 
 	public Learner updateLearner(int id, Learner newLearner) {
-		Learner learner = lr.findById(id).orElseThrow(()-> new RuntimeException("Invalid Id"));
+		
+		/*optional is a data type where the reference variable may or may not contain any value
+		 * */
+		
+		Optional<Learner> optionalLearner = lr.findById(id);
+		if(optionalLearner.isEmpty()) {
+			throw new RuntimeException("Invalid id");
+		}
+		
+		Learner learner= optionalLearner.get();
 		if (newLearner.getName()!=null) {
 			learner.setName(newLearner.getName());
 		}
