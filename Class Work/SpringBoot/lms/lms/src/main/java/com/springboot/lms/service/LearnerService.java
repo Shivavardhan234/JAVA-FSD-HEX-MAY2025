@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.springboot.lms.model.Learner;
 import com.springboot.lms.repository.LearnerRepository;
 
-
+import com.springboot.lms.exception.*;
 @Service
 public class LearnerService {
 
@@ -33,28 +33,19 @@ public class LearnerService {
 		lr.deleteById(id);
 	}
 
-	public Learner getById(int id) {
+	public Learner getById(int id) throws ResourceNotFoundException {
 		
-		return lr.findById(id).orElseThrow(()-> new RuntimeException("Invalid Id"));
+		return lr.findById(id).orElseThrow(()-> new ResourceNotFoundException("Invalid Id"));
 	}
 
-	public Learner updateLearner(int id, Learner newLearner) {
+	public Learner updateLearner(int id, Learner newearner) throws ResourceNotFoundException {
 		
-		/*optional is a data type where the reference variable may or may not contain any value
-		 * */
 		
-		Optional<Learner> optionalLearner = lr.findById(id);
-		if(optionalLearner.isEmpty()) {
-			throw new RuntimeException("Invalid id");
-		}
 		
-		Learner learner= optionalLearner.get();
-		if (newLearner.getName()!=null) {
-			learner.setName(newLearner.getName());
-		}
-		if (newLearner.getContact()!=null) {
-			learner.setContact(newLearner.getContact());
-		}
+		
+		Learner learner= lr.findById(id).orElseThrow(()-> new ResourceNotFoundException("learner with given id not found!!!") );
+		
+		
 		lr.save(learner);
 		return lr.save(learner);
 	}
