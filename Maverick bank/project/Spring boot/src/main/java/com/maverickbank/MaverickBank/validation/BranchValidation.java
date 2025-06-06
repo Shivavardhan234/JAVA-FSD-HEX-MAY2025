@@ -79,14 +79,22 @@ public class BranchValidation {
 		return;
 	}
 	
+	public static void validateBranchObject(Branch branch)throws InvalidInputException {
+		if(branch==null) {
+			throw new InvalidInputException("Branch is Invalid. Branch is null...!!!");
+		}
+		return;
+	}
+	
 	
 	
 	public static void validateForNewBranch(Branch branch) throws InvalidInputException {
+		validateBranchObject(branch);
 		validateBranchName(branch.getBranchName());
 		validateIfsc(branch.getIfsc());
 		validateAddress(branch.getAddress());
 		validateContactNumber(branch.getContactNumber());
-		validateEmail(branch.getContactNumber());
+		validateEmail(branch.getEmail());
 		
 	}
 

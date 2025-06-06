@@ -17,8 +17,6 @@ public class Customer extends Actor {
 	private String panCardNumber;
 	@Column(name="aadhar_number")
 	private String aadharNumber;
-	@Column(name="credit_score")
-	private int creditScore;
 	
 	
 	//-----------------------default constructor---------------------------------------
@@ -29,31 +27,16 @@ public class Customer extends Actor {
 	
 	
 	//--------------Constructor with no user credentials---------------------
-	public Customer(int id, String name,LocalDate dob, Gender gender,  String contactNumber, String email, String address, String panCardNumber,String aadharNumber, int creditScore) throws InvalidInputException {
-		super(id, name, dob, gender,  contactNumber, email, address);
+	public Customer(int id, String name,LocalDate dob, Gender gender,  String contactNumber, String email, String address, String panCardNumber,String aadharNumber,User user) throws InvalidInputException {
+		super(id, name, dob, gender,  contactNumber, email, address,user);
 		this.setPanCardNumber ( panCardNumber);
-		this.setCreditScore (creditScore);
 		this.setAadharNumber(aadharNumber);
 	}
 
 
 
 
-	//--------------Constructor with no pannumber,aadhar and credit score---------------------
 	
-	public Customer(int id, String name,LocalDate dob, Gender gender, String contactNumber, String email, String address,User user) throws InvalidInputException {
-		super(id, name,dob, gender,  contactNumber, email, address, user);
-	}
-
-	
-	
-
-
-	//-------Constructor with no pannumber,aadhar, credit score and user credentials-----------
-	
-	public Customer(int id, String name,LocalDate dob, Gender gender, String contactNumber, String email, String address) throws InvalidInputException {
-		super(id, name,dob, gender,  contactNumber, email, address);
-	}
 	
 	
 	
@@ -67,7 +50,6 @@ public class Customer extends Actor {
 //---------------------------getters------------------------------------------------------------
 	public String getPanCardNumber() {return panCardNumber;}
 	public String getAadharNumber() {return aadharNumber;}
-	public int getCreditScore() {return creditScore;}
 	
 	
 	
@@ -104,18 +86,6 @@ public class Customer extends Actor {
 	
 	
 	
-	/**setCreditScore() validates the given credit score by checking 
-	 * if it is less than 0 then throws InvalidInputexception
-	 * else sets credit score to object
-	 * @param creditScore
-	 * @throws InvalidInputException
-	 */
-	public void setCreditScore(int creditScore)throws InvalidInputException {
-		if(creditScore<0) {
-			throw new InvalidInputException("Invalid credit score. please enter appropriate credit score value...!!!");
-		}
-		this.creditScore = creditScore;
-	}
 	
 	
 }

@@ -1,6 +1,7 @@
 package com.maverickbank.MaverickBank.model;
 
 
+import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.Role;
 import com.maverickbank.MaverickBank.exception.InvalidInputException;
 
@@ -35,40 +36,28 @@ public class User {
 	private Role role;
 	
 	
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	ActiveStatus status;
+	
 	//---------------------------------- Constructors ---------------------------------------------
 	public User() {}
 	
 	
 	
-	public User(int id, String username, String password, Role userType) throws InvalidInputException {
+	public User(int id, String username, String password, Role role, ActiveStatus status) throws InvalidInputException {
 		this.setId( id);
 		this.setUsername( username);
 		this.setPassword( password);
-		this.setRole(userType);
+		this.setRole(role);
+		this.setStatus(status);
+	}
+	
+	public User(Role role) throws InvalidInputException {
+		this.setRole(role);
 	}
 	
 	
-	public User(int userId, String username, String password) throws InvalidInputException {
-		this.setId( id);
-		this.setUsername( username);
-		this.setPassword( password);
-	}
-	
-	
-	public User(String username, String password) throws InvalidInputException {
-		this.setUsername( username);
-		this.setPassword( password);
-	}
-	public User(Role userType) throws InvalidInputException {
-		this.setRole(userType);
-	}
-	
-	
-	public User(String username, String password, Role userType) throws InvalidInputException {
-		this.setUsername(username);
-		this.setPassword(password);
-		this.setRole(userType);
-	}
 
 
 
@@ -77,7 +66,7 @@ public class User {
 	public String getUsername() {return username;}
 	public String getPassword() {return password;}
 	public Role getRole() {return role;}
-	
+	public ActiveStatus getStatus() {return status;}
 	
 	
 	
@@ -147,4 +136,11 @@ public class User {
 		this.role = userType;
 	}
 
+	
+	public void setStatus(ActiveStatus status) throws InvalidInputException{
+		if (status == null) {
+            throw new InvalidInputException("Null active status provided. Please provide appropriate active status...!!!");
+        }
+		this.status = status;
+	}
 }

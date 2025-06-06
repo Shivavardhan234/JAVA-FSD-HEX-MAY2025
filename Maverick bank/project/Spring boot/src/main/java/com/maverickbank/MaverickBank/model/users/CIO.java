@@ -23,11 +23,6 @@ public class CIO extends Actor {
 			super(id, name, dob, gender,  contactNumber, email, address,user);
 		}
 
-		
-		//---------------constructor without admin credentials-------------------------
-		public CIO(int id, String name, LocalDate dob, Gender gender, String contactNumber, String email, String address) throws InvalidInputException {
-			super(id, name, dob, gender, contactNumber, email, address);
-		}
 
 
 }

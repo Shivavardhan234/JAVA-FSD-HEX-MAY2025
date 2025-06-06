@@ -5,7 +5,6 @@ import java.time.Period;
 
 import com.maverickbank.MaverickBank.enums.Gender;
 import com.maverickbank.MaverickBank.enums.Role;
-import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.exception.InvalidInputException;
 import com.maverickbank.MaverickBank.model.User;
 
@@ -56,9 +55,7 @@ public abstract class Actor {
 	private User user;
 	
 	
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
-	ActiveStatus status;
+	
 	
 	
 	
@@ -71,8 +68,8 @@ public abstract class Actor {
 	
 //------------------------- constructor only with User Type----------------------------------------
 	
-		public Actor(Role userType) throws InvalidInputException {
-			this.setUser(new User(userType)); 
+		public Actor(Role role) throws InvalidInputException {
+			this.setUser(new User(role)); 
 		}
 	
 	
@@ -94,19 +91,7 @@ public abstract class Actor {
 	
 	
 	
-//-----------------------------------parameterized constructor without user object-------------------------------------
-	
-	public Actor(int id, String name,LocalDate dob, Gender gender, String contactNumber, String email,String address) throws InvalidInputException {
-			this.setId(id);
-			this.setName( name);
-			this.setDob(dob);
-			this.setGender( gender);
-			this.setContactNumber(contactNumber);
-			this.setEmail (email);
-			this.setAddress(address);
-			
-	}
-	
+
 	
 	
 	
@@ -119,7 +104,7 @@ public abstract class Actor {
 	public String getEmail() {return email;}
 	public String getAddress() {return address;}
 	public User getUser() {return user;}
-	public ActiveStatus getStatus() {return status;}
+	
 	
 	
 	
@@ -249,12 +234,7 @@ public abstract class Actor {
 	}
 	
 	
-	public void setStatus(ActiveStatus status) throws InvalidInputException{
-		if (status == null) {
-            throw new InvalidInputException("Null active status provided. Please provide appropriate active status...!!!");
-        }
-		this.status = status;
-	}
+	
 	
 	
 	

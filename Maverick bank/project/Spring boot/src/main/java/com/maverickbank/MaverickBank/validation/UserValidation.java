@@ -2,7 +2,10 @@ package com.maverickbank.MaverickBank.validation;
 
 
 
+import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.Role;
+import com.maverickbank.MaverickBank.exception.DeletedUserException;
+import com.maverickbank.MaverickBank.exception.InvalidActionException;
 import com.maverickbank.MaverickBank.exception.InvalidInputException;
 import com.maverickbank.MaverickBank.model.User;
 
@@ -20,6 +23,8 @@ public class UserValidation {
 		return;
 	}
 	
+	
+
 	
 	
 	
@@ -72,7 +77,36 @@ public class UserValidation {
 	}
 
 	
-	public static void fullUserValidation(User user) throws InvalidInputException {
+	
+	public static void validateUserObject(User user) throws InvalidInputException {
+		if(user==null) {
+			throw new InvalidInputException("Invalid User. User is null...!!!");
+		}
+		return;
+	}
+	
+	
+	public static void validateStatus(ActiveStatus status) throws InvalidInputException {
+		if(status==null) {
+			throw new InvalidInputException("Invalid activity status. Status is null...!!!");
+		}
+		return;
+	}
+	
+	public static void checkActiveStatus(ActiveStatus status) throws InvalidInputException, InvalidActionException, DeletedUserException {
+		if(status==ActiveStatus.INACTIVE||
+				status==ActiveStatus.DEACTIVATED) {
+			throw new InvalidActionException("User is NOT ACTIVE...!!!");
+		}
+		if(status==ActiveStatus.DELETED) {
+			throw new DeletedUserException("User DON'T EXIST...!!!");
+		}
+		return;
+	}
+	
+	
+	public static void validateUser(User user) throws InvalidInputException {
+		validateUserObject(user);
 		validateUsername(user.getUsername());
 		validatePassword(user.getPassword());
 		validateRole(user.getRole());

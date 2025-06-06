@@ -15,4 +15,7 @@ public interface CIORepository extends JpaRepository<CIO, Integer> {
 	@Query("SELECT c FROM CIO c WHERE c.email=?1")
 	CIO getByEmail(String email);
 
+	@Query("SELECT c FROM CIO c WHERE c.user.id=?1")
+	CIO getCioByUserId(int id);
+
 }

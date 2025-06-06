@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import com.maverickbank.MaverickBank.enums.BankAccountType;
 import com.maverickbank.MaverickBank.exception.InvalidInputException;
+import com.maverickbank.MaverickBank.model.AccountType;
 
 public class AccountTypeValidation {
 	public static void validateAccountTypeId(int id) throws InvalidInputException {
@@ -13,9 +14,9 @@ public class AccountTypeValidation {
         return;
     }
 
-    public static void validateAccountType(BankAccountType accountType) throws InvalidInputException {
+    public static void validateBankAccountType(BankAccountType accountType) throws InvalidInputException {
         if (accountType == null) {
-            throw new InvalidInputException("Account Type cannot be null.");
+            throw new InvalidInputException("Bank Account Type cannot be null.");
         }
         return;
     }
@@ -54,5 +55,25 @@ public class AccountTypeValidation {
         }
         return;
     }
+    
+    public static void validateAccountTypeObject(AccountType accountType)  throws InvalidInputException {
+    	 if (accountType==null) {
+             throw new InvalidInputException("Invalid account type provided. Account type is null...!!!");
+         }
+         return;
+    	
+    }
+    
+    public static void validateAccountType(AccountType accountType)  throws InvalidInputException {
+   	validateAccountTypeObject(accountType);
+   	validateBankAccountType(accountType.getAccountType());
+   	validateInterestRate(accountType.getInterestRate());
+   	validateMinimumBalance(accountType.getMinimumBalance());
+   	validateTransactionLimit(accountType.getTransactionLimit());
+   	validateTransactionAmountLimit(accountType.getTransactionAmountLimit());
+   	validateWithdrawLimit(accountType.getWithdrawLimit());
+      return;
+   	
+   }
 
 }

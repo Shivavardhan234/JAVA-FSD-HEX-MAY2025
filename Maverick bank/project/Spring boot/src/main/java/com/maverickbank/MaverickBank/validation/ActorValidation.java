@@ -127,7 +127,7 @@ public class ActorValidation {
 		 * @param credentials
 		 * @throws InvalidInputException
 		 */
-		public static void validateUser(User user) throws InvalidInputException{
+		public static void validateUserObject(User user) throws InvalidInputException{
 			if (user==null) {
 				throw new InvalidInputException("Provided user object is null. Please provide appropriate user object...!!!");
 			}

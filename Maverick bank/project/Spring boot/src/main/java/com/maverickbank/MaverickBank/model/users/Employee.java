@@ -7,6 +7,7 @@ import com.maverickbank.MaverickBank.exception.InvalidInputException;
 import com.maverickbank.MaverickBank.model.Branch;
 import com.maverickbank.MaverickBank.model.User;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -17,6 +18,7 @@ public class Employee extends Actor{
 	@ManyToOne
 	@JoinColumn(nullable=false)
 	private Branch branch;
+	@Column(nullable=false)
 	private String designation;
 	
 	
@@ -34,18 +36,6 @@ public class Employee extends Actor{
 		
 		
 		
-	}
-
-	
-	
-
-
-	
-
-
-	//---------------constructor without user object-------------------------
-	public Employee(int id, String name, LocalDate dob, Gender gender, String contactNumber, String email, String address) throws InvalidInputException {
-		super(id, name, dob, gender, contactNumber, email, address);
 	}
 
 

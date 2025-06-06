@@ -51,32 +51,42 @@ public class CustomerValidation {
 			return;
 		}
 		
+		public static void validateCustomerObject(Customer customer) throws InvalidInputException {
+			if(customer== null) {
+				throw new InvalidInputException("Invalid Customer provided.It should not be null...!!!");
+			}
+			return;
+		}
 		
 		public static void fullCustomerValidation(Customer customer) throws InvalidInputException {
+			validateCustomerObject(customer);
 			ActorValidation.validateName(customer.getName());
 			ActorValidation.validateDob(customer.getDob());
 			ActorValidation.validateContactNumber(customer.getContactNumber());
 			ActorValidation.validateAddress(customer.getAddress());
 			ActorValidation.validateEmail(customer.getEmail());
 			ActorValidation.validateGender(customer.getGender());
-			ActorValidation.validateUser(customer.getUser());
+			ActorValidation.validateUserObject(customer.getUser());
 			validateAadharNumber(customer.getAadharNumber());
 			validatePanCardNumber(customer.getPanCardNumber());
 		}
 		
 		
 		public static void customerValidation1(Customer customer) throws InvalidInputException {
+			validateCustomerObject(customer);
 			ActorValidation.validateName(customer.getName());
 			ActorValidation.validateDob(customer.getDob());
 			ActorValidation.validateContactNumber(customer.getContactNumber());
 			ActorValidation.validateAddress(customer.getAddress());
 			ActorValidation.validateEmail(customer.getEmail());
 			ActorValidation.validateGender(customer.getGender());
+			ActorValidation.validateUserObject(customer.getUser());
 			
 		}
 		
 		
 		public static void customerValidation2(Customer customer) throws InvalidInputException {
+			validateCustomerObject(customer);
 			validateAadharNumber(customer.getAadharNumber());
 			validatePanCardNumber(customer.getPanCardNumber());
 		}
