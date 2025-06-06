@@ -7,7 +7,6 @@ import com.maverickbank.MaverickBank.exception.InvalidInputException;
 import com.maverickbank.MaverickBank.model.AccountOpeningApplication;
 import com.maverickbank.MaverickBank.model.AccountType;
 import com.maverickbank.MaverickBank.model.Branch;
-import com.maverickbank.MaverickBank.model.users.Customer;
 
 public class AccountOpeningApplicationValidation {
 	
@@ -19,13 +18,6 @@ public class AccountOpeningApplicationValidation {
 	}
 
 
-
-	public static void validateCustomer(Customer customer) throws InvalidInputException {
-		if(customer==null ) {
-			throw new InvalidInputException("Invalid customer object provided. Please provide appropriate customer object...!!!");
-		}
-		return;
-	}
 
 
 
@@ -51,11 +43,18 @@ public class AccountOpeningApplicationValidation {
 		return;
 	}
 
+	
+	public static void validateCustomerApprovalStatus(ApplicationStatus customerApprovalStatus) throws InvalidInputException{
+		if(customerApprovalStatus==null) {
+			throw new InvalidInputException("Null customer approval status provided.should not be null...!!!");
+		}
+		return;
+	}
 
 
-	public static void validateStatus(ApplicationStatus status) throws InvalidInputException{
-		if(status==null) {
-			throw new InvalidInputException("Null application status provided. Application status should not be null...!!!");
+	public static void validateEmployeeApprovalStatus(ApplicationStatus employeeApprovalStatus) throws InvalidInputException{
+		if(employeeApprovalStatus==null) {
+			throw new InvalidInputException("Null employee approval status provided.should not be null...!!!");
 		}
 		return;
 	}
@@ -65,6 +64,24 @@ public class AccountOpeningApplicationValidation {
 		if(applicationDateTime==null) {
 			throw new InvalidInputException("Null application date time provided. Application date time should not be null...!!!");
 		}
+		return;
+	}
+	
+	public static void validateAccountOpeningApplicationObject(AccountOpeningApplication accountOpeningApplication)throws InvalidInputException{
+		if(accountOpeningApplication==null) {
+			throw new InvalidInputException("Null account opening application provided...!!!");
+		}
+		return;
+	}
+	
+	public static void validateAccountOpeningApplication(AccountOpeningApplication accountOpeningApplication)throws InvalidInputException{
+		validateAccountOpeningApplicationObject(accountOpeningApplication);
+		validateBranch(accountOpeningApplication.getBranch());
+		BranchValidation.validateBranchName(accountOpeningApplication.getBranch().getBranchName());
+		validateAccountType(accountOpeningApplication.getAccountType());
+		AccountTypeValidation.validateBankAccountType(accountOpeningApplication.getAccountType().getAccountType());
+		validateCustomerApprovalStatus(accountOpeningApplication.getCustomerApprovalStatus());
+		
 		return;
 	}
 	

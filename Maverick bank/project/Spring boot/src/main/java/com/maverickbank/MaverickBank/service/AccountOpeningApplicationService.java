@@ -1,162 +1,338 @@
 package com.maverickbank.MaverickBank.service;
 
+import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.maverickbank.MaverickBank.dto.AccountOpeningApplicationDto;
 import com.maverickbank.MaverickBank.enums.ApplicationStatus;
-import com.maverickbank.MaverickBank.enums.BankAccountType;
-import com.maverickbank.MaverickBank.exception.IdentityNotMatchException;
+import com.maverickbank.MaverickBank.exception.DeletedUserException;
+import com.maverickbank.MaverickBank.exception.InvalidActionException;
 import com.maverickbank.MaverickBank.exception.InvalidInputException;
 import com.maverickbank.MaverickBank.exception.ResourceNotFoundException;
-import com.maverickbank.MaverickBank.model.AccountHolder;
 import com.maverickbank.MaverickBank.model.AccountOpeningApplication;
 import com.maverickbank.MaverickBank.model.AccountType;
 import com.maverickbank.MaverickBank.model.Branch;
-import com.maverickbank.MaverickBank.model.CustomerAccountOpeningApplication;
-import com.maverickbank.MaverickBank.model.users.Customer;
-import com.maverickbank.MaverickBank.repository.AccountHolderRepository;
+import com.maverickbank.MaverickBank.model.User;
 import com.maverickbank.MaverickBank.repository.AccountOpeningApplicationRepository;
-import com.maverickbank.MaverickBank.repository.AccountTypeRepository;
 import com.maverickbank.MaverickBank.repository.BranchRepository;
-import com.maverickbank.MaverickBank.repository.CustomerAccountOpeningApplicationRepository;
-import com.maverickbank.MaverickBank.repository.CustomerRepository;
-import com.maverickbank.MaverickBank.validation.AccountOpeningApplicationDtoValidation;
-
+import com.maverickbank.MaverickBank.repository.UserRepository;
+import com.maverickbank.MaverickBank.validation.AccountOpeningApplicationValidation;
+import com.maverickbank.MaverickBank.validation.UserValidation;
 
 
 @Service
 public class AccountOpeningApplicationService {
-	
-	AccountOpeningApplicationRepository aoar;
-	CustomerRepository cr;
-	AccountTypeRepository atr;
-	BranchRepository br;
-	AccountHolderRepository ahr;
-	CustomerAccountOpeningApplicationRepository caoar;
 
-	public AccountOpeningApplicationService(AccountOpeningApplicationRepository aoar, CustomerRepository cr,
-			AccountTypeRepository atr, BranchRepository br,AccountHolderRepository ah,CustomerAccountOpeningApplicationRepository caoar, AccountHolderRepository ahr) {
-		this.aoar = aoar;
-		this.cr = cr;
-		this.atr = atr;
-		this.br = br;
-		this.ahr=ahr;
-		this.caoar=caoar;
+	
+	AccountOpeningApplicationRepository   accountOpeningApplicationRepository;
+	UserRepository                        userRepository;
+	BranchService                         branchService;
+	AccountTypeService                    accountTypeService;
+	BranchRepository                      branchRepository;
+	
+	
+
+	
+
+
+	
+public AccountOpeningApplicationService(AccountOpeningApplicationRepository accountOpeningApplicationRepository,
+			UserRepository userRepository, BranchService branchService, AccountTypeService accountTypeService, BranchRepository branchRepository) {
+		this.accountOpeningApplicationRepository = accountOpeningApplicationRepository;
+		this.userRepository = userRepository;
+		this.branchService = branchService;
+		this.accountTypeService = accountTypeService;
+		this.branchRepository = branchRepository;
 	}
 
 
 
+
+
+
+
+//--------------------------------------------------- POST ---------------------------------------------------------------
+
 	
 
 
-	@Transactional
-	public AccountOpeningApplicationDto addAccountOpeningApplication(AccountOpeningApplicationDto applicationDto, String branchName, BankAccountType bankAccountType, String username) throws InvalidInputException,ResourceNotFoundException, Exception {
-		
-		//Validate Account opening application dto object
-		AccountOpeningApplicationDtoValidation.validateAccountOpeningApplicationDto(applicationDto);
-		//Check whether given fields are null
-		if(branchName==null) {
-			throw new InvalidInputException("Invalid Branch Name provided..!!!");
-		}
-		if(bankAccountType==null) {
-			throw new InvalidInputException("Invalid Bank Account Type provided..!!!");
-		}
-		//Get branch by branch name
-		Branch branch=br.getByName(branchName);
-		//If no branch available with given name throw exception
-		if(branch==null) {
-			throw new ResourceNotFoundException("Invalid Branch Name...!!!");
-		}
-		//Extract Account opening application
-		AccountOpeningApplication application=applicationDto.getApplication();
-		//Set branch for the application
-		application.setBranch(branch);
-		//Get account type by its name
-		AccountType accountType= atr.getAccountTypeByName(bankAccountType);
-		//Check whether account type exists in database
-		if(accountType==null) {
-			throw new ResourceNotFoundException("Invalid Bank Account type provided Name...!!!");
-		}
-		//Set account type to the Account opening application
-		application.setAccountType(accountType);
-		application.setStatus(ApplicationStatus.PENDING);
-		
-		/*
-		 * Now here check if account is joint type, 
-		 * if yes account holders should be greater than or equal to 2
-		 * then fetch the customer details of all the account holders using their mail and 
-		 * store in list of customers
-		 * if the current Actor(customer) is not in the list of customers then account opening application cannot be created due to identity invalid
-		 * if all the conditions are met then save account holders in account holder and get the ids
-		 * save updated account holders in the list 
-		 * add application to database
-		 * now update CustomerAccountHolderApplication with account holder id, customer id, application id
-		 * */
-		AccountOpeningApplicationDtoValidation.validateListSize(accountType.getAccountType(), applicationDto.getAccountHolderList());
-		
-		List<Customer> customerList=new ArrayList<>();
-		for(AccountHolder a : applicationDto.getAccountHolderList()) {
-			Customer customer=cr.getByContactNumber(a.getContactNumber());
-			if(customer==null) {
-				throw new ResourceNotFoundException("Cannot submit application,No customer with given phone number"+a.getContactNumber());
-			}
-			customerList.add(customer);
-		}
-		Customer presentCustomer=cr.getByUsername(username);
-		Boolean isPresent=false;
-		for(Customer c: customerList) {
-			if(c.equals(presentCustomer)) {
-				isPresent=true;
-			}
-		}
-		
-		if(isPresent==false) {
-			throw new IdentityNotMatchException("Customer's identity is absent in the given account holder list...!!! ");	
-		}
-		
-		application.setApplicationDateTime(LocalDateTime.now());
-		
-		//Add a condition to check weather application is already available or not
-		//Boolean isAlreadyAvailable=true;
-		
-		
-		
-		
-		//SAVING step1: add account holders
-		applicationDto.setAccountHolderList(ahr.saveAll(applicationDto.getAccountHolderList()));
-		//SAVING step2: add application
-		application=aoar.save(application);
-		applicationDto.setApplication(application);
-		//SAVING step3: Create list of CustomerAccountOpeningApplication and save
-		List<CustomerAccountOpeningApplication> customerAccountOpeningApplication=new ArrayList<>();
-		
-		
-		//Create CustomerAccountOpeningApplication object and add it to list
-		for(int i=0;i<customerList.size();i++) {
-			AccountHolder accountHolder=applicationDto.getAccountHolderList().get(i);
-			CustomerAccountOpeningApplication customerAccountOpeningApplicationTemp=new CustomerAccountOpeningApplication();
-			customerAccountOpeningApplicationTemp.setAccountHolder(accountHolder);
-			customerAccountOpeningApplicationTemp.setCustomer(customerList.get(i));
-			customerAccountOpeningApplicationTemp.setAccountOpeningApplication(application);
-			if(customerList.get(i).equals(presentCustomer)) {
-				customerAccountOpeningApplicationTemp.setCustomerApproval(ApplicationStatus.ACCEPTED);
-			}
-			else {
-				customerAccountOpeningApplicationTemp.setCustomerApproval(ApplicationStatus.PENDING);
+
+
+
+	public AccountOpeningApplication addAccountOpeningApplication(AccountOpeningApplication accountOpeningApplication,Principal principal) throws InvalidInputException,ResourceNotFoundException, InvalidActionException, DeletedUserException {
+		//Check user is active
+				User currentUser= userRepository.getByUsername(principal.getName());
+				UserValidation.checkActiveStatus(currentUser.getStatus());
+				//Validate account opening application object
+				AccountOpeningApplicationValidation.validateAccountOpeningApplication(accountOpeningApplication);
+				//Fetch and attach branch
+				Branch branch = branchService.getByName(accountOpeningApplication.getBranch().getBranchName(), principal);
 				
-			}
-			customerAccountOpeningApplication.add(customerAccountOpeningApplicationTemp);
-			
-		}//For loop
+				//Set branch
+				accountOpeningApplication.setBranch(branch);
+				
+				AccountType accountType = accountTypeService.getAccountTypeByName(accountOpeningApplication.getAccountType().getAccountType(), principal);
+				
+				//Set account type
+				accountOpeningApplication.setAccountType(accountType);
+				
+				
+				
+				accountOpeningApplication.setEmployeeApprovalStatus(ApplicationStatus.PENDING);
+				accountOpeningApplication.setApplicationDateTime(LocalDateTime.now());
 		
-		caoar.saveAll(customerAccountOpeningApplication);
-		
-		return applicationDto;
+		return accountOpeningApplicationRepository.save(accountOpeningApplication);
 	}
 
+
+
+
+
+
+
+	
+	
+	//---------------------------------------------- GET -----------------------------------------------------------------
+
+	
+	
+
+
+	public List<AccountOpeningApplication> getAllAccountOpeningApplication(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
+		//Check user is active
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
+		
+		return accountOpeningApplicationRepository.findAll();
+	}
+
+
+
+
+
+
+
+	public AccountOpeningApplication getAccountOpeningApplicationById(int id,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		//Check user is active
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
+		
+		return accountOpeningApplicationRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("No Account application record with the given id...!!!"));
+	}
+
+
+
+
+
+
+
+	public List<AccountOpeningApplication> getAccountOpeningApplicationByBranch(Branch branch, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		//Check user is active
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
+		
+		if(branch.getId()>0) {
+			branch=branchService.getById(branch.getId(), principal);
+			
+		}
+		else if(branch.getBranchName()!=null) {
+			branch=branchService.getByName(branch.getBranchName(), principal);
+			
+		}
+		else if(branch.getIfsc()!=null) {
+			branch=branchRepository.getBranchByIfsc(branch.getIfsc());
+			
+		}else {
+			throw new InvalidInputException("Invalid branch details. Provide appropriate branch details...!!!");
+		}
+		
+		List<AccountOpeningApplication> accountOpeningApplicationList=accountOpeningApplicationRepository.getAccountOpeningApplicationByBranchId(branch.getId());
+		if(accountOpeningApplicationList==null) {
+			throw new ResourceNotFoundException("No Account application records with the given branch...!!!");
+			
+		}
+		return accountOpeningApplicationList;
+	}
+
+	
+	
+	
+	
+	
+	public List<AccountOpeningApplication> getAccountOpeningApplicationByAccountType(AccountType accountType,
+			Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		//Check user is active
+				User currentUser= userRepository.getByUsername(principal.getName());
+				UserValidation.checkActiveStatus(currentUser.getStatus());
+				
+				if(accountType.getAccountTypeId()>0) {
+					accountType=accountTypeService.getAccountTypeById(accountType.getAccountTypeId(), principal);
+					
+				}
+				else if(accountType.getAccountType()!=null) {
+					accountType=accountTypeService.getAccountTypeByName(accountType.getAccountType(), principal);
+					
+				}else {
+					throw new InvalidInputException("Invalid account type details. Provide appropriate account type details...!!!");
+				}
+				
+				List<AccountOpeningApplication> accountOpeningApplicationList=accountOpeningApplicationRepository.getAccountOpeningApplicationByAccountTypeId(accountType.getAccountTypeId());
+				if(accountOpeningApplicationList==null) {
+					throw new ResourceNotFoundException("No Account application records with the given account type...!!!");
+					
+				}
+				return accountOpeningApplicationList;
+	}
+
+
+
+
+
+
+	public List<AccountOpeningApplication> getAccountOpeningApplicationByCustomerApprovalStatus(
+			ApplicationStatus customerApprovalStatus, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		//Check user is active
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
+		List<AccountOpeningApplication> accountOpeningApplicationList=accountOpeningApplicationRepository.getAccountOpeningApplicationByCustomerApprovalStatus(customerApprovalStatus);
+		if(accountOpeningApplicationList==null) {
+			throw new ResourceNotFoundException("No Account application records with the given customer approval status...!!!");
+			
+		}
+		return accountOpeningApplicationList;
+	}
+
+
+
+
+
+
+
+	public List<AccountOpeningApplication> getAccountOpeningApplicationByDate(LocalDate date, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		//Check user is active
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
+		if(date==null) {
+			throw new InvalidInputException("Invalid null date provided...!!!");
+		}
+		LocalDateTime start= date.atStartOfDay();
+		LocalDateTime end= date.plusDays(1).atStartOfDay();
+		List<AccountOpeningApplication> accountOpeningApplicationList=accountOpeningApplicationRepository.getAccountOpeningApplicationByDate(start,end);
+		if(accountOpeningApplicationList==null) {
+			throw new ResourceNotFoundException("No Account application records with the given date...!!!");
+			
+		}
+		return accountOpeningApplicationList;
+	}
+
+
+
+
+
+
+
+	public List<AccountOpeningApplication> getAccountOpeningApplicationByEmployeeApprovalStatus(
+			ApplicationStatus employeeApprovalStatus, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		//Check user is active
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
+		List<AccountOpeningApplication> accountOpeningApplicationList=accountOpeningApplicationRepository.getAccountOpeningApplicationByEmployeeApprovalStatus(employeeApprovalStatus);
+		if(accountOpeningApplicationList==null) {
+			throw new ResourceNotFoundException("No Account application records with the employee approval status...!!!");
+			
+		}
+		return accountOpeningApplicationList;
+	}
+	
+	
+	
+	
+	
+	//----------------------------------------------- PUT ----------------------------------------------------------------
+	public AccountOpeningApplication updateCustomerApprovalStatus(int id,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
+		//Check user is active
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
+		
+		return null;
+	}
+
+
+
+
+
+
+
+	public AccountOpeningApplication approveApplication(int id, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		//Check user is active
+				User currentUser= userRepository.getByUsername(principal.getName());
+				UserValidation.checkActiveStatus(currentUser.getStatus());
+				
+		AccountOpeningApplication accountOpeningApplication= accountOpeningApplicationRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("No Account application record with the given id...!!!"));
+		
+		if(accountOpeningApplication.getCustomerApprovalStatus()==ApplicationStatus.REJECTED ||
+				accountOpeningApplication.getCustomerApprovalStatus()==ApplicationStatus.PENDING ) {
+			throw new InvalidActionException("This account opening application is not eligible to approve...!!!  ");
+			
+		}
+		
+		if(accountOpeningApplication.getEmployeeApprovalStatus()==ApplicationStatus.REJECTED) {
+			throw new InvalidActionException("This account opening application is already REJECTED.Cannot perform action...!!!  ");
+		}
+		else if(accountOpeningApplication.getEmployeeApprovalStatus()==ApplicationStatus.ACCEPTED) {
+			throw new InvalidActionException("This account opening application is already ACCEPTED...!!!  ");
+			
+		}
+		accountOpeningApplication.setEmployeeApprovalStatus(ApplicationStatus.ACCEPTED);
+		return accountOpeningApplicationRepository.save(accountOpeningApplication);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	public AccountOpeningApplication rejectApplication(int id, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		//Check user is active
+				User currentUser= userRepository.getByUsername(principal.getName());
+				UserValidation.checkActiveStatus(currentUser.getStatus());
+				
+		AccountOpeningApplication accountOpeningApplication= accountOpeningApplicationRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("No Account application record with the given id...!!!"));
+		
+		if(accountOpeningApplication.getCustomerApprovalStatus()==ApplicationStatus.REJECTED ||
+				accountOpeningApplication.getCustomerApprovalStatus()==ApplicationStatus.PENDING ) {
+			throw new InvalidActionException("This account opening application is not eligible to reject...!!!  ");
+			
+		}
+		
+		if(accountOpeningApplication.getEmployeeApprovalStatus()==ApplicationStatus.REJECTED) {
+			throw new InvalidActionException("This account opening application is already REJECTED.Cannot perform action...!!!  ");
+		}
+		else if(accountOpeningApplication.getEmployeeApprovalStatus()==ApplicationStatus.ACCEPTED) {
+			throw new InvalidActionException("This account opening application is already ACCEPTED...!!!  ");
+			
+		}
+		accountOpeningApplication.setEmployeeApprovalStatus(ApplicationStatus.REJECTED);
+		return accountOpeningApplicationRepository.save(accountOpeningApplication);
+	}
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+	
 }

@@ -123,7 +123,26 @@ public class SecurityConfig {
 					.requestMatchers("/api/account-type/update").hasAnyAuthority("ADMIN")
 					
 	//====================================== Account Opening Application ===================================
+				//-------------------------------- post ------------------------------------------------
 					.requestMatchers("/api/account-opening-application/add").hasAnyAuthority("CUSTOMER")
+				//--------------------------------- get ------------------------------------------------
+					.requestMatchers("/api/account-opening-application/get/all").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-opening-application/get/by-id/{id}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-opening-application/get/by-branch").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-opening-application/get/by-account-type").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-opening-application/get/by-customer-approval-status/{customerApprovalStatus}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-opening-application/get/by-employee-approval-status/{employeeApprovalStatus}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-opening-application/get/by-date/{date}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					
+				//--------------------------------- put ------------------------------------------------
+					.requestMatchers("/api/account-opening-application/update/customer-approval/{id}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-opening-application/update/approve/{id}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-opening-application/update/reject/{id}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					
+					
+	//=================================== CUSTOMER ACCOUNT OPENING APPLICATION ================================
+					
+					
 					//Account
 					//CustomerAccount
 					//Account requests

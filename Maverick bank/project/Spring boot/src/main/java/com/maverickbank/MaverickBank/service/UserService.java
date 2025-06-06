@@ -318,8 +318,8 @@ public class UserService {
 		String currentUsername= principal.getName();
 		User currentUser=userRepository.getByUsername(currentUsername);
 		//Check whether account is deactivated
-		if(currentUser.getStatus()==ActiveStatus.DEACTIVATED) {
-			throw new InvalidActionException("Cannot activate User account. Can only be activated by Administrator...!!!");
+		if(currentUser.getStatus()==ActiveStatus.SUSPENDED) {
+			throw new InvalidActionException("This user account is suspended. Can only be activated by Administrator...!!!");
 		}
 		//Check whether account is deleted
 		if(currentUser.getStatus()==ActiveStatus.DELETED) {

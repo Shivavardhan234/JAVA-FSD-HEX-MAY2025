@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 
 import com.maverickbank.MaverickBank.enums.ApplicationStatus;
 import com.maverickbank.MaverickBank.exception.InvalidInputException;
-import com.maverickbank.MaverickBank.model.users.Customer;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,8 +36,11 @@ public class AccountOpeningApplication {
 	private String accountName;
 	private String purpose;
 	@Enumerated(EnumType.STRING)
-	@Column(nullable=false)
-	private ApplicationStatus status;
+	@Column(name="customer_approval_status",nullable=false)
+	private ApplicationStatus customerApprovalStatus;
+	@Enumerated(EnumType.STRING)
+	@Column(name="employee_approval_status",nullable=false)
+	private ApplicationStatus employeeApprovalStatus;
 	
 	@Column(name="application_date_time",nullable=false)
 	private LocalDateTime applicationDateTime;
@@ -49,17 +51,25 @@ public class AccountOpeningApplication {
 
 
 
-	public AccountOpeningApplication(int id, Branch branch, AccountType accountType,String accountName, String purpose,
-			ApplicationStatus status,LocalDateTime applicationDateTime) throws InvalidInputException {
+
+	public AccountOpeningApplication(int id, Branch branch, AccountType accountType, String accountName, String purpose,
+			ApplicationStatus customerApprovalStatus, ApplicationStatus employeeApprovalStatus,
+			LocalDateTime applicationDateTime) throws InvalidInputException {
 		this.setId(id);
 		this.setBranch(branch);
-		this.accountName=accountName;
+		this.setBranch(branch);
+		this.setAccountType(accountType);
 		this.setPurpose(purpose);
-		this.setStatus(status);
+		this.setCustomerApprovalStatus(customerApprovalStatus);
+		this.setEmployeeApprovalStatus(employeeApprovalStatus);
+		this.setApplicationDateTime(applicationDateTime);
 	}
 
-
 // ------------------------------------Getters & Setters -----------------------------------------------------------
+
+
+	
+
 
 
 	public int getId() {return id;}
@@ -67,7 +77,8 @@ public class AccountOpeningApplication {
 	public AccountType getAccountType() {return accountType;}
 	public String getAccountName() {return accountName;}
 	public String getPurpose() {return purpose;}
-	public ApplicationStatus getStatus() {return status;}
+	public ApplicationStatus getCustomerApprovalStatus() {return customerApprovalStatus;}
+	public ApplicationStatus getEmployeeApprovalStatus() {return employeeApprovalStatus;}
 	public LocalDateTime getApplicationDateTime() {return applicationDateTime;}
 
 
@@ -115,14 +126,23 @@ public class AccountOpeningApplication {
 		}
 		this.purpose = purpose;
 	}
-
-
-
-	public void setStatus(ApplicationStatus status) throws InvalidInputException{
-		if(status==null) {
-			throw new InvalidInputException("Null application status provided. Application status should not be null...!!!");
+	
+	
+	
+	public void setCustomerApprovalStatus(ApplicationStatus customerApprovalStatus) throws InvalidInputException{
+		if(customerApprovalStatus==null) {
+			throw new InvalidInputException("Null customer approval status provided.should not be null...!!!");
 		}
-		this.status = status;
+		this.customerApprovalStatus = customerApprovalStatus;
+	}
+
+
+
+	public void setEmployeeApprovalStatus(ApplicationStatus employeeApprovalStatus) throws InvalidInputException{
+		if(employeeApprovalStatus==null) {
+			throw new InvalidInputException("Null employee approval status provided.should not be null...!!!");
+		}
+		this.employeeApprovalStatus = employeeApprovalStatus;
 	}
 
 

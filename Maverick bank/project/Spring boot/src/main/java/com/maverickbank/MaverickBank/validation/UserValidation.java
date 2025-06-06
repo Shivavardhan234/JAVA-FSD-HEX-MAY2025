@@ -95,7 +95,7 @@ public class UserValidation {
 	
 	public static void checkActiveStatus(ActiveStatus status) throws InvalidInputException, InvalidActionException, DeletedUserException {
 		if(status==ActiveStatus.INACTIVE||
-				status==ActiveStatus.DEACTIVATED) {
+				status==ActiveStatus.SUSPENDED) {
 			throw new InvalidActionException("User is NOT ACTIVE...!!!");
 		}
 		if(status==ActiveStatus.DELETED) {

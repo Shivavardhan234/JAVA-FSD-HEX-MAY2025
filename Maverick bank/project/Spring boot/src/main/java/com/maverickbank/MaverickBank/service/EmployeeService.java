@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.Role;
 import com.maverickbank.MaverickBank.exception.DeletedUserException;
 import com.maverickbank.MaverickBank.exception.InvalidActionException;
@@ -90,7 +89,6 @@ public class EmployeeService {
 		
 		//Add the designation and set status
 		user.setRole(Role.valueOf(employee.getDesignation()));
-		user.setStatus(ActiveStatus.ACTIVE);
 		employee.setUser(userService.addUser(user));
 		
 		//Save employee

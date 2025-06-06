@@ -1,5 +1,5 @@
 package com.maverickbank.MaverickBank.enums;
 
 public enum ActiveStatus {
-	ACTIVE, INACTIVE, DEACTIVATED, DELETED;
+	ACTIVE, INACTIVE, SUSPENDED, DELETED;
 }

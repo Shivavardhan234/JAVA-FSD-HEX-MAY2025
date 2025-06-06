@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.Role;
 import com.maverickbank.MaverickBank.exception.DeletedUserException;
 import com.maverickbank.MaverickBank.exception.InvalidActionException;
@@ -71,8 +70,6 @@ public class CIOService {
 		
 		//set remaining properties
 		user.setRole(Role.ADMIN);
-		
-		user.setStatus(ActiveStatus.ACTIVE);
 		//Set saved user object with user id
 		cio.setUser(userService.addUser(user));
 		//Save CIO object
