@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
 public class AccountType {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	@Enumerated(EnumType.STRING)
 	@Column(name= "account_type",nullable=false)

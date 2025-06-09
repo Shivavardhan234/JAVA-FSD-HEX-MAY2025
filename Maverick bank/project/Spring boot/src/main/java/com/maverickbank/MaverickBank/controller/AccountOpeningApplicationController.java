@@ -21,13 +21,14 @@ import com.maverickbank.MaverickBank.exception.ResourceNotFoundException;
 import com.maverickbank.MaverickBank.model.AccountOpeningApplication;
 import com.maverickbank.MaverickBank.model.AccountType;
 import com.maverickbank.MaverickBank.model.Branch;
+import com.maverickbank.MaverickBank.model.CustomerAccount;
 import com.maverickbank.MaverickBank.service.AccountOpeningApplicationService;
 
 @RestController
 @RequestMapping("/api/account-opening-application")
 public class AccountOpeningApplicationController {
 	@Autowired
-	AccountOpeningApplicationService accountOpeningApplicationService;
+	private AccountOpeningApplicationService accountOpeningApplicationService;
 	
 	
 	
@@ -86,12 +87,12 @@ public class AccountOpeningApplicationController {
 //--------------------------------------------- PUT ----------------------------------------------------------------------
 	
 	@PutMapping("/update/customer-approval/{id}")
-	public  AccountOpeningApplication updateCustomerApprovalStatus(@PathVariable int id,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
+	public  AccountOpeningApplication updateCustomerApprovalStatus(@PathVariable int id,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		return accountOpeningApplicationService.updateCustomerApprovalStatus(id,principal);
 	}
 	
 	@PutMapping("/update/approve/{id}")
-	public  AccountOpeningApplication approveApplication(@PathVariable int id,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+	public  List<CustomerAccount> approveApplication(@PathVariable int id,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		return accountOpeningApplicationService.approveApplication(id,principal);
 	}
 	

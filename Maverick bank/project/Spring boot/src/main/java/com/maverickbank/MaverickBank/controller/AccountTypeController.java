@@ -26,7 +26,7 @@ import com.maverickbank.MaverickBank.service.AccountTypeService;
 @RequestMapping("/api/account-type")
 public class AccountTypeController {
 	@Autowired
-	AccountTypeService accountTypeService;
+	private AccountTypeService accountTypeService;
 	
 	//----------------------------------------------- POST ---------------------------------------------------------------
 	

@@ -23,7 +23,7 @@ import jakarta.persistence.Table;
 @Table(name="account_opening_application")
 public class AccountOpeningApplication {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
 	@ManyToOne

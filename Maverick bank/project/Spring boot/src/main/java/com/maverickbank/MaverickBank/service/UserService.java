@@ -25,8 +25,8 @@ import com.maverickbank.MaverickBank.validation.UserValidation;
 @Service
 public class UserService {
 	
-	UserRepository userRepository;
-	PasswordEncoder passwordEncoder;
+	private UserRepository userRepository;
+	private PasswordEncoder passwordEncoder;
 	
 	
 	
@@ -111,30 +111,30 @@ public class UserService {
 	
 	
 
-	public Object getByUsername(Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
-		User currentUser= userRepository.getByUsername(principal.getName());
-		UserValidation.checkActiveStatus(currentUser.getStatus());
+//	public Object getByUsername(Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
+//		User currentUser= userRepository.getByUsername(principal.getName());
+//		UserValidation.checkActiveStatus(currentUser.getStatus());
+//		
+//		
 		
-		
-		
-		switch (currentUser.getRole()) {
-		case CUSTOMER:
-			break;
-		case ADMIN:
-			break;
-		case ACCOUNT_MANAGER:
-		case JUNIOR_OPERATIONS_MANAGER:
-		case SENIOR_OPERATIONS_MANAGER:
-		case LOAN_OFFICER:
-		case TRANSACTION_ANALYST:
-			break;
-		default:
-				return null;
-			
-			
-		}
-		return null;
-	}
+//		switch (currentUser.getRole()) {
+//		case CUSTOMER:
+//			break;
+//		case ADMIN:
+//			break;
+//		case ACCOUNT_MANAGER:
+//		case JUNIOR_OPERATIONS_MANAGER:
+//		case SENIOR_OPERATIONS_MANAGER:
+//		case LOAN_OFFICER:
+//		case TRANSACTION_ANALYST:
+//			break;
+//		default:
+//				return null;
+//			
+//			
+//		}
+//		return null;
+//	}
 
 
 

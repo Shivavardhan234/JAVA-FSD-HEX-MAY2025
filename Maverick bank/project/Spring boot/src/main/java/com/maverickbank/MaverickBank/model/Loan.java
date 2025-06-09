@@ -16,7 +16,7 @@ import jakarta.persistence.ManyToOne;
 @Entity
 public class Loan {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	@ManyToOne
 	@JoinColumn(nullable=false)
@@ -32,13 +32,21 @@ public class Loan {
 	private LoanStatus status;
 	@Column(name="disbursement_date",nullable=false)
 	private LocalDate disbursementDate;
+
 	@Column(name="total_penalty",nullable=false)
 	private BigDecimal totalPenalty;
 	@Column(name="due_date")
 	private LocalDate dueDate;
+	@Column(name="is_cleared",nullable=false)
+	private boolean isCleared;
 	
 	
-// ----------------------------------------------- Constructors -------------------------------------------------	
+
+
+
+
+
+	// ----------------------------------------------- Constructors -------------------------------------------------	
 	public Loan() {}
 
 
@@ -68,7 +76,7 @@ public class Loan {
 	public LocalDate getDisbursementDate() {return disbursementDate;}
 	public BigDecimal getTotalPenalty() {return totalPenalty;}
 	public LocalDate getDueDate() {return dueDate;}
-
+	public boolean isCleared() {return isCleared;}
 
 
 	public void setId(int id) throws InvalidInputException {
@@ -132,6 +140,9 @@ public class Loan {
 		this.disbursementDate = disbursementDate;
 	}
 
+	
+	
+	
 
 
 	public void setTotalPenalty(BigDecimal totalPenalty) throws InvalidInputException{
@@ -150,6 +161,12 @@ public class Loan {
 		this.dueDate = dueDate;
 	}
 	
+
+
+
+	public void setCleared(boolean isCleared) {
+		this.isCleared = isCleared;
+	}
 	
 
 	

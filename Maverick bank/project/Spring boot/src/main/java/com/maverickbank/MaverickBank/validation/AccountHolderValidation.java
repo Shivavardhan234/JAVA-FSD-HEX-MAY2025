@@ -143,11 +143,16 @@ public class AccountHolderValidation {
 	}
 	
 	
-	public static void validateAccountHolder(AccountHolder accountHolder)throws InvalidInputException{
+	public static void validateAccountHolderObject(AccountHolder accountHolder)throws InvalidInputException{
 		if(accountHolder==null) {
 			throw new InvalidInputException("provided account holder object is null");
 			
 		}
+		return;
+	}
+	
+	public static void validateAccountHolder(AccountHolder accountHolder)throws InvalidInputException{
+		validateAccountHolderObject(accountHolder);
 		
 		validateName(accountHolder.getName());
 		validateDob(accountHolder.getDob());

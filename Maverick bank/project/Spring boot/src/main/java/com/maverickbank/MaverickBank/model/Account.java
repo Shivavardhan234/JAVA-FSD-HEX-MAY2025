@@ -19,7 +19,7 @@ import jakarta.persistence.ManyToOne;
 @Entity
 public class Account {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
 	@Column(name="account_number",unique=true,nullable=false)
@@ -40,13 +40,16 @@ public class Account {
 	@ManyToOne
 	@JoinColumn(name="account_type_id",nullable=false)
 	private AccountType accountType;
+	@Column(name="kyc_compliant",nullable=false)
+	private boolean kycCompliant;
 	
 	
 	
 	
 	//----------------------------constructors---------------------------------------------------
 	
-	
+
+
 	public Account() {}
 	
 	
@@ -89,6 +92,7 @@ public class Account {
     public BigDecimal getBalance() { return balance; }
     public AccountStatus getAccountStatus() { return accountStatus; }
     public AccountType getAccountType() { return accountType; }
+    public boolean getKycCompliant() {return kycCompliant;}
 
 
 
@@ -164,6 +168,21 @@ public class Account {
         }
         this.accountType = accountType;
     }
+	
+
+
+	public void setKycCompliant(boolean kycCompliant) {
+		this.kycCompliant = kycCompliant;
+	}
+
+
+
+
+
+
+
+
+
 	
 	
 	

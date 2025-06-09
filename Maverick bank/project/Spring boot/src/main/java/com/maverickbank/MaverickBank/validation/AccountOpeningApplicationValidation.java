@@ -85,6 +85,16 @@ public class AccountOpeningApplicationValidation {
 		return;
 	}
 	
+	public static void validateAccountOpeningApplication2(AccountOpeningApplication accountOpeningApplication)throws InvalidInputException{
+		validateAccountOpeningApplicationObject(accountOpeningApplication);
+		validateBranch(accountOpeningApplication.getBranch());
+		BranchValidation.validateBranchName(accountOpeningApplication.getBranch().getBranchName());
+		validateAccountType(accountOpeningApplication.getAccountType());
+		AccountTypeValidation.validateBankAccountType(accountOpeningApplication.getAccountType().getAccountType());
+		
+		return;
+	}
+	
 	
 	
 	

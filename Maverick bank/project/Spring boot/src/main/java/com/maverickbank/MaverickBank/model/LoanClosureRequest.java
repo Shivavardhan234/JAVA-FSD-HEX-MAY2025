@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
 public class LoanClosureRequest {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	@ManyToOne
 	@JoinColumn(nullable=false)

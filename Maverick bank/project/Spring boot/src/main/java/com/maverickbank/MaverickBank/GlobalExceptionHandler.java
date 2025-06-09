@@ -13,6 +13,7 @@ import com.maverickbank.MaverickBank.exception.IdentityNotMatchException;
 import com.maverickbank.MaverickBank.exception.InvalidActionException;
 import com.maverickbank.MaverickBank.exception.InvalidCredentialsException;
 import com.maverickbank.MaverickBank.exception.InvalidInputException;
+import com.maverickbank.MaverickBank.exception.NotEnoughFundsException;
 import com.maverickbank.MaverickBank.exception.ResourceExistsException;
 import com.maverickbank.MaverickBank.exception.ResourceNotFoundException;
 
@@ -76,6 +77,12 @@ public class GlobalExceptionHandler {
 		Map<String,String> map=new HashMap<>();
 		map.put("Deleted User Exception: ", e.getMessage());
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(map);
+	}
+	@ExceptionHandler(exception = NotEnoughFundsException.class)
+	public ResponseEntity<?> notEnoughFundsExceptionHandler(NotEnoughFundsException e){
+		Map<String,String> map=new HashMap<>();
+		map.put("Not Enough Funds Exception: ", e.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
 	}
 	
 	

@@ -1,55 +1,99 @@
 package com.maverickbank.MaverickBank.dto;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
-import com.maverickbank.MaverickBank.exception.InvalidInputException;
-import com.maverickbank.MaverickBank.model.AccountHolder;
+import com.maverickbank.MaverickBank.enums.ApplicationStatus;
+import com.maverickbank.MaverickBank.enums.BankAccountType;
 import com.maverickbank.MaverickBank.model.AccountOpeningApplication;
-import com.maverickbank.MaverickBank.validation.AccountHolderValidation;
 
 
 
 public class AccountOpeningApplicationDto {
-
-	private AccountOpeningApplication application;
-	private List<AccountHolder> accountHolderList;
 	
-	
-//-------------------------------------------- Constructors --------------------------------------------------------	
-	public AccountOpeningApplicationDto() {}
-
-
-
-	public AccountOpeningApplicationDto(AccountOpeningApplication application,List<AccountHolder> accountHolderList) throws InvalidInputException {
-		
+	private String branch;
+	private BankAccountType accountType;
+	private String accountName;
+	private String purpose;
+	private ApplicationStatus customerApprovalStatus;
+	private ApplicationStatus employeeApprovalStatus;
+	public AccountOpeningApplicationDto() {
+		super();
 	}
-
-
-// ------------------------------------Getters & Setters -----------------------------------------------------------
-
-
-	public AccountOpeningApplication getApplication() {return application;}
-	public List<AccountHolder> getAccountHolderList(){return accountHolderList;}
-
-
-	public void setApplication(AccountOpeningApplication application) throws InvalidInputException{
-		if(application==null) {
-			throw new InvalidInputException("given account account opening application is invalid...!!!");
-		}
-		this.application=application;
+	private LocalDateTime applicationDateTime;
+	
+	
+	public AccountOpeningApplicationDto(String branch, BankAccountType accountType, String accountName, String purpose,
+			ApplicationStatus customerApprovalStatus, ApplicationStatus employeeApprovalStatus,
+			LocalDateTime applicationDateTime) {
+		super();
+		this.branch = branch;
+		this.accountType = accountType;
+		this.accountName = accountName;
+		this.purpose = purpose;
+		this.customerApprovalStatus = customerApprovalStatus;
+		this.employeeApprovalStatus = employeeApprovalStatus;
+		this.applicationDateTime = applicationDateTime;
 	}
 	
-	
-	public void setAccountHolderList(List<AccountHolder> accountHolderList) throws InvalidInputException {
-		if(accountHolderList==null || accountHolderList.size()<=0 ||accountHolderList.size()>4 ) {
-			throw new InvalidInputException("given account holder list is invalid...!!!");
-		}
-		for(AccountHolder a: accountHolderList) {
-			AccountHolderValidation.validateAccountHolder(a);
-		}
-		
-		this.accountHolderList=accountHolderList;
+	public AccountOpeningApplicationDto(AccountOpeningApplication accountOpeningApplication) {
+		super();
+		this.branch = accountOpeningApplication.getBranch().getBranchName();
+		this.accountType = accountOpeningApplication.getAccountType().getAccountType();
+		this.accountName = accountOpeningApplication.getAccountName();
+		this.purpose = accountOpeningApplication.getPurpose();
+		this.customerApprovalStatus = accountOpeningApplication.getCustomerApprovalStatus();
+		this.employeeApprovalStatus = accountOpeningApplication.getEmployeeApprovalStatus();
+		this.applicationDateTime = accountOpeningApplication.getApplicationDateTime();
 	}
+	
+	
+	
+	
+	
+	public String getBranch() {
+		return branch;
+	}
+	public BankAccountType getAccountType() {
+		return accountType;
+	}
+	public String getAccountName() {
+		return accountName;
+	}
+	public String getPurpose() {
+		return purpose;
+	}
+	public ApplicationStatus getCustomerApprovalStatus() {
+		return customerApprovalStatus;
+	}
+	public ApplicationStatus getEmployeeApprovalStatus() {
+		return employeeApprovalStatus;
+	}
+	public LocalDateTime getApplicationDateTime() {
+		return applicationDateTime;
+	}
+	public void setBranch(String branch) {
+		this.branch = branch;
+	}
+	public void setAccountType(BankAccountType accountType) {
+		this.accountType = accountType;
+	}
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
+	}
+	public void setPurpose(String purpose) {
+		this.purpose = purpose;
+	}
+	public void setCustomerApprovalStatus(ApplicationStatus customerApprovalStatus) {
+		this.customerApprovalStatus = customerApprovalStatus;
+	}
+	public void setEmployeeApprovalStatus(ApplicationStatus employeeApprovalStatus) {
+		this.employeeApprovalStatus = employeeApprovalStatus;
+	}
+	public void setApplicationDateTime(LocalDateTime applicationDateTime) {
+		this.applicationDateTime = applicationDateTime;
+	}
+	
+	
 	
 	
 	

@@ -2,7 +2,6 @@ package com.maverickbank.MaverickBank.validation;
 
 import java.util.List;
 
-import com.maverickbank.MaverickBank.dto.AccountOpeningApplicationDto;
 import com.maverickbank.MaverickBank.enums.BankAccountType;
 import com.maverickbank.MaverickBank.exception.InvalidInputException;
 import com.maverickbank.MaverickBank.model.AccountHolder;
@@ -47,15 +46,7 @@ public class AccountOpeningApplicationDtoValidation {
 		}
 	}
 	
-	public static void validateAccountOpeningApplicationDto(AccountOpeningApplicationDto applicationDto) throws InvalidInputException {
-		if(applicationDto==null)
-		{
-			throw new InvalidInputException("Provided account opening application dto is null...!!!");
-		}
-		validateAccountOpeningApplication(applicationDto.getApplication());
-		validateCustomerList(applicationDto.getAccountHolderList());
-	}
-
+	
 	
 	
 }

@@ -2,10 +2,13 @@ package com.maverickbank.MaverickBank.model;
 
 import java.math.BigDecimal;
 
+import com.maverickbank.MaverickBank.enums.LoanType;
 import com.maverickbank.MaverickBank.exception.InvalidInputException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,11 +17,15 @@ import jakarta.persistence.Table;
 @Table(name="loan_plan")
 public class LoanPlan {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
+	@Column(name="loan_name", nullable=false,unique=true)
+	private String loanName;
+	
+	@Enumerated(EnumType.STRING)
 	@Column(name="loan_type", nullable=false)
-	private String loanType;
+	private LoanType loanType;
 	
 	
 	@Column(name="principal_amount", nullable=false)
@@ -29,8 +36,8 @@ public class LoanPlan {
 	private int loanTerm;
 	
 	
-	@Column(name="intrest_rate", nullable=false)
-	private BigDecimal intrestRate;
+	@Column(name="interest_rate", nullable=false)
+	private BigDecimal interestRate;
 	
 	
 	@Column(name="installment_amount", nullable=false)
@@ -59,14 +66,15 @@ public class LoanPlan {
 	public LoanPlan() {}
 	
 	
-	public LoanPlan(int id, String loanType, BigDecimal principalAmount, int loanTerm, BigDecimal intrestRate,
+	public LoanPlan(int id,String loanName, LoanType loanType, BigDecimal principalAmount, int loanTerm, BigDecimal interestRate,
 			BigDecimal installmentAmount, int repaymentFrequency, BigDecimal penaltyRate,
 			BigDecimal prePaymentPenalty, int gracePeriod) throws InvalidInputException {
 		this.setId(id);
+		this.setLoanName(loanName);
 		this.setLoanType(loanType);
 		this.setPrincipalAmount(principalAmount);
 		this.setLoanTerm(loanTerm);
-		this.setIntrestRate(intrestRate);
+		this.setIntrestRate(interestRate);
 		this.setInstallmentAmount(installmentAmount);
 		this.setRepaymentFrequency(repaymentFrequency);
 		this.setPenaltyRate(penaltyRate);
@@ -76,10 +84,11 @@ public class LoanPlan {
 
 //------------------------------------------------- Getters & Setters ---------------------------------------------
 	public int getId() {return id;}
-	public String getLoanType() {return loanType;}
+	public String getLoanName() {return loanName;}
+	public LoanType getLoanType() {return loanType;}
 	public BigDecimal getPrincipalAmount() {return principalAmount;}
 	public int getLoanTerm() {return loanTerm;}
-	public BigDecimal getIntrestRate() {return intrestRate;}
+	public BigDecimal getIntrestRate() {return interestRate;}
 	public BigDecimal getInstallmentAmount() {return installmentAmount;}
 	public int getRepaymentFrequency() {return repaymentFrequency;}
 	public BigDecimal getPenaltyRate() {return penaltyRate;}
@@ -94,10 +103,16 @@ public class LoanPlan {
 		this.id = id;
 	}
 
+	public void setLoanName(String loanName) throws InvalidInputException {
+		if(loanName==null || loanName.trim().isEmpty() ) {
+			throw new InvalidInputException("Invalid loan name provided. Please provide appropriate loan name...!!!");
+		}
+		this.loanName = loanName;
+	}
 
-	public void setLoanType(String loanType) throws InvalidInputException {
-		if(loanType==null || loanType.trim().isEmpty() ) {
-			throw new InvalidInputException("Invalid account number provided. Please provide appropriate account number...!!!");
+	public void setLoanType(LoanType loanType) throws InvalidInputException {
+		if(loanType==null ) {
+			throw new InvalidInputException("Invalid loan type provided. Please provide appropriate loan type...!!!");
 		}
 		this.loanType = loanType;
 	}
@@ -123,7 +138,7 @@ public class LoanPlan {
 		if(intrestRate==null || intrestRate.compareTo(BigDecimal.ZERO) < 0) {
 			throw new InvalidInputException("Invalid intrest rate provided. Please provide appropriate intrest rate...!!!");
 		}
-		this.intrestRate = intrestRate;
+		this.interestRate = intrestRate;
 	}
 
 

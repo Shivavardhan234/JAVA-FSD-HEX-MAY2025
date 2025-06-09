@@ -139,19 +139,185 @@ public class SecurityConfig {
 					.requestMatchers("/api/account-opening-application/update/approve/{id}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/account-opening-application/update/reject/{id}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					
+	//============================================ ACCOUNT HOLDER =============================================
+				//------------------------------------ post ---------------------------------------------	
+					.requestMatchers("/api/account-holder/add").hasAnyAuthority("CUSTOMER")
+				//------------------------------------- get ----------------------------------------------
+					.requestMatchers("/api/account-holder/get/all").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-holder/get/by-id/{id}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-holder/get/by-email/{email}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-holder/get/by-contact/{contactNumber}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-holder/get/by-aadhar/{aadharNumber}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-holderupdate/get/by-pan/{panCardNumber}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+				//------------------------------------- put ------------------------------------------------
+					.requestMatchers("/api/account-holder/update").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					
+					
+					
+					
 					
 	//=================================== CUSTOMER ACCOUNT OPENING APPLICATION ================================
 					
+				//------------------------------------ post ---------------------------------------------	
+					.requestMatchers("/api/customer-account-opening-application/add").hasAnyAuthority("CUSTOMER")
+				//------------------------------------- get ----------------------------------------------
+					.requestMatchers("/api/customer-account-opening-application/get/all").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/customer-account-opening-application/get/by-id/{id}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/customer-account-opening-application/get/by-customer-id/{customerId}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/customer-account-opening-application/get/by-account-holder-id/{accountHolderId}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/customer-account-opening-application/get/by-application-id/{applicationId}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+				//------------------------------------- put ------------------------------------------------
+					.requestMatchers("/api/customer-account-opening-application/update").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/customer-account-opening-application/update/approval/{id}").hasAnyAuthority("CUSTOMER")
+	
 					
-					//Account
-					//CustomerAccount
-					//Account requests
-					//Loan plan
-					//Loan opening application
-					//Loan
-					//Loan payment history
-					//Loan Closure Request
-					//Transaction
+					
+					
+	//============================================= TRANSACTION ====================================================				
+					//------------------------------------ post ---------------------------------------------	
+					.requestMatchers("/api/transaction/add").hasAnyAuthority("CUSTOMER","TRANSACTION_ANALYST","LOAN_OFFICER","SENIOR_OPERATIONS_MANAGER")
+				//------------------------------------- get ----------------------------------------------
+					.requestMatchers("/api/transaction/get/all").hasAnyAuthority("ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/transaction/get/by-id/{id}").hasAnyAuthority("TRANSACTION_ANALYST","ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/transaction/get/by-date-range/{startDate}/{endDate}/{accountNumber}").hasAnyAuthority("ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/transaction/get/credits/{startDate}/{endDate}/{accountNumber}").hasAnyAuthority("ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/transaction/get/debits/{startDate}/{endDate}/{accountNumber}").hasAnyAuthority("ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/transaction/get/account-statement/{accountNumber}").hasAnyAuthority("CUSTOMER")
+					.requestMatchers("/api/transaction/get/last-transactions/{accountNumber}/{count}").hasAnyAuthority("ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+				
+					
+					
+					
+					
+	//=============================================== ACCOUNT ===================================================			
+				//------------------------------------ post ---------------------------------------------	
+					.requestMatchers("/api/account/add").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+				//------------------------------------- get ----------------------------------------------
+					.requestMatchers("/api/account/get/all").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account/get/by-id/{id}").hasAnyAuthority("CUSTOMER","ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account/get/by-account-number/{accountNumber}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account/get/by-branch-id/{id}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account/get/by-account-status/{accountStatus}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account/get/by-account-type-id/{id}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+				//------------------------------------- put ------------------------------------------------
+					.requestMatchers("/api/account/update/name/{accountId}/{newName}update").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account/update/status/{accountId}/{status}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					
+					
+	//========================================== CUSTOMER ACCOUNT ================================================	
+					//------------------------------------ post ---------------------------------------------	
+					.requestMatchers("/api/customer-account/add/{applicationId}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+				//------------------------------------- get ----------------------------------------------
+					.requestMatchers("/api/customer-account/get/all").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/customer-account/get/by-id/{id}").hasAnyAuthority("CUSTOMER","ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/customer-account/get/by-customer-id/{customerId}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/customer-account/get/by-accountholder-id/{accountHolderId}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/customer-account/get/by-account-id/{accountId}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/customer-account/get/by-customer-account/{customerId}/{accountId}").hasAnyAuthority("CUSTOMER","ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+				//------------------------------------- put ------------------------------------------------
+					.requestMatchers("/api/customer-account/update/account-holder/{id}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					
+	//================================================ ACCOUNT REQUESTS ================================================
+					//------------------------------------ post ---------------------------------------------	
+					.requestMatchers("/api/account-request/add/{accountId}/{requestType}").hasAnyAuthority("CUSTOMER")
+				//------------------------------------- get ----------------------------------------------
+					.requestMatchers("/api/account-request/get/all").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-request/get/by-id/{id}").hasAnyAuthority("CUSTOMER","ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-request/get/by-status/{status}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-request/get/by-account-id/{accountId}").hasAnyAuthority("CUSTOMER","ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+				//------------------------------------- put ------------------------------------------------
+					.requestMatchers("/api/account-request/update/accept/{requestId}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-request/update/reject/{requestId}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					
+					
+					
+	//===================================================== LOAN PLAN ======================================================
+					//------------------------------------ post ---------------------------------------------	
+					.requestMatchers("/api/loan-plan/add").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+				//------------------------------------- get ----------------------------------------------
+					.requestMatchers("/api/loan-plan/get/all").hasAnyAuthority("CUSTOMER","LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan-plan/get/by-id/{id}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan-plan/get/by-loan-type/{loanType}").hasAnyAuthority("CUSTOMER","LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+				//------------------------------------- put ------------------------------------------------
+					.requestMatchers("/api/loan-plan/update").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					
+					
+					
+					
+	//================================================== LOAN OPENING APPLICATION =================================================
+				//------------------------------------ post ---------------------------------------------	
+					.requestMatchers("/api/loan-opening-application/add/{accountId}/{loanPlanId}").hasAnyAuthority("CUSTOMER")
+				//------------------------------------- get ----------------------------------------------
+					.requestMatchers("/api/loan-opening-application/get/all").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan-opening-application/get/by-id/{id}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan-opening-application/get/by-account-id/{accountId}").hasAnyAuthority("CUSTOMER","LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan-opening-application/get/by-loan-plan-id/{loanPlanId}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan-opening-application/get/by-account-id-status/{accountId}/{status}").hasAnyAuthority("CUSTOMER","LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan-opening-application/get/by-status/{status}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+				//------------------------------------- put ------------------------------------------------
+					.requestMatchers("/api/loan-opening-application/update/accept/{id}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan-opening-application/update/reject/{id}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					
+					
+					
+	//===================================================== LOAN ====================================================================
+				//------------------------------------ post ---------------------------------------------	
+					.requestMatchers("/api/loan/add/{loanApplicationId}").hasAnyAuthority("CUSTOMER")
+				//------------------------------------- get ----------------------------------------------
+					.requestMatchers("/api/loan/get/all").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan/get/by-id/{id}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan/get/by-account-id/{accountId}").hasAnyAuthority("CUSTOMER","LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan/get/by-account-id-status/{accountId}/{status}").hasAnyAuthority("CUSTOMER","LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan/get/by-status/{status}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+				//------------------------------------- put ------------------------------------------------
+					.requestMatchers("/api/loan/update/close/{id}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan/update/penalty/{loanId}/{penalty}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan/update/due-date/{loanId}/{dueDate}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan/update/is-cleared/{loanId}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					
+					
+	//==================================================== LOAN PAYMENT  =============================================================
+				//------------------------------------ post ---------------------------------------------	
+					.requestMatchers("/api/loan-payment/add/{loanId}/{amountPaid}").hasAnyAuthority("CUSTOMER")
+				//------------------------------------- get ----------------------------------------------
+					.requestMatchers("/api/loan-payment/get/all").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan-payment/get/by-id/{id}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan-payment/get/by-loan-id/{loanId}").hasAnyAuthority("CUSTOMER","LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					
+	//=================================================== LOAN CLOSURE REQUEST ========================================================
+
+				//------------------------------------ post ---------------------------------------------	
+					.requestMatchers("/api/loan-closure/add/{loanId}/{purpose}").hasAnyAuthority("CUSTOMER")
+				//------------------------------------- get ----------------------------------------------
+					.requestMatchers("/api/loan-closure/get/all").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan-closure/get/by-id/{id}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan-closure/get/by-loan-id/{loanId}").hasAnyAuthority("CUSTOMER","LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan-closure/get/by-status/{status}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan-closure/get/by-loan-id-status/{loanId}/{status}").hasAnyAuthority("CUSTOMER","LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+				//------------------------------------- put ------------------------------------------------
+					.requestMatchers("/api/loan-closure/update/reject/{id}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan-closure/update/accept/{id}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					
+					
+					
+	//===================================================== REGULATORY REPORT =========================================================
+					//------------------------------------ post ---------------------------------------------	
+					.requestMatchers("/api/regulatory-report/generate").hasAnyAuthority( "SENIOR_OPERATIONS_MANAGER","JUNIOR_OPERATIONS_MANAGER","REPORT_MANAGER")
+				//------------------------------------- get ----------------------------------------------
+					.requestMatchers("/api/regulatory-report/get/all").hasAnyAuthority( "SENIOR_OPERATIONS_MANAGER","JUNIOR_OPERATIONS_MANAGER","REPORT_MANAGER")
+					.requestMatchers("/api/regulatory-report/get/by-id/{id}").hasAnyAuthority( "SENIOR_OPERATIONS_MANAGER","JUNIOR_OPERATIONS_MANAGER","REPORT_MANAGER")
+					.requestMatchers("/api/regulatory-report/get/by-date-range/{startDate}/{endDate}").hasAnyAuthority( "SENIOR_OPERATIONS_MANAGER","JUNIOR_OPERATIONS_MANAGER","REPORT_MANAGER")
+					
+	//================================================== FINANCIAL PERFORMANCE REPORT ====================================================
+					//------------------------------------ post ---------------------------------------------	
+					.requestMatchers("/api/financial-performance-report/generate").hasAnyAuthority( "SENIOR_OPERATIONS_MANAGER","JUNIOR_OPERATIONS_MANAGER","REPORT_MANAGER")
+				//------------------------------------- get ----------------------------------------------
+					.requestMatchers("/api/financial-performance-report/get/all").hasAnyAuthority( "SENIOR_OPERATIONS_MANAGER","JUNIOR_OPERATIONS_MANAGER","REPORT_MANAGER")
+					.requestMatchers("/api/financial-performance-report/get/by-id/{id}").hasAnyAuthority( "SENIOR_OPERATIONS_MANAGER","JUNIOR_OPERATIONS_MANAGER","REPORT_MANAGER")
+					.requestMatchers("/api/financial-performance-report/get/by-date-range/{startDate}/{endDate}").hasAnyAuthority( "SENIOR_OPERATIONS_MANAGER","JUNIOR_OPERATIONS_MANAGER","REPORT_MANAGER")
+					
+					
+					
 					
 				.anyRequest().authenticated()
 			)

@@ -23,7 +23,7 @@ import com.maverickbank.MaverickBank.service.CustomerService;
 @RequestMapping("/api/customer")
 public class CustomerController {
 	@Autowired
-	CustomerService customerService ;
+	private CustomerService customerService ;
 	
 	//-------------------------------------- POST --------------------------------------------------
 	

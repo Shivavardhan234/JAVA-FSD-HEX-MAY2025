@@ -26,7 +26,7 @@ import jakarta.persistence.OneToOne;
 @MappedSuperclass
 public abstract class Actor {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
 	@Column(nullable = false)

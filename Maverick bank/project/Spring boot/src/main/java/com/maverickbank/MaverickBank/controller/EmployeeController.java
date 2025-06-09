@@ -24,7 +24,7 @@ import com.maverickbank.MaverickBank.service.EmployeeService;
 @RequestMapping("/api/employee")
 public class EmployeeController {
 	@Autowired
-	EmployeeService employeeService;
+	private EmployeeService employeeService;
 
 //--------------------------------------------- POST --------------------------------------------------------------------
 	

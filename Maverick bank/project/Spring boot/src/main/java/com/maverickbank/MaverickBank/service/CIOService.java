@@ -3,7 +3,6 @@ package com.maverickbank.MaverickBank.service;
 import java.security.Principal;
 import java.util.List;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.maverickbank.MaverickBank.enums.Role;
@@ -23,16 +22,14 @@ import com.maverickbank.MaverickBank.validation.UserValidation;
 @Service
 public class CIOService {
 	
-	CIORepository cioRepository;
-	UserRepository userRepository;
-	PasswordEncoder passwordEncoder;
-	UserService userService;
+	private CIORepository cioRepository;
+	private UserRepository userRepository;
+	private UserService userService;
 	
 
-	public CIOService(CIORepository cioRepository, UserRepository userRepository, PasswordEncoder passwordEncoder,UserService userService) {
+	public CIOService(CIORepository cioRepository, UserRepository userRepository,UserService userService) {
 		this.cioRepository = cioRepository;
 		this.userRepository = userRepository;
-		this.passwordEncoder = passwordEncoder;
 		this.userService = userService;
 	}
 

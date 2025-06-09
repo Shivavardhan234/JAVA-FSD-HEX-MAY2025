@@ -21,7 +21,7 @@ import jakarta.persistence.Table;
 @Table(name="log")
 public class Log {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	@ManyToOne
 	@JoinColumn(nullable=false)

@@ -24,7 +24,7 @@ import com.maverickbank.MaverickBank.service.CIOService;
 @RequestMapping("/api/cio")
 public class CIOController {
 	@Autowired
-	CIOService cioService;
+	private CIOService cioService;
 	
 //---------------------------------------- POST -------------------------------------------------------------------------
 	@PostMapping("/add")

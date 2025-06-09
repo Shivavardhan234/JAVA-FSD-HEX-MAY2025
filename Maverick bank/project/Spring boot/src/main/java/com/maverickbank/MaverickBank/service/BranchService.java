@@ -14,28 +14,20 @@ import com.maverickbank.MaverickBank.exception.ResourceNotFoundException;
 import com.maverickbank.MaverickBank.model.Branch;
 import com.maverickbank.MaverickBank.model.User;
 import com.maverickbank.MaverickBank.repository.BranchRepository;
-import com.maverickbank.MaverickBank.repository.EmployeeRepository;
 import com.maverickbank.MaverickBank.repository.UserRepository;
 import com.maverickbank.MaverickBank.validation.BranchValidation;
 import com.maverickbank.MaverickBank.validation.UserValidation;
 
 @Service
 public class BranchService {
-	BranchRepository branchRepository;
-	EmployeeRepository employeeRepository;
-	EmployeeService employeeService;
-	UserRepository userRepository;
-	BranchService branchService;
+	private BranchRepository branchRepository;
+	private UserRepository userRepository;
 	
 	
 	
-	public BranchService(BranchRepository branchRepository, EmployeeRepository employeeRepository,
-			EmployeeService employeeService, UserRepository userRepository,BranchService branchService) {
+	public BranchService(BranchRepository branchRepository, UserRepository userRepository) {
 		this.branchRepository = branchRepository;
-		this.employeeRepository = employeeRepository;
-		this.employeeService = employeeService;
 		this.userRepository = userRepository;
-		this.branchService= branchService;
 	}
 
 	

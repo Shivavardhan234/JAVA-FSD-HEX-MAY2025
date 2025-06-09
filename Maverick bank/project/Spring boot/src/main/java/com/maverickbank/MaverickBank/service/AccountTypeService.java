@@ -22,8 +22,8 @@ import com.maverickbank.MaverickBank.validation.UserValidation;
 
 @Service
 public class AccountTypeService {
-	AccountTypeRepository accountTypeRepository;
-	UserRepository userRepository;
+	private AccountTypeRepository accountTypeRepository;
+	private UserRepository userRepository;
 	
 	public AccountTypeService(AccountTypeRepository accountTypeRepository,UserRepository userRepository) {
 		this.accountTypeRepository=accountTypeRepository;

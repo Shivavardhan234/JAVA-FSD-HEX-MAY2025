@@ -3,7 +3,6 @@ package com.maverickbank.MaverickBank.service;
 import java.security.Principal;
 import java.util.List;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.maverickbank.MaverickBank.enums.Role;
@@ -25,21 +24,18 @@ import com.maverickbank.MaverickBank.validation.ActorValidation;
 @Service
 public class EmployeeService {
 
-	EmployeeRepository employeeRepository;
-	UserRepository userRepository;
-	PasswordEncoder passwordEncoder;
-	BranchRepository branchRepository;
-	UserService userService;
+	private EmployeeRepository employeeRepository;
+	private UserRepository userRepository;
+	private BranchRepository branchRepository;
+	private UserService userService;
 	
 	
 	
 	
-	public EmployeeService(EmployeeRepository employeeRepository, UserRepository userRepository,
-				PasswordEncoder passwordEncoder, BranchRepository branchRepository, UserService userService) {
+	public EmployeeService(EmployeeRepository employeeRepository, UserRepository userRepository, BranchRepository branchRepository, UserService userService) {
 			super();
 			this.employeeRepository = employeeRepository;
 			this.userRepository = userRepository;
-			this.passwordEncoder = passwordEncoder;
 			this.branchRepository = branchRepository;
 			this.userService = userService;
 		}

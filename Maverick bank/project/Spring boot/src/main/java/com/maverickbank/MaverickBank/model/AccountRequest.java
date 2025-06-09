@@ -18,7 +18,7 @@ import jakarta.persistence.Table;
 @Table(name="account_request")
 public class AccountRequest {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	@ManyToOne
 	@JoinColumn(nullable=false)

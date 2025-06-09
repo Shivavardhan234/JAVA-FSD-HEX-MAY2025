@@ -3,7 +3,6 @@ package com.maverickbank.MaverickBank.service;
 import java.security.Principal;
 import java.util.List;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.maverickbank.MaverickBank.enums.Role;
@@ -22,20 +21,22 @@ import com.maverickbank.MaverickBank.validation.UserValidation;
 
 @Service
 public class CustomerService {
-	CustomerRepository customerRepository;
-	UserRepository userRepository;
-	PasswordEncoder passwordEncoder;
-	UserService userService;
+	private CustomerRepository customerRepository;
+	private UserRepository userRepository;
+	private UserService userService;
 	
-	public CustomerService(CustomerRepository customerRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
-		this.customerRepository=customerRepository;
-		this.userRepository=userRepository;
-		this.passwordEncoder=passwordEncoder;
-	}
 
 	
-	
-	
+public CustomerService(CustomerRepository customerRepository, UserRepository userRepository,
+			UserService userService) {
+		super();
+		this.customerRepository = customerRepository;
+		this.userRepository = userRepository;
+		this.userService = userService;
+	}
+
+
+
 //-------------------------------- ADD -------------------------------------------------------------
 	
 	/** Add Customer() is a method where we are validating the details of a customer and saves into database

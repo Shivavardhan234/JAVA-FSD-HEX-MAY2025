@@ -24,7 +24,7 @@ import com.maverickbank.MaverickBank.service.BranchService;
 @RequestMapping("/api/branch")
 public class BranchController {
 	@Autowired
-	BranchService branchService;
+	private BranchService branchService;
 	
 //------------------------------------------- POST ------------------------------------------------------------------------
 	@PostMapping("add")

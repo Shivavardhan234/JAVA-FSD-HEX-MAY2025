@@ -5,6 +5,7 @@ package com.maverickbank.MaverickBank.model;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import com.maverickbank.MaverickBank.enums.PaymentMedium;
 import com.maverickbank.MaverickBank.enums.TransactionType;
 import com.maverickbank.MaverickBank.exception.InvalidInputException;
 
@@ -24,13 +25,19 @@ import jakarta.persistence.Id;
 @Entity
 	public class Transaction {
 		@Id
-		@GeneratedValue(strategy = GenerationType.AUTO)
+		@GeneratedValue(strategy = GenerationType.IDENTITY)
 		private int id;
 		@Column(name="from_details",nullable=false)
 		private String fromDetails;
+		@Enumerated(EnumType.STRING)
+		@Column(name="from_payment_medium",nullable=false)
+		private PaymentMedium fromPaymentMedium;
+		
 		@Column(name="to_details",nullable=false)
 		private String toDetails;
-		
+		@Enumerated(EnumType.STRING)
+		@Column(name="to_payment_medium",nullable=false)
+		private PaymentMedium toPaymentMedium;
 		@Enumerated(EnumType.STRING)
 		@Column(name="transaction_type")
 		private TransactionType transactionType;
@@ -49,7 +56,7 @@ import jakarta.persistence.Id;
 
 
 		
-		public Transaction(int transactionId, String fromDetails, String toDetails, TransactionType transactionType,
+		public Transaction(int transactionId, String fromDetails,PaymentMedium fromPaymentMedium, String toDetails,PaymentMedium toPaymentMedium, TransactionType transactionType,
 			BigDecimal transactionAmount, LocalDate transactionDate,LocalTime transactionTime, String transactionDescription) throws InvalidInputException {
 			this.setTransactionId(transactionId);
 			this.setFromDetails(fromDetails);
@@ -78,7 +85,9 @@ import jakarta.persistence.Id;
 		public LocalTime getTransactionTime() {return transactionTime;}
 		public int getTransactionId() {return id;}
 		public String getFromDetails() {return fromDetails;}
+		public PaymentMedium getFromPaymentMedium() { return fromPaymentMedium;}
 		public String getToDetails() {return toDetails;}
+		public PaymentMedium getToPaymentMedium() { return toPaymentMedium;}
 		public TransactionType getTransactionType() {return transactionType;}
 		public BigDecimal getTransactionAmount() {return transactionAmount;}
 		public LocalDate getTransactionDate() {return transactionDate;}
@@ -101,12 +110,28 @@ import jakarta.persistence.Id;
 		    }
 		    this.fromDetails = fromDetails.trim();
 		}
+		
+		
+		
+		public void setFromPaymentMedium(PaymentMedium fromPaymentMedium)throws InvalidInputException {
+			if (fromPaymentMedium == null) {
+		        throw new InvalidInputException("Invalid From payment medium. It should not be null...!!!");
+		    }
+			this.fromPaymentMedium=fromPaymentMedium;
+		}
 
 		public void setToDetails(String toDetails) throws InvalidInputException {
 		    if (toDetails == null || toDetails.trim().isEmpty()) {
 		        throw new InvalidInputException("Invalid TO details. Please provide appropriate TO details...!!!");
 		    }
 		    this.toDetails = toDetails.trim();
+		}
+		
+		public void setToPaymentMedium(PaymentMedium toPaymentMedium)throws InvalidInputException {
+			if (toPaymentMedium == null) {
+		        throw new InvalidInputException("Invalid TO payment medium. It should not be null...!!!");
+		    }
+			this.toPaymentMedium=toPaymentMedium;
 		}
 
 		public void setTransactionType(TransactionType transactionType) throws InvalidInputException {

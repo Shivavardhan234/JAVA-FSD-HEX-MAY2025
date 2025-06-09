@@ -29,7 +29,7 @@ import com.maverickbank.MaverickBank.service.UserService;
 public class UserController {
 	
 	@Autowired
-	UserService userService;
+	private UserService userService;
 	
 //------------------------------------ POST --------------------------------------------------------	
 	/**AIM    : Add user to database
@@ -94,11 +94,11 @@ public class UserController {
 	 * @throws InvalidActionException 
 	 * @throws InvalidInputException 
 	 */
-	@GetMapping("/get/details")
-	public Object getDetails(Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
-		return userService.getByUsername(principal);
-		
-	}
+//	@GetMapping("/get/details")
+//	public Object getDetails(Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
+//		return userService.getByUsername(principal);
+//		
+//	}
 	
 	
 	
