@@ -8,7 +8,8 @@ import com.hospitalManagementSystem.HospitalManagementSystem.model.User;
 public interface UserRepository extends JpaRepository<User, Integer>{
 	
 	
-	@Query("SELECT u FROM User WHERE u.username=?1")
+	@Query("SELECT u FROM User u WHERE u.username=?1")
 	User findByUsername(String username);
 
 }
+ 

@@ -6,9 +6,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -37,11 +37,11 @@ class AppointmentServiceTest {
 
 	    @Mock
 	    private AppointmentRepository appointmentRepository;
-	    @Mock
-	    private PatientRepository patientRepository;
-	    @Mock
-		private DoctorRepository doctorRepository;
-
+	    
+	    
+	    
+	    
+//As it only gives patient list we only make patient sample data
 	    private Patient patient1;
 	    private User user1;
 	    private Patient patient2;
@@ -79,27 +79,38 @@ class AppointmentServiceTest {
 	        patient2.setName("Alice");
 	        patient2.setAge(37);
 	        patient2.setUser(user2);
+	        
+	        
 	    }
 
 	    @Test
 	    void testGetAllPatientsByDoctorId() throws ResourceNotFoundException {
+	        //CASE 1: where there is some data
+	        List<Patient> patientsForThatDoctor = Arrays.asList(patient1, patient2);
+	        when(appointmentRepository.getAllPatientsByDoctorId(1)).thenReturn(patientsForThatDoctor);
+
 	        
-//	        List<Patient> patientsForThatDoctor = Arrays.asList(patient1, patient2);
-//	        when(appointmentRepository.getAllPatientsByDoctorId(1)).thenReturn(patientsForThatDoctor);
-//
-//	        
-//	        
-//	        List<Patient> expectedOutput = Arrays.asList(patient1, patient2);
-//	        
-//	        assertEquals(expectedOutput, appointmentService.getAllPatientsByDoctorId(1));
-//	        
 	        
+	        List<Patient> expectedOutput = Arrays.asList(patient1, patient2);
+	        
+	        assertEquals(expectedOutput, appointmentService.getAllPatientsByDoctorId(1));
+	        
+	        //Case 2 where there is no data
 	        
 	        List<Patient> emptyList=new ArrayList<>();
 	        when(appointmentRepository.getAllPatientsByDoctorId(20)).thenReturn(emptyList);
 
 	       ResourceNotFoundException e= assertThrows(ResourceNotFoundException.class, ()->{appointmentService.getAllPatientsByDoctorId(20);});
 	       assertEquals("No patient records with the given doctor id...!!!", e.getMessage());
+	    }
+	    
+	    @AfterEach
+	    void afterTest() {
+	    	user1=null;
+	    	user2=null;
+	    	patient1=null;
+	    	patient2=null;
+	    	
 	    }
 
 	   
