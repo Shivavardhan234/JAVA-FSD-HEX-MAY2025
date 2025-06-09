@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -23,6 +24,7 @@ import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.Role;
 import com.maverickbank.MaverickBank.exception.DeletedUserException;
 import com.maverickbank.MaverickBank.exception.InvalidActionException;
+import com.maverickbank.MaverickBank.exception.InvalidCredentialsException;
 import com.maverickbank.MaverickBank.exception.InvalidInputException;
 import com.maverickbank.MaverickBank.exception.ResourceExistsException;
 import com.maverickbank.MaverickBank.exception.ResourceNotFoundException;
@@ -54,9 +56,9 @@ class UserServiceTest {
 	    private User sampleUser2;
 	    private User sampleUser3;
 	    private User sampleUser4;
-	    private String encodedPassword;
+	    private String encodedPassword1;
 	    private Principal samplePrincipal1;
-	    
+	    private Principal samplePrincipal2;
 	    @BeforeEach
 	    public void init() throws InvalidInputException {
 	        // First sample user
@@ -76,6 +78,8 @@ class UserServiceTest {
 	        sampleUser2.setStatus(ActiveStatus.ACTIVE);
 	        
 	        
+	        
+	        
 	     // 3rd sample user
 	        sampleUser3 = new User();
 	        sampleUser3.setId(3);
@@ -93,12 +97,15 @@ class UserServiceTest {
 	        sampleUser4.setRole(Role.JUNIOR_OPERATIONS_MANAGER);
 	        sampleUser4.setStatus(ActiveStatus.DELETED);
 
+	  
+	        
+	        
 	        
 	        
 	        samplePrincipal1=mock(Principal.class);
+	        samplePrincipal2=mock(Principal.class);
 	        
-	        
-	        encodedPassword = "$2a$10$encryptedPassword";
+	        encodedPassword1 = "$2a$10$encryptedPassword1";
 	    }
 
 
@@ -109,7 +116,7 @@ class UserServiceTest {
 	        when(userRepository.getByUsername("testuser1")).thenReturn(null);
 
 	        
-	        when(passwordEncoder.encode("Rawpassword@1")).thenReturn(encodedPassword);
+	        when(passwordEncoder.encode("Rawpassword@1")).thenReturn(encodedPassword1);
 
 	        
 	        when(userRepository.save(sampleUser1)).thenReturn(sampleUser1);
@@ -126,7 +133,7 @@ class UserServiceTest {
 	        
 	        assertNotNull(actualUser1);
 	        assertEquals("testuser1", actualUser1.getUsername());
-	        assertEquals(encodedPassword, actualUser1.getPassword());
+	        assertEquals(encodedPassword1, actualUser1.getPassword());
 	        assertEquals(Role.CUSTOMER, actualUser1.getRole());
 	        assertEquals(ActiveStatus.ACTIVE, actualUser1.getStatus());
 	        
@@ -136,7 +143,7 @@ class UserServiceTest {
 	        when(userRepository.getByUsername("testuser2")).thenReturn(sampleUser2);
 
 	        
-	        when(passwordEncoder.encode("Rawpassword@2")).thenReturn(encodedPassword);
+	        when(passwordEncoder.encode("Rawpassword@2")).thenReturn(encodedPassword1);
 
 	        
 	        when(userRepository.save(sampleUser2)).thenReturn(sampleUser2);
@@ -245,10 +252,10 @@ class UserServiceTest {
 
 	        String newUsername = "updatedUser1";
 
-	        User result = userService.updateUsername(newUsername, samplePrincipal1);
+	        User actualUpdatedUser = userService.updateUsername(newUsername, samplePrincipal1);
 
-	        assertNotNull(result);
-	        assertEquals(newUsername, result.getUsername());
+	        assertNotNull(actualUpdatedUser);
+	        assertEquals(newUsername, actualUpdatedUser.getUsername());
 
 	        // Case 2
 	        String invalidUsername = "ab";
@@ -257,6 +264,215 @@ class UserServiceTest {
 	        });
 	        assertEquals("Username is Invalid. Please enter appropriate Username...!!!", e.getMessage());
 	    }
+	    
+	    
+	    
+	    
+	    //------------------------------- update password ----------------------------------
+	    @Test
+	    public void testUpdatePassword() throws Exception {
+	    	//case1
+	        when(samplePrincipal1.getName()).thenReturn("testuser1");
+	        when(userRepository.getByUsername("testuser1")).thenReturn(sampleUser1);
+	        when(passwordEncoder.matches("Rawpassword@1","Rawpassword@1")).thenReturn(true);
+	        when(passwordEncoder.encode("NewPassword@1")).thenReturn("$2a$10$newEncodedPassword1");
+	        when(userRepository.save(sampleUser1)).thenReturn(sampleUser1);
+
+	        User actualUpdatedUser = userService.updatePassword("Rawpassword@1", "NewPassword@1", samplePrincipal1);
+	        assertEquals("$2a$10$newEncodedPassword1", actualUpdatedUser.getPassword());
+
+	        //case 2
+	        when(passwordEncoder.matches("WrongOld@1","Rawpassword@1")).thenReturn(false);
+	        InvalidCredentialsException e1 = assertThrows(InvalidCredentialsException.class, () -> {
+	            userService.updatePassword("WrongOld@1", "NewPassword@1", samplePrincipal1);
+	        });
+	        assertEquals("Incorrect password...!!!", e1.getMessage());
+	        
+	        //case 3
+	        when(passwordEncoder.matches("NewPassword@1",sampleUser1.getPassword())).thenReturn(true);
+	        InvalidCredentialsException e2 = assertThrows(InvalidCredentialsException.class, () -> {
+	            userService.updatePassword("NewPassword@1", "NewPassword@1", samplePrincipal1);
+	        });
+	        assertEquals("New password cannot be same as old password...!!!", e2.getMessage());
+	    }
+	    
+	  //---------------------------------- Update role --------------------------------------
+	    @Test
+	    public void testUpdateUserRole() throws Exception {
+	        // Case 1
+	        when(samplePrincipal1.getName()).thenReturn("testuser1");
+	        when(userRepository.getByUsername("testuser1")).thenReturn(sampleUser1);
+
+	       
+	        when(userRepository.getById(3)).thenReturn(sampleUser3);
+	        when(userRepository.save(sampleUser3)).thenReturn(sampleUser3);
+
+	        User updatedUser = userService.updateUserRole(3, Role.JUNIOR_OPERATIONS_MANAGER, samplePrincipal1);
+	        assertEquals(Role.JUNIOR_OPERATIONS_MANAGER, updatedUser.getRole());
+	        
+	        
+	        
+	        
+
+	        // Case 2
+	        InvalidInputException e1 = assertThrows(InvalidInputException.class, () -> {
+	            userService.updateUserRole(3, Role.CUSTOMER, samplePrincipal1);
+	        });
+	        assertEquals("Given new role is invalid. Cannot perform update role action...!!!", e1.getMessage());
+
+	        // Case 3
+	        when(userRepository.getById(99)).thenReturn(null);
+	        ResourceNotFoundException e2 = assertThrows(ResourceNotFoundException.class, () -> {
+	            userService.updateUserRole(99, Role.ACCOUNT_MANAGER, samplePrincipal1);
+	        });
+	        assertEquals(" No user record with given user id...!!!", e2.getMessage());
+
+	        // Case 4
+	        when(userRepository.getById(1)).thenReturn(sampleUser1); 
+	        InvalidActionException e3 = assertThrows(InvalidActionException.class, () -> {
+	            userService.updateUserRole(1, Role.SENIOR_OPERATIONS_MANAGER, samplePrincipal1);
+	        });
+	        assertEquals("Invalid action.User role cannot be changed...!!!", e3.getMessage());
+	    }
+	    
+	    
+	    
+	    
+	    //----------------------------------------- deactivate user account -------------------------------------------
+	    @Test
+	    public void testDeactivateUserAccount() throws Exception {
+	        // Case 1
+	        when(samplePrincipal1.getName()).thenReturn("testuser1");
+	        when(userRepository.getByUsername("testuser1")).thenReturn(sampleUser1);
+	        when(passwordEncoder.matches("Rawpassword@1", "Rawpassword@1")).thenReturn(true);
+
+	        
+	        
+	        when(userRepository.save(sampleUser1)).thenReturn(sampleUser1);
+
+	        User updatedUser = userService.deactivateUserAccount("Rawpassword@1", samplePrincipal1);
+	        assertEquals(ActiveStatus.INACTIVE, updatedUser.getStatus());
+
+	        // Case 2
+	        when(samplePrincipal2.getName()).thenReturn("testuser2");
+	        when(userRepository.getByUsername("testuser2")).thenReturn(sampleUser2);
+	        when(passwordEncoder.matches("WrongPassword@2", "Rawpassword@2")).thenReturn(false);
+	        InvalidCredentialsException e1 = assertThrows(InvalidCredentialsException.class, () -> {
+	            userService.deactivateUserAccount("WrongPassword@2", samplePrincipal2);
+	        });
+	        assertEquals("Incorrect password...!!!", e1.getMessage());
+
+	        // Case 3
+	        sampleUser4.setStatus(ActiveStatus.DELETED);
+	        when(samplePrincipal1.getName()).thenReturn("testuser4");
+	        when(userRepository.getByUsername("testuser4")).thenReturn(sampleUser4);
+
+	        DeletedUserException e2 = assertThrows(DeletedUserException.class, () -> {
+	            userService.deactivateUserAccount("Rawpassword@4", samplePrincipal1);
+	        });
+	        assertEquals("User DON'T EXIST...!!!", e2.getMessage());
+	    }
+	    
+	    
+	    
+	    //------------------------------------- Activete account-------------------------------------------
+
+	    
+	    @Test
+		public void testActivateUser() throws Exception {
+		    sampleUser3.setStatus(ActiveStatus.INACTIVE); 
+		    when(samplePrincipal1.getName()).thenReturn("testuser3");
+		    when(userRepository.getByUsername("testuser3")).thenReturn(sampleUser3);
+		    when(userRepository.save(sampleUser3)).thenReturn(sampleUser3);
+
+		    //case 1
+		    User activatedUser = userService.activateUser(samplePrincipal1);
+		    assertEquals(ActiveStatus.ACTIVE, activatedUser.getStatus());
+
+		    // Case 2:Suspended case
+		    sampleUser3.setStatus(ActiveStatus.SUSPENDED);
+		    when(userRepository.getByUsername("testuser3")).thenReturn(sampleUser3);
+		    assertThrows(InvalidActionException.class, () ->
+		        userService.activateUser(samplePrincipal1)
+		    );
+
+		    // Case 3: Deleted case
+		    sampleUser3.setStatus(ActiveStatus.DELETED);
+		    when(userRepository.getByUsername("testuser3")).thenReturn(sampleUser3);
+		    assertThrows(DeletedUserException.class, () ->
+		        userService.activateUser(samplePrincipal1)
+		    );
+		}
+
+		//------------------------------- update status ---------------------------------------------------
+		
+		@Test
+		public void testUpdateUserActiveStatus() throws Exception {
+		    when(samplePrincipal1.getName()).thenReturn("testuser2");
+		    when(userRepository.getByUsername("testuser2")).thenReturn(sampleUser2); 
+		    when(userRepository.getById(1)).thenReturn(sampleUser1); 
+		    when(userRepository.save(sampleUser1)).thenReturn(sampleUser1);
+
+		    User updatedUser = userService.updateUserActiveStatus(1, ActiveStatus.SUSPENDED, samplePrincipal1);
+		    assertEquals(ActiveStatus.SUSPENDED, updatedUser.getStatus());
+
+		    // Deleted user
+		    sampleUser4.setStatus(ActiveStatus.DELETED);
+		    when(userRepository.getById(4)).thenReturn(sampleUser4);
+		    assertThrows(InvalidActionException.class, () ->
+		        userService.updateUserActiveStatus(4, ActiveStatus.ACTIVE, samplePrincipal1)
+		    );
+
+		    // Invalid ID
+		    when(userRepository.getById(999)).thenReturn(null);
+		    assertThrows(InvalidInputException.class, () ->
+		        userService.updateUserActiveStatus(999, ActiveStatus.ACTIVE, samplePrincipal1)
+		    );
+		}
+
+		
+		
+		
+		
+		//----------------------------------- delete ----------------------------------------------------------
+		
+		
+		
+		@Test
+		public void testDeleteUserAccount() throws Exception {
+		    when(samplePrincipal1.getName()).thenReturn("testuser1");
+		    when(userRepository.getByUsername("testuser1")).thenReturn(sampleUser1);
+		    when(passwordEncoder.matches("Rawpassword@1", "Rawpassword@1")).thenReturn(true);
+		    when(userRepository.save(sampleUser1)).thenReturn(sampleUser1);
+
+		    User deletedUser = userService.deleteUserAccount("Rawpassword@1", samplePrincipal1);
+		    assertEquals(ActiveStatus.DELETED, deletedUser.getStatus());
+
+		    // Invalid password
+		    when(samplePrincipal2.getName()).thenReturn("testuser2");
+		    when(userRepository.getByUsername("testuser2")).thenReturn(sampleUser2);
+		    when(passwordEncoder.matches("WrongPassword@2", "Rawpassword@2")).thenReturn(false);
+		    assertThrows(InvalidCredentialsException.class, () ->
+		        userService.deleteUserAccount("WrongPassword@2", samplePrincipal2)
+		    );
+		}
+	    
+	    
+	    
+	    
+	    
+	    
+	    @AfterEach
+	    public void afterTest() {
+	    	sampleUser1=null;
+	    	sampleUser2=null;
+	    	sampleUser3=null;
+	    	sampleUser4=null;
+		    encodedPassword1=null;
+		    samplePrincipal1=null;
+	    	
+	    }
+	    
 
 
 }

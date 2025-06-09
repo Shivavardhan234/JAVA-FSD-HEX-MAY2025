@@ -1,5 +1,7 @@
 package com.maverickbank.MaverickBank.service;
 
+
+
 import java.security.Principal;
 import java.util.List;
 
@@ -99,7 +101,7 @@ public class UserService {
 	 * @throws InvalidActionException 
 	 * @throws InvalidInputException 
 	 */
-	public User getUserById(int id, Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException , Exception {
+	public User getUserById(int id, Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException{
 		User currentUser= userRepository.getByUsername(principal.getName());
 		UserValidation.checkActiveStatus(currentUser.getStatus());
 		return userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("No user record found with the given id...!!!"));
@@ -141,7 +143,7 @@ public class UserService {
 	
 	//------------------------------------- Update -------------------------------------------------
 
-	public User updateUsername(String username, Principal principal) throws InvalidInputException , Exception {
+	public User updateUsername(String username, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
 		User currentUser= userRepository.getByUsername(principal.getName());
 		UserValidation.checkActiveStatus(currentUser.getStatus());
 		
@@ -175,8 +177,10 @@ public class UserService {
 	 * @return
 	 * @throws InvalidInputException 
 	 * @throws InvalidCredentialsException 
+	 * @throws DeletedUserException 
+	 * @throws InvalidActionException 
 	 */
-	public User updatePassword(String oldPassword, String newPassword, Principal principal) throws InvalidInputException, InvalidCredentialsException, Exception {
+	public User updatePassword(String oldPassword, String newPassword, Principal principal) throws InvalidInputException, InvalidCredentialsException, InvalidActionException, DeletedUserException{
 		User currentUser= userRepository.getByUsername(principal.getName());
 		UserValidation.checkActiveStatus(currentUser.getStatus());
 		
@@ -190,6 +194,7 @@ public class UserService {
 			throw new InvalidCredentialsException("Incorrect password...!!!");
 			
 		}
+		
 		
 		//Check whether old password is same as new password
 		if(oldPassword.equals(newPassword)) {
@@ -217,8 +222,9 @@ public class UserService {
 	 * @return
 	 * @throws InvalidInputException 
 	 * @throws InvalidActionException 
+	 * @throws DeletedUserException 
 	 */
-	public User updateUserRole(int id, Role newRole, Principal principal) throws InvalidInputException, InvalidActionException,ResourceNotFoundException, Exception {
+	public User updateUserRole(int id, Role newRole, Principal principal) throws InvalidInputException, InvalidActionException,ResourceNotFoundException, DeletedUserException {
 		User currentUser= userRepository.getByUsername(principal.getName());
 		UserValidation.checkActiveStatus(currentUser.getStatus());
 		
@@ -274,8 +280,9 @@ public class UserService {
 	 * @throws InvalidInputException 
 	 * @throws InvalidActionException 
 	 * @throws InvalidCredentialsException 
+	 * @throws DeletedUserException 
 	 */
-	public User deactivateUserAccount(String password, Principal principal) throws InvalidInputException, InvalidActionException, InvalidCredentialsException, Exception {
+	public User deactivateUserAccount(String password, Principal principal) throws InvalidInputException, InvalidActionException, InvalidCredentialsException, DeletedUserException{
 		//Extract user and username
 			String currentUsername= principal.getName();
 			User currentUser=userRepository.getByUsername(currentUsername);
@@ -313,7 +320,7 @@ public class UserService {
 	 * @throws InvalidActionException 
 	 * @throws InvalidInputException 
 	 */
-	public User activateUser(Principal principal) throws InvalidActionException,DeletedUserException, InvalidInputException, Exception {
+	public User activateUser(Principal principal) throws InvalidActionException,DeletedUserException, InvalidInputException {
 		//Extract user and username
 		String currentUsername= principal.getName();
 		User currentUser=userRepository.getByUsername(currentUsername);
@@ -398,6 +405,9 @@ public class UserService {
 		return userRepository.save(currentUser);
 		
 	}
+
+	
+	
 
 
 

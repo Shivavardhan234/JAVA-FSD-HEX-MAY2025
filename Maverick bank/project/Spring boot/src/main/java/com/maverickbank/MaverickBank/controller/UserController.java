@@ -42,7 +42,7 @@ public class UserController {
 	 * @throws Exception
 	 */
 	@PostMapping("/add")
-	public User addUser(@RequestBody User user) throws InvalidInputException, ResourceExistsException, Exception , Exception {
+	public User addUser(@RequestBody User user) throws InvalidInputException, ResourceExistsException {
 		return userService.addUser(user);
 		
 	}
@@ -70,14 +70,14 @@ public class UserController {
 	 * RETURN : User object with id
 	 * @param id
 	 * @return
-	 * @throws Exception 
 	 * @throws DeletedUserException 
 	 * @throws InvalidActionException 
 	 * @throws InvalidInputException 
-	 * @throws ResourceNotFoundException
+	 * @throws ResourceNotFoundException 
+	 * @throws Exception 
 	 */
 	@GetMapping("/get/by-id/{id}")
-	public User getUserById(@PathVariable int id,Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException, Exception  {
+	public User getUserById(@PathVariable int id,Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException  {
 		return userService.getUserById(id, principal);
 		
 	}
@@ -110,35 +110,37 @@ public class UserController {
 	 * @param principal
 	 * @return
 	 * @throws InvalidInputException
+	 * @throws DeletedUserException 
+	 * @throws InvalidActionException 
 	 */
 	@PutMapping("/update/username/{username}")
-	public User updateUsername(@PathVariable String username, Principal principal) throws InvalidInputException , Exception {
+	public User updateUsername(@PathVariable String username, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException{
 		return userService.updateUsername(username,principal);
 		
 	}
 	
 	@PutMapping("/update/password/{oldPassword}/{newPassword}")
-	public User updatePassword(@PathVariable String oldPassword,@PathVariable String newPassword, Principal principal) throws InvalidInputException, InvalidCredentialsException, Exception  {
+	public User updatePassword(@PathVariable String oldPassword,@PathVariable String newPassword, Principal principal) throws InvalidInputException, InvalidCredentialsException, InvalidActionException, DeletedUserException  {
 		return userService.updatePassword(oldPassword,newPassword,principal);
 		
 	}
 	
 	@PutMapping("/update/role/{id}/{newRole}")
-	public User updateRole(@PathVariable int id, @PathVariable Role newRole, Principal principal) throws InvalidInputException, InvalidActionException, ResourceNotFoundException, Exception {
+	public User updateRole(@PathVariable int id, @PathVariable Role newRole, Principal principal) throws InvalidInputException, InvalidActionException, ResourceNotFoundException, DeletedUserException{
 		
 		return userService.updateUserRole(id,newRole, principal);
 	}
 	
 	
 	@PutMapping("/update/deactivate/{password}")
-	public User deactivateUserAccount(@PathVariable String password,Principal principal) throws InvalidInputException, InvalidActionException, InvalidCredentialsException, Exception {
+	public User deactivateUserAccount(@PathVariable String password,Principal principal) throws InvalidInputException, InvalidActionException, InvalidCredentialsException, DeletedUserException{
 		return userService.deactivateUserAccount(password,principal);
 		
 	}
 	
 	
 	@PutMapping("/update/activate")
-	public User activateUser(Principal principal) throws InvalidActionException, DeletedUserException, InvalidInputException, Exception {
+	public User activateUser(Principal principal) throws InvalidActionException, DeletedUserException, InvalidInputException {
 		return userService.activateUser(principal);
 	}
 	
@@ -152,7 +154,7 @@ public class UserController {
 //-------------------------------UPDATE but Marking as DELETE -------------------------------------
 	
 	@PutMapping("/update/delete/{password}")
-	public User deleteUserAccount(@PathVariable String password,Principal principal) throws InvalidInputException, InvalidActionException, InvalidCredentialsException, Exception {
+	public User deleteUserAccount(@PathVariable String password,Principal principal) throws InvalidInputException, InvalidActionException, InvalidCredentialsException, DeletedUserException{
 		return userService.deleteUserAccount(password,principal);
 		
 	}
