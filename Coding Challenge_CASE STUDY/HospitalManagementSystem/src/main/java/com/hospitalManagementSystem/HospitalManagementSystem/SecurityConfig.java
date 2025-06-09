@@ -23,11 +23,10 @@ public class SecurityConfig {
 		http
 		.csrf((csrf)->csrf.disable())
 			.authorizeHttpRequests((authorize) -> authorize
-					.requestMatchers("/api/user/signup").permitAll()
-					.requestMatchers("/api/author/add").permitAll()
-					.requestMatchers("/api/user/token/v1").authenticated()
-					.requestMatchers("/api/user/token/details").authenticated()
-					.requestMatchers("/api/learner/get-all").hasAuthority("LEARNER")
+					.requestMatchers("/api/appointment/add/{patientId}/{doctorId}").permitAll()
+					.requestMatchers("/api/appointment/get/patients-by-doctorId/{doctorId}").hasAnyAuthority("DOCTOR")
+					.requestMatchers("/api/medical-history/add/first-time").permitAll()
+					.requestMatchers("/api/medical-history/get/by-patient-id").hasAuthority("PATIENT")
 				.anyRequest().authenticated()
 			)
 			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) 

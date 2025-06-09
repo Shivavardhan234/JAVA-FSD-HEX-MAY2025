@@ -6,9 +6,8 @@ public class MedicalHistoryDto {
 
 	private String illness;
 	
-	int numberOfYears;
+	private int numberOfYears;
 	private String medication;
-	
 	
 	
 //------------------------------------------- constructor ---------------------------------------------------
@@ -56,6 +55,10 @@ public class MedicalHistoryDto {
 	public void setMedication(String medication) {
 		this.medication = medication;
 	}
+
+
+
+
 	
 	
 	

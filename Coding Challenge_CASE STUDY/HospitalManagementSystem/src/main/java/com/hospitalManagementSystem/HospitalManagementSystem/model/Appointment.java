@@ -1,6 +1,6 @@
 package com.hospitalManagementSystem.HospitalManagementSystem.model;
 
-import java.time.LocalDateTime;
+
 
 import com.hospitalManagementSystem.HospitalManagementSystem.enums.AppointmentStatus;
 import com.hospitalManagementSystem.HospitalManagementSystem.exception.InvalidInputException;
