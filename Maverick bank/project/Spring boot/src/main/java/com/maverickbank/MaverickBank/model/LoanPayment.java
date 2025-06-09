@@ -14,7 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 @Entity
-@Table(name="loan_payment_history")
+@Table(name="loan_payment")
 public class LoanPayment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
