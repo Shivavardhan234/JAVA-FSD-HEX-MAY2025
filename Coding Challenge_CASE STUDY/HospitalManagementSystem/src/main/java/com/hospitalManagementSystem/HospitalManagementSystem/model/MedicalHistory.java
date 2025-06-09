@@ -23,7 +23,7 @@ public class MedicalHistory {
 	private String illness;
 	
 	
-	@Column(name="number_od_years",nullable=false)
+	@Column(name="number_of_years",nullable=false)
 	int numberOfYears;
 	@Column(nullable = false)
 	private String medication;
