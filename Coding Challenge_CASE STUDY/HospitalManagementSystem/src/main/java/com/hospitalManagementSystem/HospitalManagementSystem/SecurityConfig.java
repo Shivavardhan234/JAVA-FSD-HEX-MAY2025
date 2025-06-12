@@ -26,6 +26,7 @@ public class SecurityConfig {
 					.requestMatchers("/api/appointment/add/{patientId}/{doctorId}").permitAll()
 					.requestMatchers("/api/appointment/get/patients-by-doctorId/{doctorId}").hasAnyAuthority("DOCTOR")
 					.requestMatchers("/api/medical-history/add/first-time").permitAll()
+					.requestMatchers("/api/doctor/add").hasAnyAuthority("DOCTOR")
 					.requestMatchers("/api/medical-history/get/by-patient-id").hasAuthority("PATIENT")
 				.anyRequest().authenticated()
 			)

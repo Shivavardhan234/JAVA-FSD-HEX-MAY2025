@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hospitalManagementSystem.HospitalManagementSystem.enums.AppointmentStatus;
 import com.hospitalManagementSystem.HospitalManagementSystem.exception.InvalidInputException;
 import com.hospitalManagementSystem.HospitalManagementSystem.exception.ResourceNotFoundException;
 import com.hospitalManagementSystem.HospitalManagementSystem.model.Appointment;
@@ -39,6 +41,11 @@ public class AppointmentController {
 		
 		return appointmentService.getAllPatientsByDoctorId(doctorId);
 		}
+	
+	@GetMapping("/get/by-status")
+	public List<Patient> getByStatus(@RequestParam AppointmentStatus status) throws ResourceNotFoundException{
+		return appointmentService.getByStatus(status);
+	}
 	
 
 }

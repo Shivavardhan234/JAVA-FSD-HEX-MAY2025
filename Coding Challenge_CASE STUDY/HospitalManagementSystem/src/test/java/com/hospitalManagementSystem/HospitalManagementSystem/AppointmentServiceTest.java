@@ -21,8 +21,6 @@ import com.hospitalManagementSystem.HospitalManagementSystem.exception.ResourceN
 import com.hospitalManagementSystem.HospitalManagementSystem.model.Patient;
 import com.hospitalManagementSystem.HospitalManagementSystem.model.User;
 import com.hospitalManagementSystem.HospitalManagementSystem.repository.AppointmentRepository;
-import com.hospitalManagementSystem.HospitalManagementSystem.repository.DoctorRepository;
-import com.hospitalManagementSystem.HospitalManagementSystem.repository.PatientRepository;
 import com.hospitalManagementSystem.HospitalManagementSystem.service.AppointmentService;
 
 
