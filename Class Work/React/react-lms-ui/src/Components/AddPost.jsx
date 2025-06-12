@@ -1,25 +1,36 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-function Posts() {
+function AddPost() {
 
-    let [postList, setPostList] = useState([]);
+    let[userId,setUserId]=useState(undefined)
+    let[body,setBody]=useState("")
+    let[title,setTitle]=useState("")
+    let[message,setMessage]=useState("")
     
 
     useEffect(() => {
         
-        const getPosts=async ()=>{
+        const addPosts=async ()=>{
             try{
-           let response=await axios.get("https://jsonplaceholder.typicode.com/posts");
-           //console.log(response);
-           setPostList(response.data);
+           let response=await axios.post("https://jsonplaceholder.typicode.com/posts",
+            {
+                'userId':userId,
+                'title':title,
+                'body':body
+            }
+           );
+            setMessage("operation success,post added..");
+           
+           
         }
         catch(err){
+            setMessage("operation failes!!! try again");
         console.log(err);
     }
     }
     
-        getPosts();
+        addPosts();
             
     }, []);
 
@@ -58,4 +69,4 @@ function Posts() {
 
     )
 }
-export default Posts;
+export default AddPost;

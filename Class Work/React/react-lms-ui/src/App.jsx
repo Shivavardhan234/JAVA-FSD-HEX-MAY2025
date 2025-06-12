@@ -4,6 +4,7 @@ import Tasks from "./Components/Tasks";
 import TodoTable from "./Components/TodoTable";
 import UserTable from "./Components/Usertable";
 import Posts from "./Components/Posts";
+import CourseList from "./Components/CourseList";
 function App() {
   return (
     <div>
@@ -11,7 +12,8 @@ function App() {
       {/* <Tasks />  */}
       {/* <TodoTable/> */}
       {/* <UserTable/> */}
-      <Posts/>
+      {/* <Posts/> */}
+      <CourseList/>
     </div>
   );
 }

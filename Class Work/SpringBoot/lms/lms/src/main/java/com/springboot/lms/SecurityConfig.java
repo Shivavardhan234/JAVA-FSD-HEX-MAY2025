@@ -28,6 +28,7 @@ public class SecurityConfig {
 					.requestMatchers("/api/user/token/v1").authenticated()
 					.requestMatchers("/api/user/token/details").authenticated()
 					.requestMatchers("/api/learner/get-all").hasAuthority("LEARNER")
+					.requestMatchers("api/course/get/all-by-pagenation").permitAll()
 				.anyRequest().authenticated()
 			)
 			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) 

@@ -3,6 +3,7 @@ package com.springboot.lms.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +27,7 @@ public class CourseController {
 	}
 
 	@GetMapping("/get/all-by-pagenation")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public List<Course> getAllCourse(@RequestParam(name="page",required = false, defaultValue = "0") Integer page,
 									 @RequestParam(name="size",required = false,defaultValue = "100000") Integer size){
 		return cs.getCourseByPage(page,size);
