@@ -1,5 +1,6 @@
 package com.springboot.lms.service;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -36,5 +37,11 @@ public class CourseService {
 		Pageable pageable = PageRequest.of(page, size);
 		return cr.findAll(pageable).getContent();
 	}
+	
+	
+	public List<Course> getAllCoursesForAuthor(Principal principal) {
+			String username=principal.getName();
+			return cr.getAllCoursesForAuthor(username);
+		}
 
 }

@@ -53,9 +53,10 @@ public class UserInfoController {
 	}
 	
 	@GetMapping("/details")
-	public Object getDetails(Principal principal) throws Exception {
+	@CrossOrigin(origins = "http://localhost:5173")
+	public ResponseEntity<?> getDetails(Principal principal) throws Exception {
 		String username = principal.getName(); 
-		return us.getByUsername(username);
+		return ResponseEntity.status(HttpStatus.OK).body(us.getByUsername(username));
 	}
 	
 	

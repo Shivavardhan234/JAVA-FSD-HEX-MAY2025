@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -94,11 +95,12 @@ public class UserController {
 	 * @throws InvalidActionException 
 	 * @throws InvalidInputException 
 	 */
-//	@GetMapping("/get/details")
-//	public Object getDetails(Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
-//		return userService.getByUsername(principal);
-//		
-//	}
+	@GetMapping("/get/details")
+	@CrossOrigin(origins = "http://localhost:5173")
+	public Object getDetails(Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
+		return userService.getByPrincipal(principal);
+		
+	}
 	
 	
 	
@@ -167,6 +169,7 @@ public class UserController {
 //-------------------------------------- UTILS ----------------------------------------------------	
 	
 	@GetMapping("/token/v1")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public String getTokenV1(Principal principal) {
 		System.out.println("I am in the API method");
 		
@@ -175,6 +178,7 @@ public class UserController {
 	}
 	
 	@GetMapping("/token/v2")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public String getTokenV2(Principal principal) {
 		JwtUtil jwtUtil = new JwtUtil();
 		String token =jwtUtil.createToken(principal.getName());

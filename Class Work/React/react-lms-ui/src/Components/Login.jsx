@@ -1,10 +1,16 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUserDetails } from "../store/actions/UserAction";
 function LogIn() {
 
     let [username, setUsername] = useState("")
     let [password, setPassword] = useState("")
     let [msg, setMsg] = useState("")
+    const navigate = useNavigate();
+    const dispatch =useDispatch();
+
     const processLogin = async () => {
 
         const encodedString = window.btoa(username + ':' + password)
@@ -14,8 +20,39 @@ function LogIn() {
                     headers: { "Authorization": "Basic " + encodedString }
                 }
             )
-            console.log(response)
-            setMsg("LogIn success!!!");
+            // console.log(response.data)
+            let token=response.data;
+            localStorage.setItem('token', token);
+            const details= await axios.get('http://localhost:8080/api/user/details',
+                {
+                    headers: { "Authorization": "Bearer " + token }
+                }
+            )
+            // console.log(details.data);
+
+            let user={
+                'username':username,
+                'role': details.data.user.role
+            }
+
+            setUserDetails(dispatch)(user);
+
+            let role = details.data.user.role;
+            switch (role) {
+                case "LEARNER":
+                    console.log("learner dashboard")
+                    navigate("/learner")
+                    break;
+                case "AUTHOR":
+                    navigate("/author")
+                    break;
+                case "EXECUTIVE":
+                    navigate("/executive")
+                    break;
+                default:
+                    setMsg("Login Disabled, Contact Admin at admin@example.com")
+            }
+            setMsg("login success");
         }
         catch (err) {
             setMsg("Invalid login credentials!!!");

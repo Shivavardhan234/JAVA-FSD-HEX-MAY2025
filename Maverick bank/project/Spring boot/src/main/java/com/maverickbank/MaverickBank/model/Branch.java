@@ -125,8 +125,8 @@ public class Branch {
 
 
 	public void setAddress(String address) throws InvalidInputException {
-		if(address==null || address.trim().isEmpty()||!address.matches("^[A-Za-z _&]+$")) {
-			throw new InvalidInputException("State Name is Invalid. Please enter appropriate State Name...!!!");
+		if(address==null || address.trim().isEmpty()) {
+			throw new InvalidInputException("Address is Invalid. Please enter appropriate Address...!!!");
 		}
 		this.address = address;
 	}

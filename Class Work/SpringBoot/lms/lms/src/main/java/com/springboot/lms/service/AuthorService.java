@@ -1,9 +1,13 @@
 package com.springboot.lms.service;
 
+import java.security.Principal;
+import java.util.List;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.springboot.lms.model.Author;
+import com.springboot.lms.model.Course;
 import com.springboot.lms.model.UserInfo;
 import com.springboot.lms.repository.AuthorRepository;
 import com.springboot.lms.repository.UserInfoRepository;
@@ -34,5 +38,9 @@ public class AuthorService {
 		author.setActive(true);
 		return ar.save(author);
 	}
+
+
+
+	
 
 }

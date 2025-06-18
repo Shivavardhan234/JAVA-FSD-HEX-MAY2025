@@ -86,7 +86,7 @@ public class SecurityConfig {
 					
 		//==================================== CIO ==================================================		
 					//----------------------- post ----------------------------------
-					.requestMatchers("/api/cio/add").permitAll()
+					.requestMatchers("/api/cio/add").hasAnyAuthority("ADMIN")
 					
 					//------------------------ get ----------------------------------
 					.requestMatchers("/api/cio/get/all").hasAnyAuthority("ADMIN")

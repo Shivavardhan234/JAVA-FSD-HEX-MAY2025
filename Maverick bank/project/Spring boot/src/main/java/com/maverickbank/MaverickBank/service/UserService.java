@@ -17,6 +17,9 @@ import com.maverickbank.MaverickBank.exception.InvalidInputException;
 import com.maverickbank.MaverickBank.exception.ResourceExistsException;
 import com.maverickbank.MaverickBank.exception.ResourceNotFoundException;
 import com.maverickbank.MaverickBank.model.User;
+import com.maverickbank.MaverickBank.repository.CIORepository;
+import com.maverickbank.MaverickBank.repository.CustomerRepository;
+import com.maverickbank.MaverickBank.repository.EmployeeRepository;
 import com.maverickbank.MaverickBank.repository.UserRepository;
 import com.maverickbank.MaverickBank.validation.EmployeeValidation;
 import com.maverickbank.MaverickBank.validation.UserValidation;
@@ -29,14 +32,23 @@ public class UserService {
 	
 	private UserRepository userRepository;
 	private PasswordEncoder passwordEncoder;
-	
+	private CustomerRepository customerRepository;
+	private EmployeeRepository employeeRepository;
+	private CIORepository cioRepository;
 	
 	
 
-	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+	
+
+
+public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
+			CustomerRepository customerRepository, EmployeeRepository employeeRepository, CIORepository cioRepository) {
 		super();
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.customerRepository = customerRepository;
+		this.employeeRepository = employeeRepository;
+		this.cioRepository = cioRepository;
 	}
 
 
@@ -113,30 +125,33 @@ public class UserService {
 	
 	
 
-//	public Object getByUsername(Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
-//		User currentUser= userRepository.getByUsername(principal.getName());
-//		UserValidation.checkActiveStatus(currentUser.getStatus());
-//		
-//		
+ 	public Object getByPrincipal(Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
 		
-//		switch (currentUser.getRole()) {
-//		case CUSTOMER:
-//			break;
-//		case ADMIN:
-//			break;
-//		case ACCOUNT_MANAGER:
-//		case JUNIOR_OPERATIONS_MANAGER:
-//		case SENIOR_OPERATIONS_MANAGER:
-//		case LOAN_OFFICER:
-//		case TRANSACTION_ANALYST:
-//			break;
-//		default:
-//				return null;
-//			
-//			
-//		}
-//		return null;
-//	}
+		
+		
+		switch (currentUser.getRole()) {
+		case CUSTOMER:
+			return customerRepository.getByUserId(currentUser.getId());
+			
+		case ADMIN:
+			return cioRepository.getCioByUserId(currentUser.getId());
+			
+		case ACCOUNT_MANAGER:
+		case JUNIOR_OPERATIONS_MANAGER:
+		case SENIOR_OPERATIONS_MANAGER:
+		case LOAN_OFFICER:
+		case TRANSACTION_ANALYST:
+		case REPORT_MANAGER:
+			return employeeRepository.getEmployeeByUserId(currentUser.getId());
+			
+		default:
+			throw new InvalidActionException("No user...!!!");
+			
+			
+		}
+	}
 
 
 

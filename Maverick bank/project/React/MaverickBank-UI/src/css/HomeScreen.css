@@ -1,0 +1,49 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+.navbar {
+  background-color: #1e3d2f; /* Dark green */
+  width: 100%;
+  color: white;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.nav-buttons .btn {
+  background-color: white;
+  color: #1e3d2f;
+  border: none;
+  padding: 8px 15px;
+  margin-left: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.nav-buttons .btn:hover {
+  background-color: #d4eadf;
+}
+
+.nav-buttons .signup {
+  background-color: #4CAF50; /* Lighter green */
+  color: white;
+}
+
+.nav-buttons .signup:hover {
+  background-color: #45a049;
+}

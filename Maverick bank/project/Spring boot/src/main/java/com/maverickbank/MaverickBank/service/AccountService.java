@@ -324,9 +324,7 @@ public AccountService(AccountRepository accountRepository, UserRepository userRe
 	        account.setBalance(account.getBalance().subtract(roundedAmount));
 	        accountRepository.save(account);
 
-	        if (medium == PaymentMedium.UPI || medium == PaymentMedium.WALLET) {
-	        	throw new InvalidActionException("Withdrawl of Rs."+amount+" from account number "+account.getAccountNumber()+" to "+medium+"is successful(^o^)");
-	        }
+	       
 
 	        return account;
 	    }
@@ -371,9 +369,7 @@ public AccountService(AccountRepository accountRepository, UserRepository userRe
 	        // Update account balance by adding the amount
 	        account.setBalance(account.getBalance().add(roundedAmount));
 	        accountRepository.save(account);
-	        if (medium == PaymentMedium.UPI || medium == PaymentMedium.WALLET) {
-	            throw new InvalidActionException("Deposit of Rs." + amount + " to account number " + account.getAccountNumber() + " from " + medium + " is successful(^o^)");
-	        }
+	        
 	        return account;
 	    }
 

@@ -4,6 +4,7 @@ package com.springboot.lms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -24,12 +25,14 @@ public class SecurityConfig {
 		
 		.csrf((csrf)->csrf.disable())
 			.authorizeHttpRequests((authorize) -> authorize
+					.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 					.requestMatchers("/api/user/signup").permitAll()
 					.requestMatchers("/api/author/add").permitAll()
-					.requestMatchers("/api/user/token/v1").authenticated()
+					.requestMatchers("/api/user/token/v1").permitAll()
 					.requestMatchers("/api/user/token/details").authenticated()
 					.requestMatchers("/api/learner/get-all").hasAuthority("LEARNER")
 					.requestMatchers("api/course/get/all-by-pagenation").permitAll()
+					.requestMatchers("api/course/get/by-author").permitAll()
 				.anyRequest().authenticated()
 			)
 			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) 

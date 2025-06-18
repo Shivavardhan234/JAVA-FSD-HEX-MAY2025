@@ -1,5 +1,6 @@
 package com.springboot.lms.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,12 @@ public class CourseController {
 									 @RequestParam(name="size",required = false,defaultValue = "100000") Integer size){
 		return cs.getCourseByPage(page,size);
 		
+	}
+	
+	@GetMapping("/get/by-author")
+	@CrossOrigin(origins = "http://localhost:5173")
+	public List<Course> getAllCoursesForAuthor(Principal principal){
+		return cs.getAllCoursesForAuthor(principal);
 	}
 	
 	
