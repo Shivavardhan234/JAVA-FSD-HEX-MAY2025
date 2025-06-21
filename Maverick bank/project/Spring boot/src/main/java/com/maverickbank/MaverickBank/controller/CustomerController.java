@@ -4,11 +4,13 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.maverickbank.MaverickBank.exception.DeletedUserException;
@@ -38,6 +40,7 @@ public class CustomerController {
 	 * @throws Exception 
 	 */
 	@PostMapping("/signup")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public Customer signUp( @RequestBody Customer customer) throws InvalidInputException, ResourceExistsException {
 		return customerService.signUp(customer);
 		
@@ -53,8 +56,10 @@ public class CustomerController {
 	//-------------------------------------- GET ---------------------------------------------------
 	
 	@GetMapping("/get/all")
-	public List<Customer> getAllCustomer(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException{
-		return customerService.getAllCustomer(principal);
+	@CrossOrigin(origins = "http://localhost:5173")
+	public List<Customer> getAllCustomer(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			   @RequestParam(name="size",required = false, defaultValue = "100000") Integer size,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException{
+		return customerService.getAllCustomer(page,size,principal);
 	}
 	
 	@GetMapping("/get/by-id")

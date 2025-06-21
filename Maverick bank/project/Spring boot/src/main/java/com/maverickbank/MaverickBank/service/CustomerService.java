@@ -1,8 +1,11 @@
 package com.maverickbank.MaverickBank.service;
 
+
 import java.security.Principal;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.maverickbank.MaverickBank.enums.Role;
@@ -129,10 +132,11 @@ public CustomerService(CustomerRepository customerRepository, UserRepository use
 	 * @throws InvalidActionException 
 	 * @throws InvalidInputException 
 	 */
-	public List<Customer> getAllCustomer(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
+	public List<Customer> getAllCustomer(int page, int size,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
 		User currentUser= userRepository.getByUsername(principal.getName());
 		UserValidation.checkActiveStatus(currentUser.getStatus());
-		return customerRepository.findAll();
+		Pageable pageable =PageRequest.of(page, size);
+		return customerRepository.findAll(pageable).getContent();
 	}
 
 

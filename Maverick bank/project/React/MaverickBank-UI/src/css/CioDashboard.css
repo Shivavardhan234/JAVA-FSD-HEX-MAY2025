@@ -1,0 +1,81 @@
+.navbar {
+    position: fixed;
+    background-color: #004d00;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.logo {
+    color: white;
+}
+
+.logout-btn {
+    background-color: white;
+    color: #004d00;
+    border: 2px solid #004d00;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: rgba(91, 255, 91, 0.477); /* light green with 75% transparency */
+    color: white;
+}
+
+
+.cio-bar {
+    width: 100%;
+    position: fixed;        
+    top: 59px;  
+    display: flex;
+    border-top: 2px solid green;
+    border-bottom: 2px solid green;
+    background-color: white;
+    height: 30px;
+    padding: 0;
+    margin: 0;
+}
+
+/* Each section */
+.cio-link-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: green;
+    transition: background-color 0.3s, color 0.3s;
+    position: relative;
+}
+
+/* Add vertical separator for middle partitions */
+.cio-link-section:not(:first-child)::before  {
+    content: "";
+    position: absolute;
+    left: 0;
+    height: 60%;
+    width: 1px;
+    background-color: green;
+}
+
+/* Hover effect only for middle (link) partitions */
+.cio-link-section.hoverable:hover {
+    background-color: green;
+    color: white;
+}
+
+/* Anchor tag styles */
+.cio-link {
+    text-decoration: none;
+    color: inherit;
+}

@@ -28,6 +28,7 @@ public class SecurityConfig {
 					.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 					.requestMatchers("/api/user/signup").permitAll()
 					.requestMatchers("/api/author/add").permitAll()
+					.requestMatchers("/api/author/upload/profile-pic").hasAuthority("AUTHOR")
 					.requestMatchers("/api/user/token/v1").permitAll()
 					.requestMatchers("/api/user/token/details").authenticated()
 					.requestMatchers("/api/learner/get-all").hasAuthority("LEARNER")

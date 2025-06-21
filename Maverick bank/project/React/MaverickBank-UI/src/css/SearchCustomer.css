@@ -1,0 +1,13 @@
+.search-customer-container {
+    display: flex;
+    top: 89px;
+    margin-left: 60px;
+    padding: 20px;
+    min-height: calc(100vh - 89px);
+    box-sizing: border-box;
+    background-color: #fdfdfd;
+    transition: margin-left 0.3s ease;
+    position: relative;
+    z-index: -1;
+}
+

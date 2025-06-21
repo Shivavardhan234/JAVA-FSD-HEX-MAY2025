@@ -3,6 +3,7 @@ package com.maverickbank.MaverickBank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -25,6 +26,7 @@ public class SecurityConfig {
 		http
 		.csrf((csrf)->csrf.disable())
 			.authorizeHttpRequests((authorize) -> authorize
+					.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 		 //================================== USER ============================================
 					//----------------------- post ------------------------------------
 					.requestMatchers("/api/user/add").hasAnyAuthority("ADMIN")

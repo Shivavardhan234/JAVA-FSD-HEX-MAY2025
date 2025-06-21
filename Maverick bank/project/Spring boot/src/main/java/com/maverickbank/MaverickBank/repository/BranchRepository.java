@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.model.Branch;
 
 public interface BranchRepository extends JpaRepository<Branch, Integer>{
@@ -24,6 +25,15 @@ public interface BranchRepository extends JpaRepository<Branch, Integer>{
 	
 	@Query("SELECT b FROM Branch b WHERE b.ifsc=?1")
 	Branch getBranchByIfsc(String ifsc);
+
+	@Query("SELECT b FROM Branch b WHERE b.status=?1")
+	List<Branch> getByStatus(ActiveStatus status);
+	
+	@Query("SELECT b FROM Branch b WHERE b.status=?2 AND LOWER(b.address) LIKE  LOWER(CONCAT('%' ,?1,'%')) ")
+	List<Branch> getByStateAndStatus(String state,ActiveStatus status);
+
+
+	
 	
 
 }

@@ -116,12 +116,14 @@ public class UserController {
 	 * @throws InvalidActionException 
 	 */
 	@PutMapping("/update/username/{username}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public User updateUsername(@PathVariable String username, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException{
 		return userService.updateUsername(username,principal);
 		
 	}
 	
 	@PutMapping("/update/password/{oldPassword}/{newPassword}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public User updatePassword(@PathVariable String oldPassword,@PathVariable String newPassword, Principal principal) throws InvalidInputException, InvalidCredentialsException, InvalidActionException, DeletedUserException  {
 		return userService.updatePassword(oldPassword,newPassword,principal);
 		
@@ -135,6 +137,7 @@ public class UserController {
 	
 	
 	@PutMapping("/update/deactivate/{password}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public User deactivateUserAccount(@PathVariable String password,Principal principal) throws InvalidInputException, InvalidActionException, InvalidCredentialsException, DeletedUserException{
 		return userService.deactivateUserAccount(password,principal);
 		
@@ -142,6 +145,7 @@ public class UserController {
 	
 	
 	@PutMapping("/update/activate")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public User activateUser(Principal principal) throws InvalidActionException, DeletedUserException, InvalidInputException {
 		return userService.activateUser(principal);
 	}

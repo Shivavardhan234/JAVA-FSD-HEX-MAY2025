@@ -35,6 +35,7 @@ function SignIn() {
                     break;
                 case "ADMIN":
                     console.log("CIO dashboard");
+                    navigate("/cio")
                     break;
                 case "LOAN_OFFICER":
                     console.log("LOAN_OFFICER dashboard");

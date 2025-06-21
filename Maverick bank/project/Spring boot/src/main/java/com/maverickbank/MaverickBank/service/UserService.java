@@ -127,7 +127,6 @@ public UserService(UserRepository userRepository, PasswordEncoder passwordEncode
 
  	public Object getByPrincipal(Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
 		User currentUser= userRepository.getByUsername(principal.getName());
-		UserValidation.checkActiveStatus(currentUser.getStatus());
 		
 		
 		

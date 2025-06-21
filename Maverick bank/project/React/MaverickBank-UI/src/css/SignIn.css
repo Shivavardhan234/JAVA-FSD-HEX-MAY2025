@@ -1,5 +1,23 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: #004d00;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  z-index: 1000;
+}
+
+
 .login-container {
+  top: 40%;
   max-width: 400px;
+  margin-top: 800px;
   margin: 80px auto;
   padding: 30px;
   background-color: #f9f9f9;

@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +28,8 @@ public class BranchController {
 	private BranchService branchService;
 	
 //------------------------------------------- POST ------------------------------------------------------------------------
-	@PostMapping("add")
+	@PostMapping("/add")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public Branch addBranch(@RequestBody  Branch branch,Principal principal) throws InvalidInputException, ResourceExistsException, Exception {
 		return branchService.addBranch(branch,principal);
 		
@@ -37,6 +39,7 @@ public class BranchController {
 	
 //--------------------------------------- GET ----------------------------------------------------------------------------	
 	@GetMapping("/get/by-id/{id}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public Branch getById(@PathVariable int id,Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
 		return branchService.getById(id, principal);
 	}
@@ -44,33 +47,69 @@ public class BranchController {
 	
 	
 	@GetMapping("/get/all")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public List<Branch> getAll(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
 		return branchService.getAll( principal);
 		
 	}
 	
 	@GetMapping("/get/by-name/{name}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public Branch getByName(@PathVariable String name,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		return branchService.getByName(name, principal);
+		
+	}
+	@GetMapping("/get/by-ifsc/{ifsc}")
+	@CrossOrigin(origins = "http://localhost:5173")
+	public Branch getByIfsc(@PathVariable String ifsc,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		return branchService.getByIfsc(ifsc, principal);
 		
 	}
 	
 	
 	@GetMapping("/get/by-state/{state}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public List<Branch> getByState(@PathVariable String state,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
 		return branchService.getByState(state, principal);
 	}
+	@GetMapping("/get/active-by-state/{state}")
+	@CrossOrigin(origins = "http://localhost:5173")
+	public List<Branch> getActiveBranchesByState(@PathVariable String state,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
+		return branchService.getActiveBranchesByState(state, principal);
+	}
+	
+	
+	@GetMapping("/get/inactive-by-state/{state}")
+	@CrossOrigin(origins = "http://localhost:5173")
+	public List<Branch> getInactiveBranchesByState(@PathVariable String state,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
+		return branchService.getgetInactiveBranchesByState(state, principal);
+	}
+	
+	@GetMapping("/get/inactive")
+	@CrossOrigin(origins = "http://localhost:5173")
+	public List<Branch> getInactiveBranches(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
+		return branchService.getInactiveBranches (principal);
+	}
+	@GetMapping("/get/active")
+	@CrossOrigin(origins = "http://localhost:5173")
+	public List<Branch> getActiveBranches(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
+		return branchService.getActiveBranches( principal);
+	}
+	
+	
 	
 	//-------------------------------------- PUT ------------------------------------------------------------------------
 
 	
 	@PutMapping("/deactivate/{id}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public Branch deactivateBranch(@PathVariable int id,Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
 		return branchService.deactivateBranch(id, principal);
 	}
 	
 	
 	@PutMapping("/activate/{id}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public Branch activateBranch(@PathVariable int id,Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
 		return branchService.activateBranch(id, principal);
 	}
@@ -83,6 +122,11 @@ public class BranchController {
 	@PutMapping("/update/email/{id}/{email}")
 	public Branch updateBranchEmail(@PathVariable int id,@PathVariable String email,Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
 		return branchService.updateEmail(id,email, principal);
+	}
+	@PutMapping("/update")
+	@CrossOrigin(origins = "http://localhost:5173")
+	public Branch updateBranch(@RequestBody Branch branch, Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
+		return branchService.updateBranch(branch, principal);
 	}
 	
 	

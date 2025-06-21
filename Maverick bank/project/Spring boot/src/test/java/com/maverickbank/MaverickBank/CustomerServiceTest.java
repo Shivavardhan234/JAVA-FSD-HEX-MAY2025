@@ -184,7 +184,7 @@ class CustomerServiceTest {
 	        when(userRepository.getByUsername("testuser1")).thenReturn(sampleUser1);
 	        when(customerRepository.findAll()).thenReturn(Arrays.asList(sampleCustomer1, sampleCustomer2));
 
-	        List<Customer> allCustomers = customerService.getAllCustomer(samplePrincipal1);
+	        List<Customer> allCustomers = customerService.getAllCustomer(0,10,samplePrincipal1);
 	        assertEquals(2, allCustomers.size());
 	    }
 

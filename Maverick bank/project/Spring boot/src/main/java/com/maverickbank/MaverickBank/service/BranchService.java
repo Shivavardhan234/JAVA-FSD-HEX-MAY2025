@@ -109,6 +109,18 @@ public class BranchService {
 		return branchList;
 	}
 
+	public Branch getByIfsc(String ifsc, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
+		
+		Branch branch=branchRepository.getBranchByIfsc(ifsc);
+		if(branch==null) {
+			throw new ResourceNotFoundException("No branche with the given ifsc code...!!!");
+		}
+
+			return branch;
+	}
+	
 
 	
 	
@@ -125,6 +137,57 @@ public class BranchService {
 	}
 
 	
+	public List<Branch> getInactiveBranches(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
+		
+		List <Branch> branchList=branchRepository.getByStatus(ActiveStatus.INACTIVE);
+		if(branchList==null) {
+			throw new ResourceNotFoundException("No INACTIVE branches found...!!!");
+		}
+
+		return branchList;
+	}
+
+
+
+
+	public List<Branch> getActiveBranches(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
+		List <Branch> branchList=branchRepository.getByStatus(ActiveStatus.ACTIVE);
+		if(branchList==null) {
+			throw new ResourceNotFoundException("No ACTIVE branches found...!!!");
+		}
+
+		return branchList;
+	}
+	
+	
+	public List<Branch> getActiveBranchesByState(String state, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
+		List <Branch> branchList=branchRepository.getByStateAndStatus( state,ActiveStatus.ACTIVE);
+		if(branchList==null) {
+			throw new ResourceNotFoundException("No ACTIVE branches found in the given state...!!!");
+		}
+
+		return branchList;
+	}
+
+
+
+
+	public List<Branch> getgetInactiveBranchesByState(String state, Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
+		List <Branch> branchList=branchRepository.getByStateAndStatus( state,ActiveStatus.INACTIVE);
+		if(branchList==null) {
+			throw new ResourceNotFoundException("No INACTIVE branches found in the given state...!!!");
+		}
+
+		return branchList;
+	}
 	
 	
 //-------------------------------------------- PUT ----------------------------------------------------------------------
@@ -182,6 +245,41 @@ public class BranchService {
 		branch.setEmail(email);
 		return branchRepository.save(branch);
 	}
+
+
+
+
+	public Branch updateBranch(Branch branch, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
+		if(branch.getId()<=0) {
+			throw new InvalidInputException("Invalid branch id...!!!");
+		}
+		BranchValidation.validateForNewBranch(branch);
+		Branch currentBranch=branchRepository.findById(branch.getId()).orElseThrow(()-> new ResourceNotFoundException("No branch record with given Id...!!!"));
+		currentBranch.setBranchName(branch.getBranchName());
+		currentBranch.setIfsc(branch.getIfsc());
+		currentBranch.setContactNumber(branch.getContactNumber());
+		currentBranch.setEmail(branch.getEmail());
+		currentBranch.setAddress(branch.getAddress());
+		return branchRepository.save(currentBranch);
+	}
+
+
+
+
+	
+
+
+
+
+	
+	
+	
+
+
+
+
 	
 
 }
