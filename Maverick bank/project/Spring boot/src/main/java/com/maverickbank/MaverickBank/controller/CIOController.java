@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.exception.DeletedUserException;
 import com.maverickbank.MaverickBank.exception.InvalidActionException;
 import com.maverickbank.MaverickBank.exception.InvalidInputException;
@@ -29,6 +30,7 @@ public class CIOController {
 	
 //---------------------------------------- POST -------------------------------------------------------------------------
 	@PostMapping("/add")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public CIO  addAdmin(@RequestBody CIO admin) throws InvalidInputException, ResourceExistsException  {
 		return cioService.addAdmin(admin);
 	}
@@ -36,16 +38,25 @@ public class CIOController {
 	
 //----------------------------------------- GET -------------------------------------------------------------------------
 	@GetMapping("/get/all")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public List<CIO> getAllCIO(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
 		return cioService.getAllCIO(principal);
 	}
+	@GetMapping("/get/by-status/{status}")
+	@CrossOrigin(origins = "http://localhost:5173")
+	public List<CIO> getByStatus(@PathVariable ActiveStatus status, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		return cioService.getByStatus(status,principal);
+	}
+	
 	
 	@GetMapping("/get/by-id/{id}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public CIO getById(@PathVariable int id, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		return cioService.getById(id,principal);
 	}
 	
 	@GetMapping("/get/by-user-id/{id}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public CIO getByUserId(@PathVariable int id, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		return cioService.getByUserId(id,principal);
 	}

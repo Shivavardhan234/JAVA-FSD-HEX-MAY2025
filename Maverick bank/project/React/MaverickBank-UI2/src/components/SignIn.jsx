@@ -30,7 +30,7 @@ function SignIn() {
             localStorage.setItem('token', tokenResponse.data);
 
             await getUserDetails(dispatch)();
-            console.log(userDet);
+            //console.log(userDet);
 
             localStorage.setItem('password', password);
         } catch (err) {
@@ -103,9 +103,11 @@ function SignIn() {
                         break;
                     case "LOAN_OFFICER":
                         console.log("LOAN_OFFICER dashboard");
+                        navigate("/accountManager")
                         break;
                     case "ACCOUNT_MANAGER":
                         console.log("ACCOUNT_MANAGER dashboard");
+                        navigate("/accountManager")
                         break;
                     case "REPORT_MANAGER":
                         console.log("REPORT_MANAGER dashboard");

@@ -95,7 +95,7 @@ public class CustomerAccount {
 	}
 
 	public void setPin(String pin) throws InvalidInputException{
-		if(pin==null || pin.trim().isEmpty() || !pin.matches("^[0-9]{6}$")) {
+		if(pin==null || pin.trim().isEmpty()) {
 			throw new InvalidInputException("Invalid pin number provided. Please provide appropriate pin number...!!!");
 		}
 		this.pin = pin;

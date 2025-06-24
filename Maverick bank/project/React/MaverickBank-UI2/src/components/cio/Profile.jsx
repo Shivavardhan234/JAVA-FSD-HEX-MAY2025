@@ -99,6 +99,8 @@ function Profile() {
 
 
             setShowPasswordOverlay(false);
+            localStorage.removeItem('password');
+            localStorage.setItem('password', newPassword);
 
 
             setCurrentPassword(newPassword);
@@ -110,6 +112,7 @@ function Profile() {
             const tokenResponse = await axios.get("http://localhost:9090/api/user/token/v1", {
                 headers: { "Authorization": basicAuthString }
             });
+            localStorage.removeItem('token');
             localStorage.setItem('token', tokenResponse.data);
 
             getUserDetails(dispatch)();
@@ -171,6 +174,7 @@ function Profile() {
                     headers: { "Authorization": basicAuthString }
                 });
                 //store token in local storage for future uses
+                localStorage.removeItem('token');
                 localStorage.setItem('token', tokenResponse.data);
                 //update the details
 

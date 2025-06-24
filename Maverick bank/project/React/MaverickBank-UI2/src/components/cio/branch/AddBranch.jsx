@@ -59,6 +59,17 @@ function AddBranch() {
 
     return (
         <div className="container py-4">
+             <nav aria-label="breadcrumb" className="mb-3">
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item">
+                        <span className="text-decoration-none text-muted">BRANCH</span>
+                    </li>
+                   
+                    <li className="breadcrumb-item active" aria-current="page">
+                       Add Branch
+                    </li>
+                </ol>
+            </nav>
             <div className="card shadow-lg border-0" style={{ backgroundColor: "#f8f9fa" }}>
                 {/* Header */}
                 <div className="card-header bg-primary text-white fw-semibold fs-5">

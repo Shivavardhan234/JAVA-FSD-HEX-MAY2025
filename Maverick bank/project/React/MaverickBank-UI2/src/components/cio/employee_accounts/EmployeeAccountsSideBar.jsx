@@ -48,7 +48,7 @@ function EmployeeAccountsSideBar() {
                     {/* Find Employee */}
                     <li className="nav-item border-bottom border-white">
                         <Link
-                            to="find"
+                            to=""
                             className={`nav-link d-flex align-items-center px-3 py-2 ${isExpanded ? 'justify-content-start' : 'justify-content-center'}`}
                             style={{
                                 height: '48px',
@@ -84,7 +84,7 @@ function EmployeeAccountsSideBar() {
                     {/* Employees by Category */}
                     <li className="nav-item border-bottom border-white">
                         <Link
-                            to="by-category"
+                            to="category"
                             className={`nav-link d-flex align-items-center px-3 py-2 ${isExpanded ? 'justify-content-start' : 'justify-content-center'}`}
                             style={{
                                 height: '48px',
@@ -113,6 +113,40 @@ function EmployeeAccountsSideBar() {
                                 }}
                             >
                                 Employees by Category
+                            </span>
+                        </Link>
+                    </li>
+                    <li className="nav-item border-bottom border-white">
+                        <Link
+                            to="addEmployee"
+                            className={`nav-link d-flex align-items-center px-3 py-2 ${isExpanded ? 'justify-content-start' : 'justify-content-center'}`}
+                            style={{
+                                height: '48px',
+                                color: 'white',
+                                transition: 'background-color 0.2s ease, color 0.2s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = '#ffffff';
+                                e.currentTarget.style.color = '#000000';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = '';
+                                e.currentTarget.style.color = '#ffffff';
+                            }}
+                        >
+                            <i className="bi bi-plus-circle fs-5 text-center" style={{ width: '24px' }}></i>
+                            <span
+                                className="ms-2"
+                                style={{
+                                    width: isExpanded ? 'auto' : '0px',
+                                    opacity: isExpanded ? 1 : 0,
+                                    visibility: isExpanded ? 'visible' : 'hidden',
+                                    overflow: 'hidden',
+                                    transition: 'opacity 0.3s ease, width 0.3s ease',
+                                    whiteSpace: 'nowrap',
+                                }}
+                            >
+                                Find Employee
                             </span>
                         </Link>
                     </li>

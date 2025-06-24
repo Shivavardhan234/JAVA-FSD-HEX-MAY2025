@@ -151,6 +151,7 @@ public class UserController {
 	}
 	
 	@PutMapping("/update/status/{id}/{status}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public User updateUserActiveStatus(@PathVariable int id,@PathVariable ActiveStatus status,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
 		return userService.updateUserActiveStatus(id,status,principal);
 	}
@@ -160,6 +161,7 @@ public class UserController {
 //-------------------------------UPDATE but Marking as DELETE -------------------------------------
 	
 	@PutMapping("/update/delete/{password}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public User deleteUserAccount(@PathVariable String password,Principal principal) throws InvalidInputException, InvalidActionException, InvalidCredentialsException, DeletedUserException{
 		return userService.deleteUserAccount(password,principal);
 		

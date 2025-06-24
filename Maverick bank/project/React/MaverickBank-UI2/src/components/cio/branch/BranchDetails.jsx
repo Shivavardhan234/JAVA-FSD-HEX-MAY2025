@@ -86,113 +86,114 @@ function BranchDetails() {
 
     return (
         <>
-        <nav aria-label="breadcrumb" className="mb-3">
-  <ol className="breadcrumb">
-    <li className="breadcrumb-item">
-      <Link to="/cio/cioBranch/category" className="text-decoration-none">
-        Branches by Category
-      </Link>
-    </li>
-    <li className="breadcrumb-item active" aria-current="page">
-      View Branch
-    </li>
-  </ol>
-</nav>
+            <nav aria-label="breadcrumb" className="mb-3">
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item">
+                        <Link to="/cio/cioBranch/category" className="text-decoration-none">
+                            Branches by Category
+                        </Link>
+                    </li>
+                    <li className="breadcrumb-item active" aria-current="page">
+                        View Branch
+                    </li>
+                </ol>
+            </nav>
 
-        <div className="container-fluid position-relative">
-            <div className="card shadow border-0 bg-light-subtle" style={{ borderRadius: "10px" }}>
-                {/* Header */}
-                <div className="card-header bg-secondary bg-opacity-10 fw-semibold"
-                    style={{ borderTopLeftRadius: "10px", borderTopRightRadius: "10px" }}>
-                    <h5 className="mb-0">Branch Details</h5>
+            <div className="container-fluid position-relative">
+                <div className="card shadow border-0 bg-light-subtle" style={{ borderRadius: "10px" }}>
+                    {/* Header */}
+                    <div className="card-header bg-secondary bg-opacity-10 fw-semibold"
+                        style={{ borderTopLeftRadius: "10px", borderTopRightRadius: "10px" }}>
+                        <h5 className="mb-0">Branch Details</h5>
+                    </div>
+
+                    {/* Body */}
+                    <div className="card-body">
+                        {branch ? (
+                            <div className="row">
+                                <div className="col-md-3 d-flex justify-content-center align-items-center">
+                                    <i className={`bi bi-bank2 ${branch.status === "ACTIVE" ? "text-success" : "text-danger"}`}
+                                        style={{ fontSize: "5rem" }}></i>
+                                </div>
+                                <div className="col-md-9">
+                                    <div className="mb-2"><strong>ID:</strong> {branch.id}</div>
+                                    <div className="mb-2"><strong>IFSC:</strong> {branch.ifsc}</div>
+                                    <div className="mb-2"><strong>Name:</strong> {branch.branchName}</div>
+                                    <div className="mb-2"><strong>Contact:</strong> {branch.contactNumber}</div>
+                                    <div className="mb-2"><strong>Email:</strong> {branch.email}</div>
+                                    <div className="mb-2"><strong>Address:</strong> {branch.address}</div>
+                                    <div className="mb-2"><strong>Status:</strong> {branch.status}</div>
+                                </div>
+                            </div>
+                        ) : (
+                            <p className="text-muted">No branch selected.</p>
+                        )}
+                        {message && <div className="text-danger mt-2">{message}</div>}
+                    </div>
+
+                    {/* Footer */}
+                    {branch && (
+                        <div className="card-footer d-flex justify-content-end gap-2">
+                            <Button variant="secondary" size="sm" onClick={() => setShowEditOverlay(true)}>Edit Branch</Button>
+                            {branch.status === "ACTIVE" ? (
+                                <Button variant="danger" size="sm" onClick={deactivateBranch}>Deactivate</Button>
+                            ) : (
+                                <Button variant="success" size="sm" onClick={activateBranch}>Activate</Button>
+                            )}
+                        </div>
+                    )}
                 </div>
 
-                {/* Body */}
-                <div className="card-body">
-                    {branch ? (
-                        <div className="row">
-                            <div className="col-md-3 d-flex justify-content-center align-items-center">
-                                <i className={`bi bi-bank2 ${branch.status === "ACTIVE" ? "text-success" : "text-danger"}`}
-                                   style={{ fontSize: "5rem" }}></i>
-                            </div>
-                            <div className="col-md-9">
-                                <div className="mb-2"><strong>ID:</strong> {branch.id}</div>
-                                <div className="mb-2"><strong>IFSC:</strong> {branch.ifsc}</div>
-                                <div className="mb-2"><strong>Name:</strong> {branch.branchName}</div>
-                                <div className="mb-2"><strong>Contact:</strong> {branch.contactNumber}</div>
-                                <div className="mb-2"><strong>Email:</strong> {branch.email}</div>
-                                <div className="mb-2"><strong>Address:</strong> {branch.address}</div>
-                                <div className="mb-2"><strong>Status:</strong> {branch.status}</div>
+                {/* Edit Overlay */}
+                {showEditOverlay && (
+                    <div className="position-fixed bg-dark bg-opacity-50"
+                        style={{
+                            top: '56px',
+                            left: isExpanded ? '240px' : '70px',
+                            width: isExpanded ? 'calc(100% - 240px)' : 'calc(100% - 70px)',
+                            height: 'calc(100vh - 56px)',
+                            backdropFilter: 'blur(4px)',
+                            zIndex: 1050,
+                            transition: 'left 0.3s ease, width 0.3s ease',
+                        }}>
+                        <div className="d-flex justify-content-center align-items-center h-100">
+                            <div className="bg-white p-4 rounded shadow-lg" style={{ width: '90%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
+                                <div className="bg-secondary text-white rounded p-2 mb-3">
+                                    <h5 className="mb-0">Edit Branch</h5>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6">
+                                        <div className="mb-3"><label className="form-label">IFSC</label>
+                                            <input type="text" className="form-control" value={ifsc} onChange={(e) => setIfsc(e.target.value)} /></div>
+                                        <div className="mb-3"><label className="form-label">Branch Name</label>
+                                            <input type="text" className="form-control" value={branchName} onChange={(e) => setBranchName(e.target.value)} /></div>
+                                        <div className="mb-3"><label className="form-label">Contact Number</label>
+                                            <input type="text" className="form-control" value={contactNumber} onChange={(e) => setContactNumber(e.target.value)} /></div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="mb-3"><label className="form-label">Email</label>
+                                            <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
+                                        <div className="mb-3"><label className="form-label">Address</label>
+                                            <input type="text" className="form-control" value={address} onChange={(e) => setAddress(e.target.value)} /></div>
+                                    </div>
+                                </div>
+                                {message && <div className="text-danger mt-2">{message}</div>}
+                                <div className="d-flex justify-content-end gap-3 mt-3">
+                                    <button className="btn btn-secondary" onClick={() => setShowEditOverlay(false)}>Cancel</button>
+                                    <button className="btn btn-success" onClick={updateBranch}>Save</button>
+                                </div>
                             </div>
                         </div>
-                    ) : (
-                        <p className="text-muted">No branch selected.</p>
-                    )}
-                    {message && <div className="text-danger mt-2">{message}</div>}
-                </div>
+                    </div>
+                )}
+                
 
-                {/* Footer */}
-                {branch && (
-                    <div className="card-footer d-flex justify-content-end gap-2">
-                        <Button variant="secondary" size="sm" onClick={() => setShowEditOverlay(true)}>Edit Branch</Button>
-                        {branch.status === "ACTIVE" ? (
-                            <Button variant="danger" size="sm" onClick={deactivateBranch}>Deactivate</Button>
-                        ) : (
-                            <Button variant="success" size="sm" onClick={activateBranch}>Activate</Button>
-                        )}
+                {successMessage && (
+                    <div className="d-flex justify-content-center position-fixed top-0 start-0 w-100 mt-3" style={{ zIndex: 9999 }}>
+                        <div className="alert alert-success text-center" role="alert">{successMessage}</div>
                     </div>
                 )}
             </div>
-
-            {/* Edit Overlay */}
-            {showEditOverlay && (
-                <div className="position-fixed bg-dark bg-opacity-50"
-                     style={{
-                         top: '56px',
-                         left: isExpanded ? '240px' : '70px',
-                         width: isExpanded ? 'calc(100% - 240px)' : 'calc(100% - 70px)',
-                         height: 'calc(100vh - 56px)',
-                         backdropFilter: 'blur(4px)',
-                         zIndex: 1050,
-                         transition: 'left 0.3s ease, width 0.3s ease',
-                     }}>
-                    <div className="d-flex justify-content-center align-items-center h-100">
-                        <div className="bg-white p-4 rounded shadow-lg" style={{ width: '90%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
-                            <div className="bg-secondary text-white rounded p-2 mb-3">
-                                <h5 className="mb-0">Edit Branch</h5>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-6">
-                                    <div className="mb-3"><label className="form-label">IFSC</label>
-                                        <input type="text" className="form-control" value={ifsc} onChange={(e) => setIfsc(e.target.value)} /></div>
-                                    <div className="mb-3"><label className="form-label">Branch Name</label>
-                                        <input type="text" className="form-control" value={branchName} onChange={(e) => setBranchName(e.target.value)} /></div>
-                                    <div className="mb-3"><label className="form-label">Contact Number</label>
-                                        <input type="text" className="form-control" value={contactNumber} onChange={(e) => setContactNumber(e.target.value)} /></div>
-                                </div>
-                                <div className="col-md-6">
-                                    <div className="mb-3"><label className="form-label">Email</label>
-                                        <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-                                    <div className="mb-3"><label className="form-label">Address</label>
-                                        <input type="text" className="form-control" value={address} onChange={(e) => setAddress(e.target.value)} /></div>
-                                </div>
-                            </div>
-                            {message && <div className="text-danger mt-2">{message}</div>}
-                            <div className="d-flex justify-content-end gap-3 mt-3">
-                                <button className="btn btn-secondary" onClick={() => setShowEditOverlay(false)}>Cancel</button>
-                                <button className="btn btn-success" onClick={updateBranch}>Save</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {successMessage && (
-                <div className="d-flex justify-content-center position-fixed top-0 start-0 w-100 mt-3" style={{ zIndex: 9999 }}>
-                    <div className="alert alert-success text-center" role="alert">{successMessage}</div>
-                </div>
-            )}
-        </div>
         </>
     );
 }

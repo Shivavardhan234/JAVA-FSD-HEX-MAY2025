@@ -23,7 +23,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 	    @Query("SELECT t FROM Transaction t WHERE t.fromDetails = ?1 AND t.transactionDate BETWEEN ?2 AND ?3")
 	    List<Transaction> findDebits(String accountNumber, LocalDate startDate, LocalDate endDate);
 
-	    @Query("SELECT t FROM Transaction t WHERE t.fromDetails = ?1 OR t.toDetails = ?1")
+	    @Query("SELECT t FROM Transaction t WHERE t.fromDetails = ?1 OR t.toDetails = ?1 ORDER BY t.transactionDate DESC, t.transactionTime DESC")
 	    List<Transaction> findAllByAccountNumber(String accountNumber);
 
 	    

@@ -231,7 +231,21 @@ public class TransactionService {
         validateAccountNumber(accountNumber);
 
         List<Transaction> transactionList = transactionRepository.findAllByAccountNumber(accountNumber);
-
+        transactionList.parallelStream().forEach(t->{
+    	    if (accountNumber.equals(t.getFromDetails())) {
+    	        try {
+					t.setTransactionType(TransactionType.DEBT);
+				} catch (InvalidInputException e) {
+					//do nothing
+				}
+    	    } else if (accountNumber.equals(t.getToDetails())) {
+    	        try {
+					t.setTransactionType(TransactionType.CREDIT);
+				} catch (InvalidInputException e) {
+					//do nothing
+				}
+    	    }
+    	});
         if (transactionList.size() <= count) {
             return transactionList;
         } else {

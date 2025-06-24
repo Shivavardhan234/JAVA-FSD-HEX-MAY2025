@@ -420,8 +420,11 @@ public AccountService(AccountRepository accountRepository, UserRepository userRe
 	        
 	        Account fromAccount = accountRepository.findById(fromAccountId).orElseThrow(() -> new ResourceNotFoundException("No account record with the provided fromAccountId...!!!"));
 	        Account toAccount = accountRepository.getByAccountNumber(toAccountNumber);
-	        if (toAccount == null) {
+	        if (toAccount == null || toAccount.getAccountStatus()==AccountStatus.CLOSED) {
 	            throw new ResourceNotFoundException("No account record found with the given toAccountNumber...!!!");
+	        }
+	        if(toAccount.getAccountStatus()==AccountStatus.SUSPENDED) {
+	        	throw new InvalidActionException("Reciever bank account nor responding! Please try again after some time...!!!");
 	        }
 
 	        // Check if fromAccount has sufficient funds

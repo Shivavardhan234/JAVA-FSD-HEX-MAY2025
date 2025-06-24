@@ -91,8 +91,10 @@ public AccountOpeningApplicationService(AccountOpeningApplicationRepository acco
 		//Check user is active
 				User currentUser= userRepository.getByUsername(principal.getName());
 				UserValidation.checkActiveStatus(currentUser.getStatus());
+				
 				//Validate account opening application object
 				AccountOpeningApplicationValidation.validateAccountOpeningApplication(accountOpeningApplication);
+				
 				//Fetch and attach branch
 				Branch branch = branchService.getByName(accountOpeningApplication.getBranch().getBranchName(), principal);
 				
@@ -103,7 +105,6 @@ public AccountOpeningApplicationService(AccountOpeningApplicationRepository acco
 				
 				//Set account type
 				accountOpeningApplication.setAccountType(accountType);
-				
 				
 				accountOpeningApplication.setCustomerApprovalStatus(ApplicationStatus.PENDING);
 				accountOpeningApplication.setEmployeeApprovalStatus(ApplicationStatus.PENDING);

@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.Role;
 import com.maverickbank.MaverickBank.exception.DeletedUserException;
 import com.maverickbank.MaverickBank.exception.InvalidActionException;
@@ -186,6 +187,18 @@ public CustomerService(CustomerRepository customerRepository, UserRepository use
 		//return the customer
 		return currentCustomer;
 	}
+	
+	public List<Customer> getCustomerByStatus(ActiveStatus status, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
+		List<Customer> customerList = customerRepository.getCustomerByStatus(status);
+		if(customerList==null || customerList.isEmpty()) {
+			throw new ResourceNotFoundException("No customer records with the given active status...!!!");
+		}
+		
+		return customerList;
+	}
+
 
 
 //-------------------------------------------- UPDATE -------------------------------------------------------------------
@@ -241,6 +254,9 @@ public CustomerService(CustomerRepository customerRepository, UserRepository use
 		return customerRepository.save(currentCustomer);
 	}
 
+
+
+	
 
 
 	

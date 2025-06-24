@@ -19,6 +19,6 @@ public interface CustomerAccountRepository extends JpaRepository<CustomerAccount
     @Query("SELECT c FROM CustomerAccount c WHERE c.account.id = ?1")
     List<CustomerAccount> getByAccountId(int id);
 
-    @Query("SELECT c FROM CustomerAccount c WHERE c.customer.id = ?1AND c.account.id=?2")
+    @Query("SELECT c FROM CustomerAccount c WHERE c.customer.id = ?1 AND  c.account.id=?2")
 	CustomerAccount getByCustomerIdAndAccountId(int customerId, int accountId);
 }

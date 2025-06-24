@@ -52,7 +52,7 @@ function CustomerAccountsSideBar() {
                     {/* Search Customer */}
                     <li className="nav-item border-bottom border-white">
                         <Link
-                            to="search"
+                            to=""
                             className={`nav-link d-flex align-items-center px-3 py-2 ${isExpanded ? 'justify-content-start' : 'justify-content-center'}`}
                             style={{
                                 height: '48px',
@@ -88,7 +88,7 @@ function CustomerAccountsSideBar() {
                     {/* All Customers */}
                     <li className="nav-item border-bottom border-white">
                         <Link
-                            to="all"
+                            to="byCategory"
                             className={`nav-link d-flex align-items-center px-3 py-2 ${isExpanded ? 'justify-content-start' : 'justify-content-center'}`}
                             style={{
                                 height: '48px',
@@ -116,7 +116,7 @@ function CustomerAccountsSideBar() {
                                     whiteSpace: 'nowrap',
                                 }}
                             >
-                                All Customers
+                                Customers By Category
                             </span>
                         </Link>
                     </li>
@@ -138,7 +138,7 @@ function CustomerAccountsSideBar() {
                     width: '100%',
                 }}
             >
-                <Outlet />
+                <Outlet context={{ isExpanded }} />
             </div>
         </div>
     );

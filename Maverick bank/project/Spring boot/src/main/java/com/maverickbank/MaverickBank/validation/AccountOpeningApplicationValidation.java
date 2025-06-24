@@ -80,7 +80,7 @@ public class AccountOpeningApplicationValidation {
 		BranchValidation.validateBranchName(accountOpeningApplication.getBranch().getBranchName());
 		validateAccountType(accountOpeningApplication.getAccountType());
 		AccountTypeValidation.validateBankAccountType(accountOpeningApplication.getAccountType().getAccountType());
-		validateCustomerApprovalStatus(accountOpeningApplication.getCustomerApprovalStatus());
+		
 		
 		return;
 	}

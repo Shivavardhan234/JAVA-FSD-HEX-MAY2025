@@ -10,7 +10,7 @@ const userInitialState ={
 const UserReducer = (state = userInitialState,action)=>{
 
     if(action.type === "GET_USER_DETAILS"){
-        console.log("in user reducer"+ action.payload)
+        //console.log("in user reducer"+ action.payload)
         return{
 
             ...state,

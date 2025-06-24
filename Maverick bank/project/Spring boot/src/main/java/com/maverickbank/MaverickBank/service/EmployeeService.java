@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.Role;
 import com.maverickbank.MaverickBank.exception.DeletedUserException;
 import com.maverickbank.MaverickBank.exception.InvalidActionException;
@@ -238,6 +239,36 @@ public class EmployeeService {
 		//return list
 		return employeeList;
 	}
+	
+	public List<Employee> getEmployeeByBranchId(int id, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
+		
+		//Fetch the employees
+		List<Employee> employeeList=employeeRepository.getEmployeeByBranchId(id);
+		//throw exception if list is empty
+		if(employeeList==null) {
+			throw new ResourceNotFoundException("No employee record found with given branch id...!!!");
+		}
+		//return list
+		return employeeList;
+	}
+
+
+
+	public List<Employee> getEmployeeByStatus(ActiveStatus status, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
+		
+		//Fetch the employees
+		List<Employee> employeeList=employeeRepository.getEmployeeByStatus(status);
+		//throw exception if list is empty
+		if(employeeList==null) {
+			throw new ResourceNotFoundException("No employee record found with given activity status...!!!");
+		}
+		//return list
+		return employeeList;
+	}
 
 
 
@@ -328,6 +359,10 @@ public class EmployeeService {
 		//Return updated employee		
 		return employeeRepository.save(currentEmployee);
 	}
+
+
+
+	
 
 
 

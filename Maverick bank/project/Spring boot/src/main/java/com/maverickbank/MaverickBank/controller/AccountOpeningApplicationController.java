@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,12 +42,14 @@ public class AccountOpeningApplicationController {
 	
 //--------------------------------------------- GET ----------------------------------------------------------------------
 	@GetMapping("/get/all")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public List<AccountOpeningApplication> getAllAccountOpeningApplication(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException{
 		return accountOpeningApplicationService.getAllAccountOpeningApplication(principal);
 		
 	}
 	
 	@GetMapping("/get/by-id/{id}")
+	 @CrossOrigin(origins = "http://localhost:5173")
 	public AccountOpeningApplication getAccountOpeningApplicationById(@PathVariable int id, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
 		return accountOpeningApplicationService.getAccountOpeningApplicationById(id,principal);
 		
@@ -59,18 +62,21 @@ public class AccountOpeningApplicationController {
 	}
 	
 	@GetMapping("/get/by-account-type")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public List<AccountOpeningApplication> getAccountOpeningApplicationByAccountType(@RequestBody AccountType accountType,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
 		return accountOpeningApplicationService.getAccountOpeningApplicationByAccountType(accountType,principal);
 		
 	}
 	
 	@GetMapping("/get/by-customer-approval-status/{customerApprovalStatus}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public List<AccountOpeningApplication> getAccountOpeningApplicationByCustomerApprovalStatus(@PathVariable ApplicationStatus customerApprovalStatus, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
 		return accountOpeningApplicationService.getAccountOpeningApplicationByCustomerApprovalStatus(customerApprovalStatus,principal);
 		
 	}
 	
 	@GetMapping("/get/by-employee-approval-status/{employeeApprovalStatus}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public List<AccountOpeningApplication> getAccountOpeningApplicationByEmployeeApprovalStatus(@PathVariable ApplicationStatus employeeApprovalStatus,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
 		return accountOpeningApplicationService.getAccountOpeningApplicationByEmployeeApprovalStatus(employeeApprovalStatus,principal);
 		
@@ -78,6 +84,7 @@ public class AccountOpeningApplicationController {
 	
 	
 	@GetMapping("/get/by-date/{date}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public List<AccountOpeningApplication> getAccountOpeningApplicationByDate(@PathVariable LocalDate date,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
 		return accountOpeningApplicationService.getAccountOpeningApplicationByDate(date,principal);
 		
@@ -92,12 +99,14 @@ public class AccountOpeningApplicationController {
 	}
 	
 	@PutMapping("/update/approve/{id}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public  List<CustomerAccount> approveApplication(@PathVariable int id,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		return accountOpeningApplicationService.approveApplication(id,principal);
 	}
 	
 	
 	@PutMapping("/update/reject/{id}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public  AccountOpeningApplication rejectApplication(@PathVariable int id,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		return accountOpeningApplicationService.rejectApplication(id,principal);
 	}

@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,26 +39,31 @@ public class CustomerAccountController {
 	  
 //------------------------------------------------ GET -------------------------------------------------------------------
 	  @GetMapping("/get/all")
+	  @CrossOrigin(origins = "http://localhost:5173")
 	    public List<CustomerAccount> getAllCustomerAccounts(Principal principal) throws DeletedUserException, ResourceNotFoundException, InvalidInputException, InvalidActionException {
 	        return customerAccountService.getAllCustomerAccounts(principal);
 	    }
 
 	    @GetMapping("/get/by-customer-id/{customerId}")
+	    @CrossOrigin(origins = "http://localhost:5173")
 	    public List<CustomerAccount> getByCustomerId(@PathVariable int customerId, Principal principal)
 	            throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 	        return customerAccountService.getByCustomerId(customerId, principal);
 	    }
 
 	    @GetMapping("/get/by-accountholder-id/{accountHolderId}")
+	    @CrossOrigin(origins = "http://localhost:5173")
 	    public List<CustomerAccount> getByAccountHolderId(@PathVariable int accountHolderId, Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 	        return customerAccountService.getByAccountHolderId(accountHolderId, principal);
 	    }
 
 	    @GetMapping("/get/by-account-id/{accountId}")
+	    @CrossOrigin(origins = "http://localhost:5173")
 	    public List<CustomerAccount> getByAccountId(@PathVariable int accountId, Principal principal)throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 	        return customerAccountService.getByAccountId(accountId, principal);
 	    }
 	    @GetMapping("/get/by-customer-account/{customerId}/{accountId}")
+	    @CrossOrigin(origins = "http://localhost:5173")
 	    public CustomerAccount getByCustomerIdAndAccountId(@PathVariable int customerId,@PathVariable int accountId, Principal principal)throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 	        return customerAccountService.getByCustomerIdAndAccountId(customerId,accountId, principal);
 	    }
@@ -65,12 +71,14 @@ public class CustomerAccountController {
 	    
 
 	    @GetMapping("/get/by-id/{id}")
+	    @CrossOrigin(origins = "http://localhost:5173")
 	    public CustomerAccount getById(@PathVariable int id, Principal principal)throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 	        return customerAccountService.getById(id, principal);
 	    }
 	    
 //-------------------------------------- PUT -----------------------------------------------------------------------------
 	    @PutMapping("/update/account-holder/{id}")
+	    @CrossOrigin(origins = "http://localhost:5173")
 	    public CustomerAccount updateAccountHolder(@PathVariable int customerAccountId,@RequestBody AccountHolder accountHolder,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 	    	return customerAccountService.updateAccountHolder(customerAccountId,accountHolder,principal);
 	    }

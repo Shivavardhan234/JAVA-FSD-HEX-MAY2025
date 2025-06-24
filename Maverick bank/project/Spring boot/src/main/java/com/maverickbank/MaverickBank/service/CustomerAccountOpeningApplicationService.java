@@ -279,6 +279,27 @@ public class CustomerAccountOpeningApplicationService {
 	        }
 	        return customerAccountOpeningApplicationList;
 	    }
+	    public List<CustomerAccountOpeningApplication> getByCustomerIdAndStatus(int customerId,ApplicationStatus status, Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
+	    	 User currentUser = userRepository.getByUsername(principal.getName());
+		        UserValidation.checkActiveStatus(currentUser.getStatus());
+
+		        List<CustomerAccountOpeningApplication> customerAccountOpeningApplicationList = customerAccountOpeningApplicationRepository.getByCustomerIdAndStatus(customerId,status);
+
+		        if (customerAccountOpeningApplicationList == null) {
+		            throw new ResourceNotFoundException("No application records found with the given customer id and status...!!!");
+		        }
+		        return customerAccountOpeningApplicationList;
+		}
+	    
+	    public List<CustomerAccountOpeningApplication> getCustomerApprovalPending(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
+	    	User currentUser = userRepository.getByUsername(principal.getName());
+	        UserValidation.checkActiveStatus(currentUser.getStatus());
+	        
+	        Customer currentCustomer = customerRepository.getByUserId(currentUser.getId());
+	        List<CustomerAccountOpeningApplication> customerAccountOpeningApplicationList =customerAccountOpeningApplicationRepository.getCustomerApprovalPending(currentCustomer.getId(),ApplicationStatus.PENDING);
+	        
+			return customerAccountOpeningApplicationList;
+		}
 	    
 	    
 //---------------------------------------------- PUT ---------------------------------------------------------------------
@@ -341,7 +362,7 @@ public class CustomerAccountOpeningApplicationService {
 	     * @throws DeletedUserException
 	     * @throws InvalidInputException
 	     */
-	    public CustomerAccountOpeningApplication approveApplication(int id, Principal principal) throws ResourceNotFoundException, InvalidActionException, DeletedUserException, InvalidInputException {
+	    public CustomerAccountOpeningApplication updateApproval(int id,ApplicationStatus status, Principal principal) throws ResourceNotFoundException, InvalidActionException, DeletedUserException, InvalidInputException {
 	        // Check user is active or not
 	        User currentUser = userRepository.getByUsername(principal.getName());
 	        UserValidation.checkActiveStatus(currentUser.getStatus());
@@ -361,12 +382,30 @@ public class CustomerAccountOpeningApplicationService {
 	            throw new InvalidActionException("Action invalid.This application is already ACCEPTED or REJECTED...!!!");
 	        }
 
-	        // set the status to accepted
-	        customerAccountOpeningApplication.setCustomerApproval(ApplicationStatus.ACCEPTED);
+	        // set the status 
+	        customerAccountOpeningApplication.setCustomerApproval(status);
 	        //save the customer account application
 	        customerAccountOpeningApplication=customerAccountOpeningApplicationRepository.save(customerAccountOpeningApplication);
 	        accountOpeningApplicationService.updateCustomerApprovalStatus(customerAccountOpeningApplication.getAccountOpeningApplication().getId(), principal);
 	        return customerAccountOpeningApplication;
 	    }
+
+
+
+
+
+
+
+
+		
+
+
+
+
+
+
+
+
+		
 
 }

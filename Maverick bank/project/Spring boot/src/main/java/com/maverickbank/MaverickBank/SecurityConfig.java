@@ -56,7 +56,7 @@ public class SecurityConfig {
 					
 					//----------------------- get --------------------------------------------
 					.requestMatchers("/api/customer/get/all").hasAnyAuthority("ADMIN")
-					.requestMatchers("/api/customer/get/by-id").hasAnyAuthority("ADMIN")
+					.requestMatchers("/api/customer/get/by-id").permitAll()
 					.requestMatchers("/api/customer/get/current").hasAnyAuthority("CUSTOMER")
 					.requestMatchers("/api/customer/get/by-user-id").hasAnyAuthority("ADMIN")
 					
@@ -165,12 +165,12 @@ public class SecurityConfig {
 				//------------------------------------- get ----------------------------------------------
 					.requestMatchers("/api/customer-account-opening-application/get/all").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/customer-account-opening-application/get/by-id/{id}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
-					.requestMatchers("/api/customer-account-opening-application/get/by-customer-id/{customerId}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/customer-account-opening-application/get/by-customer-id/{customerId}").hasAnyAuthority("CUSTOMER","ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/customer-account-opening-application/get/by-account-holder-id/{accountHolderId}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
-					.requestMatchers("/api/customer-account-opening-application/get/by-application-id/{applicationId}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/customer-account-opening-application/get/by-application-id/{applicationId}").hasAnyAuthority("CUSTOMER","ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 				//------------------------------------- put ------------------------------------------------
 					.requestMatchers("/api/customer-account-opening-application/update").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
-					.requestMatchers("/api/customer-account-opening-application/update/approval/{id}").hasAnyAuthority("CUSTOMER")
+					.requestMatchers("/api/customer-account-opening-application/update/approval/{id}/{status}").hasAnyAuthority("CUSTOMER")
 	
 					
 					
@@ -181,11 +181,11 @@ public class SecurityConfig {
 				//------------------------------------- get ----------------------------------------------
 					.requestMatchers("/api/transaction/get/all").hasAnyAuthority("ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/transaction/get/by-id/{id}").hasAnyAuthority("TRANSACTION_ANALYST","ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
-					.requestMatchers("/api/transaction/get/by-date-range/{startDate}/{endDate}/{accountNumber}").hasAnyAuthority("ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/transaction/get/by-date-range/{startDate}/{endDate}/{accountNumber}").hasAnyAuthority("CUSTOMER","ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/transaction/get/credits/{startDate}/{endDate}/{accountNumber}").hasAnyAuthority("ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/transaction/get/debits/{startDate}/{endDate}/{accountNumber}").hasAnyAuthority("ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/transaction/get/account-statement/{accountNumber}").hasAnyAuthority("CUSTOMER")
-					.requestMatchers("/api/transaction/get/last-transactions/{accountNumber}/{count}").hasAnyAuthority("ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/transaction/get/last-transactions/{accountNumber}/{count}").hasAnyAuthority("CUSTOMER","ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 				
 					
 					
@@ -212,7 +212,7 @@ public class SecurityConfig {
 				//------------------------------------- get ----------------------------------------------
 					.requestMatchers("/api/customer-account/get/all").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/customer-account/get/by-id/{id}").hasAnyAuthority("CUSTOMER","ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
-					.requestMatchers("/api/customer-account/get/by-customer-id/{customerId}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/customer-account/get/by-customer-id/{customerId}").hasAnyAuthority("CUSTOMER","ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/customer-account/get/by-accountholder-id/{accountHolderId}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/customer-account/get/by-account-id/{accountId}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/customer-account/get/by-customer-account/{customerId}/{accountId}").hasAnyAuthority("CUSTOMER","ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")

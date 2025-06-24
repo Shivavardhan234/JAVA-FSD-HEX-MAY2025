@@ -8,7 +8,7 @@ export const getUserDetails = (dispatch)=>()=>{
     axios.get("http://localhost:9090/api/user/get/details", {
                 headers: { "Authorization": baererAuthString }
             }).then(function(response){
-                console.log("in actor"+token);
+                //console.log("in actor"+token);
                 dispatch({
                     'payload':response.data,
                     'type':"GET_USER_DETAILS"
