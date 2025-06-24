@@ -64,6 +64,8 @@ function User() {
             headers: { "Authorization": bearerAuthString }
         });
         console.log(updateResponse.data);
+        const temp = userList.filter(u => u.id !== userToBeUpdated.id);
+        setUserList([...temp,updateResponse.data])
         alert('Update Successful...!!!')
         cancelUpdate();
     }
