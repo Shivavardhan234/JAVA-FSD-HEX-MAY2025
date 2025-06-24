@@ -7,6 +7,7 @@ function User() {
     let [token, setToken] = useState("c730e0b4729e66b64a8ff2c7c105413ef09940d738ab31f9628ce783dfb440de");
     let [updateForm, setUpdateForm] = useState(false);
     let [userToBeUpdated, setUserToBeUpdated] = useState(null);
+    const bearerAuthString = "Bearer " + token;
 
     //Used for update operation
     let [name, setName] = useState("");
@@ -33,7 +34,7 @@ function User() {
     }
 
     const deleteUser = async (id) => {
-        const bearerAuthString = "Bearer " + token;
+
         const response = await axios.delete(`https://gorest.co.in/public/v2/users/${id}`, {
             headers: { "Authorization": bearerAuthString }
         });
@@ -43,21 +44,48 @@ function User() {
     }
 
 
-    const handleUpdateUser = () => {
-        setName(userToBeUpdated?.name);
-        setEmail(userToBeUpdated?.email);
-        setGender(userToBeUpdated?.gender);
-        setStatus(userToBeUpdated?.status);
+    //------------------------------ update user-----------------------------------------------------------------------------
+    const updateUser = async () => {
+        if (name === "" || email === "" || gender === "" || status === "") {
+            alert("enter all fields");
+            return;
+        }
 
-        setUpdateForm(true);
 
+
+        const updateResponse = await axios.put(`https://gorest.co.in/public/v2/users/${userToBeUpdated?.id}`, {
+            "id": userToBeUpdated.id,
+            "name": name,
+            "email": email,
+            "gender": gender,
+            "status": status
+
+        }, {
+            headers: { "Authorization": bearerAuthString }
+        });
+        console.log(updateResponse.data);
+        alert('Update Successful...!!!')
+        cancelUpdate();
     }
+//----------- When ever the user to be updated changed ,also change the states-------------------
+    useEffect(() => {
+        if (userToBeUpdated) {
+            setName(userToBeUpdated?.name);
+            setEmail(userToBeUpdated?.email);
+            setGender(userToBeUpdated?.gender);
+            setStatus(userToBeUpdated?.status);
+
+        }
+    }, [userToBeUpdated])
+
+
 
     const cancelUpdate = () => {
         setName("");
         setEmail("");
         setGender("");
         setStatus("");
+        setUserToBeUpdated(null);
         setUpdateForm(false);
 
     }
@@ -90,7 +118,7 @@ function User() {
                                     <td>{u.email}</td>
                                     <td>{u.gender}</td>
                                     <td>{u.status}</td>
-                                    <td><button type="button" className="btn btn-warning" onClick={() => { setUserToBeUpdated(u); handleUpdateUser() }}>Update</button></td>
+                                    <td><button type="button" className="btn btn-warning" onClick={() => { setUserToBeUpdated(u); setUpdateForm(true); }}>Update</button></td>
                                     <td><button type="button" className="btn btn-danger" onClick={() => { deleteUser(u.id) }}>Delete</button></td>
                                 </tr>
 
@@ -132,7 +160,7 @@ function User() {
                             </select>
                         </div>
                         <div className="card-footer">
-                            <button type="button" className="btn btn-success me-2">Save Updated User</button>
+                            <button type="button" className="btn btn-success me-2" onClick={() => { updateUser() }}>Save Updated User</button>
                             <button type="button" className="btn btn-danger ms-2" onClick={() => { cancelUpdate() }}>Cancel</button>
                         </div>
                     </div>
