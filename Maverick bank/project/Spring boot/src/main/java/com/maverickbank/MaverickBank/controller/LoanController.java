@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +39,7 @@ public class LoanController {
 	
 //------------------------------------------------ GET --------------------------------------------------------------------
 	@GetMapping("/get/all")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public List<Loan> getAllLoans(Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
 	    return loanService.getAllLoans(principal);
 	}
@@ -45,6 +47,7 @@ public class LoanController {
 	
 	
 	@GetMapping("/get/by-id/{loanId}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public Loan getLoanById(@PathVariable int loanId, Principal principal)
 	        throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 	    return loanService.getLoanById(loanId, principal);
@@ -54,12 +57,14 @@ public class LoanController {
 	
 	
 	@GetMapping("/get/by-account-id/{accountId}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public List<Loan> getLoansByAccountId(@PathVariable int accountId, Principal principal)
 	        throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 	    return loanService.getLoansByAccountId(accountId, principal);
 	}
 
 	@GetMapping("/get/by-status/{status}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public List<Loan> getLoansByStatus(@PathVariable LoanStatus status, Principal principal)
 	        throws DeletedUserException, InvalidInputException, InvalidActionException, ResourceNotFoundException {
 	    return loanService.getLoansByStatus(status, principal);
@@ -68,6 +73,7 @@ public class LoanController {
 	
 
 	@GetMapping("/get/by-account-id-status/{accountId}/{status}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public List<Loan> getLoansByAccountIdAndStatus(@PathVariable int accountId,@PathVariable LoanStatus status, Principal principal)
 	        throws DeletedUserException, InvalidInputException, InvalidActionException, ResourceNotFoundException {
 	    return loanService.getLoansByAccountIdAndStatus(accountId,status, principal);
@@ -77,22 +83,26 @@ public class LoanController {
 //------------------------------------------ PUT ------------------------------------------------------------------------
 
 	@PutMapping("/update/close/{loanId}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public Loan closeLoan(@PathVariable int loanId, Principal principal) throws DeletedUserException, ResourceNotFoundException, InvalidActionException, InvalidInputException  {
 	    return loanService.closeLoan(loanId, principal);
 	}
 
 	@PutMapping("/update/penalty/{loanId}/{penalty}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public Loan updatePenalty(@PathVariable int loanId,@PathVariable BigDecimal penalty,Principal principal) throws DeletedUserException, ResourceNotFoundException, InvalidInputException, InvalidActionException {
 	    return loanService.updateTotalPenalty(loanId, penalty, principal);
 	}
 
 	@PutMapping("/update/due-date/{loanId}/{dueDate}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public Loan updateDueDate(@PathVariable int loanId,@PathVariable LocalDate dueDate,Principal principal) throws DeletedUserException, ResourceNotFoundException, InvalidInputException, InvalidActionException  {
 	    return loanService.updateDueDate(loanId, dueDate, principal);
 	}
 	
 	
 	@PutMapping("/update/is-cleared/{loanId}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public Loan updateIsCleared(@PathVariable int loanId,Principal principal ) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 	    return loanService.updateIsCleared(loanId, principal);
 	}

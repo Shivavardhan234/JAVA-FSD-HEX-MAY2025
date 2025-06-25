@@ -1,12 +1,21 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { getBankAccount } from "../../../store/actions/BankAccountAction";
 
 function DepositMoney() {
-    const location = useLocation();
-    const account = location.state?.account;
+
     const navigate = useNavigate();
+    const accountId = localStorage.getItem("accountId");
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        getBankAccount(dispatch)(accountId);
+    }, [])
+
+    const account = useSelector(state => state.bankAccount.account);
 
     const [amount, setAmount] = useState("");
     const [medium, setMedium] = useState("UPI");
@@ -56,14 +65,14 @@ function DepositMoney() {
                     <li className="breadcrumb-item">
                         <span
                             role="button"
-                            onClick={() => navigate(`/customer/myAccounts/manageBankAccount/${account?.accountNumber}` ,{state:{ account }})}
+                            onClick={() => navigate(`/customer/myAccounts/manageBankAccount/${account?.accountNumber}`)}
                             className="text-decoration-none text-primary"
-                            
+
                         >
                             Manage Bank Account
                         </span>
                     </li>
-                    
+
                     <li className="breadcrumb-item active" aria-current="page">
                         Deposit Money
                     </li>

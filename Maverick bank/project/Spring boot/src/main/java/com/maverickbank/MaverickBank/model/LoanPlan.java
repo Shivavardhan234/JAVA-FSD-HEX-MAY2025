@@ -74,7 +74,7 @@ public class LoanPlan {
 		this.setLoanType(loanType);
 		this.setPrincipalAmount(principalAmount);
 		this.setLoanTerm(loanTerm);
-		this.setIntrestRate(interestRate);
+		this.setInterestRate(interestRate);
 		this.setInstallmentAmount(installmentAmount);
 		this.setRepaymentFrequency(repaymentFrequency);
 		this.setPenaltyRate(penaltyRate);
@@ -88,7 +88,7 @@ public class LoanPlan {
 	public LoanType getLoanType() {return loanType;}
 	public BigDecimal getPrincipalAmount() {return principalAmount;}
 	public int getLoanTerm() {return loanTerm;}
-	public BigDecimal getIntrestRate() {return interestRate;}
+	public BigDecimal getInterestRate() {return interestRate;}
 	public BigDecimal getInstallmentAmount() {return installmentAmount;}
 	public int getRepaymentFrequency() {return repaymentFrequency;}
 	public BigDecimal getPenaltyRate() {return penaltyRate;}
@@ -134,7 +134,7 @@ public class LoanPlan {
 	}
 
 
-	public void setIntrestRate(BigDecimal intrestRate)throws InvalidInputException {
+	public void setInterestRate(BigDecimal intrestRate)throws InvalidInputException {
 		if(intrestRate==null || intrestRate.compareTo(BigDecimal.ZERO) < 0) {
 			throw new InvalidInputException("Invalid intrest rate provided. Please provide appropriate intrest rate...!!!");
 		}

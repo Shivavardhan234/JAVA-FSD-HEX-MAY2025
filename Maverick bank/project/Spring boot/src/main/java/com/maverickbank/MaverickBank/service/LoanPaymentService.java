@@ -1,6 +1,7 @@
 package com.maverickbank.MaverickBank.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -76,24 +77,27 @@ public class LoanPaymentService {
 	    
 
 	    
-	    BigDecimal penalty = BigDecimal.ZERO;
+	    BigDecimal latePenalty = BigDecimal.ZERO;
 	    if (today.isAfter(dueDate)) {
 	        int daysLate = (int) ChronoUnit.DAYS.between(dueDate, today);
 	        BigDecimal penaltyRatePercent = loan.getLoanPlan().getPenaltyRate(); 
 	        BigDecimal penaltyRateDecimal = penaltyRatePercent.divide(BigDecimal.valueOf(100)); 
-	        penalty = penaltyRateDecimal.multiply(installmentAmount).multiply(BigDecimal.valueOf(daysLate));
+	        latePenalty = penaltyRateDecimal.multiply(installmentAmount).multiply(BigDecimal.valueOf(daysLate));
 	    }
+	    
+	    
+	    BigDecimal prePenalty = BigDecimal.ZERO;
+	    if (today.isBefore(dueDate)) {
+	    	 prePenalty = loan.getLoanPlan().getPrePaymentPenalty(); 
+	      
+	    }
+	    
+	    BigDecimal totalPenalty =latePenalty.add(prePenalty);
+	    totalPenalty=totalPenalty.setScale(2, RoundingMode.HALF_UP);
+	    
+	    BigDecimal amountToBePaid = installmentAmount.add(totalPenalty);
 
 	    
-	    BigDecimal amountToBePaid = installmentAmount.add(loan.getTotalPenalty());
-
-	    if (amountPaid.compareTo(amountToBePaid) > 0) {
-	        BigDecimal overpaid = amountPaid.subtract(amountToBePaid);
-	        penalty = penalty.subtract(overpaid);
-	        if (penalty.compareTo(BigDecimal.ZERO) < 0) {
-	            penalty = BigDecimal.ZERO;
-	        }
-	    }
 
 	   
 	    LoanPayment payment = new LoanPayment();
@@ -102,13 +106,13 @@ public class LoanPaymentService {
 	    payment.setAmountToBePaid(amountToBePaid);
 	    payment.setAmountPaid(amountPaid);
 	    payment.setPaymentDate(today);
-	    payment.setPenalty(penalty);
+	    payment.setPenalty(totalPenalty);
 
 	    
-	    BigDecimal newTotalPenalty = loan.getTotalPenalty().add(penalty);
+	    
 
 	    
-	    if (newTotalPenalty.compareTo(BigDecimal.ZERO) < 0) {
+	    if (amountPaid.compareTo(amountToBePaid.add(BigDecimal.ONE)) > 0) {
 	        throw new InvalidActionException("You're trying to pay more than required. Cannot process...!!!");
 	    }
 
@@ -120,6 +124,7 @@ public class LoanPaymentService {
 
 	    
 	    loanService.updateDueDate(loanId, newDueDate, principal);
+	    BigDecimal newTotalPenalty = loan.getTotalPenalty().add(totalPenalty);
 	    loanService.updateTotalPenalty(loanId, newTotalPenalty, principal);
 	    loanService.updateIsCleared(loanId, principal);
 	   
@@ -187,5 +192,44 @@ public class LoanPaymentService {
         
         return loanPaymentList;
     }
+
+
+
+	public BigDecimal calculatePenalty(int id, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		 User currentUser = userRepository.getByUsername(principal.getName());
+		    UserValidation.checkActiveStatus(currentUser.getStatus());
+
+		    Loan loan = loanService.getLoanById(id, principal);
+
+		    LocalDate today = LocalDate.now();
+		    LocalDate dueDate = loan.getDueDate();
+		    
+		    
+		    
+		    
+		  
+		    BigDecimal installmentAmount = loan.getLoanPlan().getInstallmentAmount();
+
+		    
+		    BigDecimal latePenalty = BigDecimal.ZERO;
+		    if (today.isAfter(dueDate)) {
+		        int daysLate = (int) ChronoUnit.DAYS.between(dueDate, today);
+		        BigDecimal penaltyRatePercent = loan.getLoanPlan().getPenaltyRate(); 
+		        BigDecimal penaltyRateDecimal = penaltyRatePercent.divide(BigDecimal.valueOf(100)); 
+		        latePenalty = penaltyRateDecimal.multiply(installmentAmount).multiply(BigDecimal.valueOf(daysLate));
+		    }
+		    
+		    
+		    BigDecimal prePenalty = BigDecimal.ZERO;
+		    if (today.isBefore(dueDate)) {
+		    	 prePenalty = loan.getLoanPlan().getPrePaymentPenalty(); 
+		      
+		    }
+		    
+		    BigDecimal totalPenalty =latePenalty.add(prePenalty);
+		    totalPenalty=totalPenalty.setScale(2, RoundingMode.HALF_UP);
+		    
+		return totalPenalty;
+	}
 
 }

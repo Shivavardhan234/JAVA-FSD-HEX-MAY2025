@@ -18,7 +18,7 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
 	@Query("SELECT l FROM Loan l WHERE l.account.id = ?1")
 	List<Loan> getByAccountId(int accountId);
 
-	@Query("SELECT l FROM Loan l WHERE l.account.id = ?1AND l.status = ?2")
+	@Query("SELECT l FROM Loan l WHERE l.account.id = ?1 AND  l.status = ?2")
 	List<Loan> getByAccountIdAndStatus(int accountId,LoanStatus status);
 
 	

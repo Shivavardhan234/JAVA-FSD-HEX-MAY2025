@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,7 @@ public class LoanPlanController {
 //----------------------------------------- POST -------------------------------------------------------------------------	
 	
 	@PostMapping("/add")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public LoanPlan createLoanPlan(@RequestBody LoanPlan loanPlan, Principal principal) throws Exception {
 	    return loanPlanService.createLoanPlan(loanPlan, principal);
 	}
@@ -36,12 +38,14 @@ public class LoanPlanController {
 //------------------------------------------ GET ------------------------------------------------------------------------
 	
 	@GetMapping("/get/all")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public List<LoanPlan> getAllLoanPlans(Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
 	    return loanPlanService.getAllLoanPlans(principal);
 	}
 
 	
 	@GetMapping("/get/by-id/{id}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public LoanPlan getLoanPlanById(@PathVariable int id, Principal principal)
 	        throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 	    return loanPlanService.getLoanPlanById(id, principal);
@@ -49,6 +53,7 @@ public class LoanPlanController {
 
 	
 	@GetMapping("/get/by-loan-type/{loanType}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public List<LoanPlan> getLoanPlansByType(@PathVariable LoanType loanType, Principal principal)
 	        throws DeletedUserException, InvalidInputException, InvalidActionException {
 	    return loanPlanService.getLoanPlansByType(loanType, principal);

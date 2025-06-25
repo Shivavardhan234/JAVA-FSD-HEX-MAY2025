@@ -103,7 +103,7 @@ function SignIn() {
                         break;
                     case "LOAN_OFFICER":
                         console.log("LOAN_OFFICER dashboard");
-                        navigate("/accountManager")
+                        navigate("/loanOfficer")
                         break;
                     case "ACCOUNT_MANAGER":
                         console.log("ACCOUNT_MANAGER dashboard");

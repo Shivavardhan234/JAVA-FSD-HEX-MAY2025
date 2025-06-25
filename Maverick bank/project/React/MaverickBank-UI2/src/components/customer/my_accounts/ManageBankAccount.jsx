@@ -1,19 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useLocation, useNavigate, Outlet } from 'react-router-dom';
+import {  useNavigate, Outlet } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { getBankAccount } from '../../../store/actions/BankAccountAction';
 
 function ManageBankAccount() {
-    const { accountNumber } = useParams();
-    const location = useLocation();
-    const oldAccount = location.state?.account;
     const navigate = useNavigate();
     const [showBalance, setShowBalance] = useState(false);
     const dispatch =useDispatch();
+    const accountId = localStorage.getItem("accountId");
 
     useEffect(()=>{
-        getBankAccount(dispatch)(oldAccount.id);
+        getBankAccount(dispatch)(accountId);
     },[])
 
     const account =useSelector(state=> state.bankAccount.account);
@@ -89,7 +87,7 @@ function ManageBankAccount() {
                             {/* Deposit Money */}
                             <div className="col-3 d-flex flex-column align-items-center">
                                 <button className="btn btn-outline-secondary rounded-circle d-flex justify-content-center align-items-center"
-                                    style={{ width: '80px', height: '80px' }} onClick={() => { navigate('/customer/myAccounts/deposit', { state: { account } }); }}>
+                                    style={{ width: '80px', height: '80px' }} onClick={() => { navigate('/customer/myAccounts/deposit'); }}>
                                     <i className="bi bi-cash-stack fs-4"></i>
                                 </button>
                                 <p className="mt-2 ">Deposit Money</p>
@@ -98,7 +96,7 @@ function ManageBankAccount() {
                             {/* Withdraw Money */}
                             <div className="col-3 d-flex flex-column align-items-center">
                                 <button className="btn btn-outline-secondary rounded-circle d-flex justify-content-center align-items-center"
-                                    style={{ width: '80px', height: '80px' }} onClick={() => { navigate('/customer/myAccounts/withdraw', { state: { account } }); }}>
+                                    style={{ width: '80px', height: '80px' }} onClick={() => { navigate('/customer/myAccounts/withdraw'); }}>
                                     <i className="bi bi-cash fs-4"></i>
                                 </button>
                                 <p className="mt-2 ">Withdraw Money</p>
@@ -107,7 +105,7 @@ function ManageBankAccount() {
                             {/* Transfer Money */}
                             <div className="col-3 d-flex flex-column align-items-center">
                                 <button className="btn btn-outline-secondary rounded-circle d-flex justify-content-center align-items-center"
-                                    style={{ width: '80px', height: '80px' }}onClick={() => { navigate('/customer/myAccounts/transferMoney', { state: { account } }); }}>
+                                    style={{ width: '80px', height: '80px' }}onClick={() => { navigate('/customer/myAccounts/transferMoney'); }}>
                                     <i className="bi bi-arrow-left-right fs-4"></i>
                                 </button>
                                 <p className="mt-2 ">Transfer Money</p>
@@ -117,7 +115,7 @@ function ManageBankAccount() {
                             {/* My Transactions */}
                             <div className="col-3 d-flex flex-column align-items-center">
                                 <button className="btn btn-outline-secondary rounded-circle d-flex justify-content-center align-items-center"
-                                    style={{ width: '80px', height: '80px' }}onClick={() => { navigate('/customer/myAccounts/myTransactions', { state: { account } }); }}>
+                                    style={{ width: '80px', height: '80px' }}onClick={() => { navigate('/customer/myAccounts/myTransactions'); }}>
                                     <i className="bi bi-clock-history fs-4"></i>
                                 </button>
                                 <p className="mt-2 ">My Transactions</p>
@@ -126,7 +124,7 @@ function ManageBankAccount() {
                             {/* Account Statement */}
                             <div className="col-3 d-flex flex-column align-items-center">
                                 <button className="btn btn-outline-secondary rounded-circle d-flex justify-content-center align-items-center"
-                                    style={{ width: '80px', height: '80px' }}onClick={() => { navigate('/customer/myAccounts/statement', { state: { account } }); }}>
+                                    style={{ width: '80px', height: '80px' }}onClick={() => { navigate('/customer/myAccounts/statement'); }}>
                                     <i className="bi bi-file-text fs-4"></i>
                                 </button>
                                 <p className="mt-2 ">Account Statement</p>
@@ -135,7 +133,7 @@ function ManageBankAccount() {
                             {/* My Loans */}
                             <div className="col-3 d-flex flex-column align-items-center">
                                 <button className="btn btn-outline-secondary rounded-circle d-flex justify-content-center align-items-center"
-                                    style={{ width: '80px', height: '80px' }}>
+                                    style={{ width: '80px', height: '80px' }}  onClick={() => { navigate('/customer/myAccounts/myLoans'); }}>
                                     <i className="bi bi-bank fs-4"></i>
                                 </button>
                                 <p className="mt-2 ">My Loans</p>
@@ -144,7 +142,7 @@ function ManageBankAccount() {
                             {/* Account Closing / Suspension */}
                             <div className="col-3 d-flex flex-column align-items-center">
                                 <button className="btn btn-outline-danger rounded-circle d-flex justify-content-center align-items-center"
-                                    style={{ width: '80px', height: '80px' }}>
+                                    style={{ width: '80px', height: '80px' }} onClick={() => { navigate('/customer/myAccounts/request'); }}>
                                     <i className="bi bi-slash-circle fs-4"></i>
                                 </button>
                                 <p className="mt-2 ">Account Closing / Suspension</p>

@@ -133,13 +133,13 @@ function User() {
 
                     {/* for some space */}
                     <br /><br /><br /><br />
-
+                    {/* Update form only shown when update button is clicked */}
                     {updateForm && <div className="card">
                         <div className="card-header">
                             <h1>Update User {userToBeUpdated?.id}</h1>
                         </div>
                         <div className="card-body">
-
+                            {/* Input fields */}
                             <div className="input-group mb-3">
                                 <span className="input-group-text" id="inputGroup-sizing-default">Name:</span>
                                 <input type="text" className="form-control" value={name} aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={($e) => { setName($e.target.value) }} />
@@ -177,7 +177,7 @@ function User() {
 
 
                 {/* By clicking go to add user component */}
-                <div className="catd-footer">
+                <div className="card-footer">
                     <Link to="/add">
                         <button type="button" className="btn btn-success">Add User</button>
                     </Link>

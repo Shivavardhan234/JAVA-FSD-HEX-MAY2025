@@ -106,7 +106,7 @@ public class LoanPlanValidation {
 		validateLoanType(loanPlan.getLoanType());
 		validatePrincipalAmount(loanPlan.getPrincipalAmount());
 		validateLoanTerm(loanPlan.getLoanTerm());
-		validateIntrestRate(loanPlan.getIntrestRate());
+		validateIntrestRate(loanPlan.getInterestRate());
 		validateInstallmentAmount(loanPlan.getInstallmentAmount());
 		validateRepaymentFrequency(loanPlan.getRepaymentFrequency());
 		validatePenaltyRate(loanPlan.getPenaltyRate());

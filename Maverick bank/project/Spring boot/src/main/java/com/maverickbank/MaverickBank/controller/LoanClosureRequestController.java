@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +32,7 @@ public class LoanClosureRequestController {
 //-------------------------------------------------- POST ----------------------------------------------------------------
 	
 	@PostMapping("/add/{loanId}/{purpose}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public LoanClosureRequest createLoanClosureRequest(@PathVariable int loanId, @PathVariable String purpose,Principal principal)
 	        throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 
@@ -39,27 +41,32 @@ public class LoanClosureRequestController {
 	
 //----------------------------------------------------- GET --------------------------------------------------------------
 	 @GetMapping("/get/all")
+	 @CrossOrigin(origins = "http://localhost:5173")
 	    public List<LoanClosureRequest> getAllRequests(Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
 	        return loanClosureRequestService.getAllRequests(principal);
 	    }
 
 	    @GetMapping("/get/by-id/{id}")
+	    @CrossOrigin(origins = "http://localhost:5173")
 	    public LoanClosureRequest getRequestById(@PathVariable int id,Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 	        return loanClosureRequestService.getRequestById(id,principal);
 	    }
 
 	    @GetMapping("/get/by-loan-id/{loanId}")
+	    @CrossOrigin(origins = "http://localhost:5173")
 	    public List<LoanClosureRequest> getByLoanId(@PathVariable int loanId,Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 	        return loanClosureRequestService.getByLoanId(loanId,principal);
 	    }
 	    
 	    @GetMapping("/get/by-status/{status}")
+	    @CrossOrigin(origins = "http://localhost:5173")
 	    public List<LoanClosureRequest> getByStatus(@PathVariable ApplicationStatus status, Principal principal)
 	            throws DeletedUserException, ResourceNotFoundException, InvalidInputException, InvalidActionException {
 	        return loanClosureRequestService.getByStatus(status, principal);
 	    }
 
 	    @GetMapping("/get/by-loan-id-status/{loanId}/{status}")
+	    @CrossOrigin(origins = "http://localhost:5173")
 	    public List<LoanClosureRequest> getByLoanIdAndStatus(@PathVariable int loanId,@PathVariable ApplicationStatus status,Principal principal)
 	            throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 	        return loanClosureRequestService.getByLoanIdAndStatus(loanId, status, principal);
@@ -68,12 +75,14 @@ public class LoanClosureRequestController {
 	    
 //------------------------------------------------ PUT -------------------------------------------------------------------
 	    @PutMapping("/update/reject/{id}")
+	    @CrossOrigin(origins = "http://localhost:5173")
 	    public LoanClosureRequest rejectLoanClosureRequest(@PathVariable int id, Principal principal)
 	            throws ResourceNotFoundException, DeletedUserException, InvalidActionException, InvalidInputException {
 	        return loanClosureRequestService.rejectLoanClosureRequest(id, principal);
 	    }
 	    
 	    @PutMapping("/update/accept/{id}")
+	    @CrossOrigin(origins = "http://localhost:5173")
 	    public LoanClosureRequest acceptLoanClosureRequest(@PathVariable int id, Principal principal)
 	            throws ResourceNotFoundException, DeletedUserException, InvalidActionException, InvalidInputException {
 	        return loanClosureRequestService.acceptLoanClosureRequest(id, principal);

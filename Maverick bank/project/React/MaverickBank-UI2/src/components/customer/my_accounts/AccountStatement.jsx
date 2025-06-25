@@ -1,13 +1,14 @@
 import { useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { useRef } from "react";
 import html2pdf from "html2pdf.js";
+import { useDispatch, useSelector } from "react-redux";
+import { getBankAccount } from "../../../store/actions/BankAccountAction";
 
 function AccountStatement() {
-    const { state } = useLocation();
-    const account = state?.account;
+
 
     const statementRef = useRef();
 
@@ -16,6 +17,15 @@ function AccountStatement() {
     const [generated, setGenerated] = useState(false);
     const generationDate = new Date().toLocaleDateString();
     const [totals, setTotals] = useState({ inbound: 0, outbound: 0 });
+
+    const dispatch = useDispatch();
+    const accountId = localStorage.getItem("accountId");
+
+    useEffect(() => {
+        getBankAccount(dispatch)(accountId);
+    }, [])
+
+    const account = useSelector(state => state.bankAccount.account);
 
     const handleGenerate = async () => {
         const token = localStorage.getItem("token");
@@ -41,10 +51,9 @@ function AccountStatement() {
             let inbound = 0;
             let outbound = 0;
             data.forEach(t => {
-                if (t.transactionType === "CREDIT")
-                    { 
-                        inbound += t.transactionAmount;
-                    }
+                if (t.transactionType === "CREDIT") {
+                    inbound += t.transactionAmount;
+                }
                 else {
                     outbound += t.transactionAmount;
                 }
@@ -138,15 +147,15 @@ function AccountStatement() {
                         </div>
 
                         <hr />
-                          <div className="d-flex justify-content-between mb-4">
-                                <p className="text-muted">
-                                    <strong>Generated On:</strong> {generationDate}
-                                </p>
-                                <p className="text-muted">
-                                    <strong>Duration:</strong> {durationMap[duration]}
-                                </p>
-                            </div>
-                             <hr />
+                        <div className="d-flex justify-content-between mb-4">
+                            <p className="text-muted">
+                                <strong>Generated On:</strong> {generationDate}
+                            </p>
+                            <p className="text-muted">
+                                <strong>Duration:</strong> {durationMap[duration]}
+                            </p>
+                        </div>
+                        <hr />
 
                         {/* Summary */}
                         <div className="mb-4">

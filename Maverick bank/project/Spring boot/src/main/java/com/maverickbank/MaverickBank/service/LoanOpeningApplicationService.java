@@ -60,7 +60,7 @@ public LoanOpeningApplicationService(LoanOpeningApplicationRepository loanOpenin
 
 	    
 
-	    if (loanOpeningApplicationRepository.getOldLoanOpeningApplications(accountId, loanPlanId, ApplicationStatus.PENDING).isEmpty()) {
+	    if (!loanOpeningApplicationRepository.getOldLoanOpeningApplications(accountId, loanPlanId, ApplicationStatus.PENDING).isEmpty()) {
 	        throw new InvalidActionException("You have already applied for this same loan loan ...!!!");
 	    }
 

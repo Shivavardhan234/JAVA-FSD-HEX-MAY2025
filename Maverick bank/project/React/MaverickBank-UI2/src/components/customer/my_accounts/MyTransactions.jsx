@@ -2,11 +2,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Form, Table } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { getBankAccount } from "../../../store/actions/BankAccountAction";
 
 function MyTransactions() {
-    const location = useLocation();
     const navigate = useNavigate();
-    const account = location.state?.account;
+
 
     const [filterType, setFilterType] = useState("count");
     const [count, setCount] = useState(10);
@@ -15,6 +16,16 @@ function MyTransactions() {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+
+    const dispatch = useDispatch();
+    const accountId = localStorage.getItem("accountId");
+
+    useEffect(() => {
+        getBankAccount(dispatch)(accountId);
+    }, [])
+
+    const account = useSelector(state => state.bankAccount.account);
 
     useEffect(() => {
         if (filterType === "count") {
@@ -76,9 +87,7 @@ function MyTransactions() {
                         <span
                             role="button"
                             onClick={() =>
-                                navigate(`/customer/myAccounts/manageBankAccount/${account?.accountNumber}`, {
-                                    state: { account },
-                                })
+                                navigate(`/customer/myAccounts/manageBankAccount/${account?.accountNumber}`)
                             }
                             className="text-decoration-none text-primary"
                         >

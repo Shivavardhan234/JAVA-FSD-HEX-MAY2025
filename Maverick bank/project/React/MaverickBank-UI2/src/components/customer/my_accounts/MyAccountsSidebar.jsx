@@ -8,7 +8,7 @@ function MyAccountsSidebar() {
     const [isExpanded, setIsExpanded] = useState(false);
     const [accounts, setAccounts] = useState([]);
     const [message, setMessage] = useState("");
-    const [suspendedAccount, setSuspendedAccount]= useState(null);
+    const [suspendedAccount, setSuspendedAccount] = useState(null);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -61,7 +61,13 @@ function MyAccountsSidebar() {
 
     const handleAccountClick = (account) => {
         if (account.accountStatus === "OPEN") {
-            navigate(`manageBankAccount/${account.accountNumber}`, { state: { account } });
+
+            if (localStorage.getItem("accountId")) {
+                localStorage.removeItem("accountId");
+            }
+            localStorage.setItem("accountId", account.id);
+
+            navigate(`manageBankAccount/${account.accountNumber}`);
             return;
         }
         else {
@@ -83,7 +89,7 @@ function MyAccountsSidebar() {
     const handleRequestOpening = async () => {
         try {
             const token = localStorage.getItem("token");
-            const accountId = suspendedAccount?.id; 
+            const accountId = suspendedAccount?.id;
 
             if (!token || !accountId) {
                 console.error("Token or accountId missing");
@@ -100,7 +106,7 @@ function MyAccountsSidebar() {
                 { headers }
             );
 
-            
+
             alert("Request to reopen account sent successfully!");
 
         } catch (error) {
@@ -108,7 +114,7 @@ function MyAccountsSidebar() {
             alert("Failed to send request.");
         } finally {
             setSuspendedAccount(null);
-            setShowSuspensionOverlay(false); 
+            setShowSuspensionOverlay(false);
         }
     };
 
@@ -173,7 +179,7 @@ function MyAccountsSidebar() {
                                 onMouseLeave={(e) => {
                                     e.currentTarget.style.backgroundColor = '';
                                     e.currentTarget.style.color = '#ffffff';
-                                }} onClick={() => { handleAccountClick(account) }}>
+                                }} onClick={() => { handleAccountClick(account); }}>
                                 <i className="bi bi-bank fs-5 text-center" style={{ width: '24px' }}></i>
                                 <span
                                     className="ms-2"

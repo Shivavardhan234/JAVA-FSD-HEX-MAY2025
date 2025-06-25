@@ -1,11 +1,19 @@
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import {  useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { getBankAccount } from '../../../store/actions/BankAccountAction';
 
 function TransferMoney() {
-    const location = useLocation();
-    const account = location.state?.account;
+    const accountId = localStorage.getItem("accountId");
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        getBankAccount(dispatch)(accountId);
+    }, [])
+
+    const account = useSelector(state => state.bankAccount.account);
 
     const [toAccountNumber, setToAccountNumber] = useState('');
     const [amount, setAmount] = useState('');
@@ -68,7 +76,7 @@ function TransferMoney() {
                     <li className="breadcrumb-item">
                         <span
                             role="button"
-                            onClick={() => navigate(`/customer/myAccounts/manageBankAccount/${account?.accountNumber}`, { state: { account } })}
+                            onClick={() => navigate(`/customer/myAccounts/manageBankAccount/${account?.accountNumber}`)}
                             className="text-decoration-none text-primary"
 
                         >

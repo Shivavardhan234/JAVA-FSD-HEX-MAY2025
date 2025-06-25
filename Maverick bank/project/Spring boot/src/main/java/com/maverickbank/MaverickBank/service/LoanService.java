@@ -310,12 +310,11 @@ public LoanService(LoanRepository loanRepository, UserRepository userRepository,
 
 	    
 	    BigDecimal principalAmount = loan.getLoanPlan().getPrincipalAmount();
-	    BigDecimal intrestRate = loan.getLoanPlan().getIntrestRate(); 
+	    BigDecimal intrestRate = loan.getLoanPlan().getInterestRate(); 
 
-	    BigDecimal totalAmountToBePaid = principalAmount.add(principalAmount.multiply(intrestRate));
+	    BigDecimal totalAmountToBePaid = principalAmount.add(principalAmount.multiply(intrestRate)).add(loan.getTotalPenalty());
 
-	    if (totalPaid.compareTo(totalAmountToBePaid) >= 0 &&
-	        loan.getTotalPenalty().compareTo(BigDecimal.ZERO) == 0) {
+	    if (totalPaid.compareTo(totalAmountToBePaid) >= 0 ) {
 	    	loan.setDueDate(null);
 	        loan.setCleared(true);
 	        return loanRepository.save(loan);

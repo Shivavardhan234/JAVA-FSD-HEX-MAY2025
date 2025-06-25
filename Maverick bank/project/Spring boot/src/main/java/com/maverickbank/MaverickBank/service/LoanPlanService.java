@@ -137,9 +137,9 @@ public class LoanPlanService {
 	        oldLoanPlan.setLoanTerm(loanPlan.getLoanTerm());
 	    }
 
-	    if (loanPlan.getIntrestRate() != null) {
-	        LoanPlanValidation.validateIntrestRate(loanPlan.getIntrestRate());
-	        oldLoanPlan.setIntrestRate(loanPlan.getIntrestRate());
+	    if (loanPlan.getInterestRate() != null) {
+	        LoanPlanValidation.validateIntrestRate(loanPlan.getInterestRate());
+	        oldLoanPlan.setInterestRate(loanPlan.getInterestRate());
 	    }
 
 	    if (loanPlan.getInstallmentAmount() != null) {

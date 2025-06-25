@@ -22,7 +22,7 @@ function ViewBranchForEmployee() {
             case "ACCOUNT_MANAGER":
                 return "/accountManager/accountManagerProfile";
             case "LOAN_OFFICER":
-                return "/loanOfficer/profile";
+                return "/loanOfficer/loanOfficerProfile";
             case "REPORT_MANAGER":
                 return "/report-manager/profile";
             case "TRANSACTION_ANALYST":

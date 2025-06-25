@@ -33,6 +33,8 @@ function AddUser() {
             headers: { "Authorization": bearerAuthString }
         });
 
+        alert('user added successfully...!!!')
+
     }
 
     return (

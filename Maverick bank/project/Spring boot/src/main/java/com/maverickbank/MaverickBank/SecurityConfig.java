@@ -196,7 +196,7 @@ public class SecurityConfig {
 					.requestMatchers("/api/account/add").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 				//------------------------------------- get ----------------------------------------------
 					.requestMatchers("/api/account/get/all").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
-					.requestMatchers("/api/account/get/by-id/{id}").hasAnyAuthority("CUSTOMER","ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account/get/by-id/{id}").hasAnyAuthority("CUSTOMER","LOAN_OFFICER","ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/account/get/by-account-number/{accountNumber}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/account/get/by-branch-id/{id}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/account/get/by-account-status/{accountStatus}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
@@ -267,7 +267,7 @@ public class SecurityConfig {
 					.requestMatchers("/api/loan/add/{loanApplicationId}").hasAnyAuthority("CUSTOMER")
 				//------------------------------------- get ----------------------------------------------
 					.requestMatchers("/api/loan/get/all").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
-					.requestMatchers("/api/loan/get/by-id/{id}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan/get/by-id/{id}").hasAnyAuthority("CUSTOMER","LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/loan/get/by-account-id/{accountId}").hasAnyAuthority("CUSTOMER","LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/loan/get/by-account-id-status/{accountId}/{status}").hasAnyAuthority("CUSTOMER","LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/loan/get/by-status/{status}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
