@@ -39,8 +39,8 @@ import AccountManagerNavbar from './components/employee/account_manager/AccountM
 import EmployeeProfile from './components/employee/EmployeeProfile.jsx';
 import ViewBranchForEmployee from './components/employee/account_manager/ViewBranchForEmployee.jsx';
 import AccountsDashboardSidebar from './components/employee/account_manager/AccountsDashboardSideber.jsx';
-import FindAccountOpeningApplication from './components/employee/account_manager/FindAccountOpeningApplication.jsx';
-import AccountOpeningApplicationByCategory from './components/employee/account_manager/AccountOpeningApplicationByCategory.jsx';
+import FindAccountOpeningApplication from './components/employee/account_manager/account_opening_application/FindAccountOpeningApplication.jsx';
+import AccountOpeningApplicationByCategory from './components/employee/account_manager/account_opening_application/AccountOpeningApplicationByCategory.jsx';
 import MyAccountsSidebar from './components/customer/my_accounts/MyAccountsSidebar.jsx';
 import DefaultMyAccountScreen from './components/customer/my_accounts/DefaultMyAccountScreen.jsx';
 import ManageBankAccount from './components/customer/my_accounts/ManageBankAccount.jsx';
@@ -65,6 +65,22 @@ import FindLoanPlan from './components/employee/loan_officer/loan_plan/FindLoanP
 import LoanPlansByCategory from './components/employee/loan_officer/loan_plan/LoanPlansByCategory.jsx';
 import AddLoanPlan from './components/employee/loan_officer/loan_plan/AddLoanPlan.jsx';
 import ManageLoan from './components/customer/my_accounts/loan/ManageLoan.jsx';
+import LoanClosureRequest from './components/customer/my_accounts/loan/LoanClosureRequest.jsx';
+import PayInstallment from './components/customer/my_accounts/loan/PayInstallment.jsx';
+import FindLoanClosureRequest from './components/employee/loan_officer/loan_closure_request/FindLoanClosureRequest.jsx';
+import LoanClosureRequests from './components/employee/loan_officer/loan_closure_request/LoanClosureRequests.jsx';
+import ViewLoanClosureRequest from './components/employee/loan_officer/loan_closure_request/ViewLoanClosureRequest.jsx';
+import FindBankAccount from './components/employee/account_manager/account/FindBankAccount.jsx';
+import AccountsByCategory from './components/employee/account_manager/account/AccountsByCategory.jsx';
+import ViewAccount from './components/employee/account_manager/account/ViewAccount.jsx';
+import FindAccountRequest from './components/employee/account_manager/account_request/FindAccountRequest.jsx';
+import AccountRequestsByCategory from './components/employee/account_manager/account_request/AccountRequestsByCategory.jsx';
+import ViewAccountRequest from './components/employee/account_manager/account_request/ViewAccountRequest.jsx';
+import TransactionAnalystNavbar from './components/employee/transaction_analyst/TransactionAnalystNavbar.jsx';
+import TransactionsSidebar from './components/employee/transaction_analyst/TransactionsSidebar.jsx';
+import FindTransaction from './components/employee/transaction_analyst/FindTransaction.jsx';
+import TransactionsByCategory from './components/employee/transaction_analyst/TransactionsByCategory.jsx';
+import TransactionsForAccount from './components/employee/transaction_analyst/TransactionsForAccount.jsx';
 
 
 
@@ -81,7 +97,7 @@ function App() {
           <Route path='signup' element={<SignUp />}></Route>
         </Route>
 
-
+        {/* ============================================================ CUSTOMER ==================================================================== */}
         {/* Customer */}
         <Route path='/customer' element={<CustomerNavBar />}>
           <Route index element={<CustomerProfile />}></Route>
@@ -104,7 +120,9 @@ function App() {
             <Route path='myLoans' element={<MyLoans />}></Route>
             <Route path='applyLoan' element={<ApplyForLoan />}></Route>
             <Route path='myLoanApplications' element={<MyLoanApplications />}></Route>
-            <Route path='manageLoan' element={<ManageLoan/>}></Route>
+            <Route path='manageLoan' element={<ManageLoan />}></Route>
+            <Route path='loanClosure' element={<LoanClosureRequest />}></Route>
+            <Route path='payInstallment' element={<PayInstallment />}></Route>
 
           </Route>
 
@@ -115,7 +133,7 @@ function App() {
             <Route index element={<MyAccountOpeningApplications />}></Route>
           </Route>
         </Route>
-
+        {/* ====================================================== CIO / ADMIN ======================================================================= */}
         {/* CIO */}
         <Route path='/cio' element={<CioNavbar />}>
 
@@ -156,47 +174,73 @@ function App() {
           <Route path="profile" element={<Profile />}></Route>
         </Route>
 
+{/* =============================================================== EMP PROFILR ============================================================ */}
 
+        
+
+        {/* ====================================================== ACCOUNT MANAGER =================================================================== */}
 
         {/* Account manager */}
         <Route path='/accountManager' element={<AccountManagerNavbar />}>
-          <Route path='accountManagerProfile' element={<EmployeeProfile />}></Route>
+          <Route path='employeeProfile' element={<EmployeeProfile />}></Route>
           <Route path='viewBranchForAccountManager' element={<ViewBranchForEmployee />}></Route>
 
           {/* Accounts Dashboard */}
           <Route path='bankAccountsSideBar' element={<AccountsDashboardSidebar />}>
+            {/* Account opening application */}
             <Route path='findAccountApplication' element={<FindAccountOpeningApplication />}></Route>
             <Route path='accountApplicationByCategory' element={<AccountOpeningApplicationByCategory />}></Route>
+
+            {/* Bank Account */}
+            <Route path='findAccount' element={<FindBankAccount />}></Route>
+            <Route path='accountsByCategory' element={<AccountsByCategory />}></Route>
+            <Route path='viewAccount' element={<ViewAccount />}></Route>
+
+            <Route path='findAccountRequest' element={<FindAccountRequest />}></Route>
+            <Route path='accountRequestsByCategory' element={<AccountRequestsByCategory />}></Route>
+            <Route path='viewAccountRequest' element={<ViewAccountRequest />}></Route>
           </Route>
         </Route>
 
+        {/* ====================================================== LOAN OFFICER ====================================================================== */}
+        <Route path='/loanOfficer' element={<LoanOfficerNavbar />}>
+          <Route index element={<EmployeeProfile />}></Route>
+          <Route path='employeeProfile' element={<EmployeeProfile />}></Route>
+          {/* loan Management sidebar */}
+          <Route path='loanManagementSidebar' element={<LoanManagementSidebar />}>
 
-        <Route path='/loanOfficer' element={<LoanOfficerNavbar/>}>
-        <Route path='loanOfficerProfile' element={<EmployeeProfile />}></Route>
-        {/* loan Management sidebar */}
-        <Route path='loanManagementSidebar' element={<LoanManagementSidebar/>}>
+            {/* loans */}
+            <Route path='findLoan' element={<FindLoan />}></Route>
+            <Route path='loansByCategory' element={<LoansByCategory />}></Route>
+            <Route path='viewLoan' element={<ViewLoan />}></Route>
+            {/* loan Opening Applications */}
+            <Route path='loanOpeningApplications' element={<LoanOpeningApplications />}></Route>
+            <Route path='viewLoanOpeningApplication' element={<ViewLoanOpeningApplication />}></Route>
+            <Route path='findLoanApplication' element={<FindLoanOpeningApplication />}></Route>
 
-        {/* loans */}
-        <Route path='findLoan' element={<FindLoan/>}></Route>
-        <Route path='loansByCategory' element={<LoansByCategory/>}></Route>
-        <Route path='viewLoan' element={<ViewLoan/>}></Route>
-        {/* loan Opening Applications */}
-        <Route path='loanOpeningApplications' element={<LoanOpeningApplications/>}></Route>
-        <Route path='viewLoanOpeningApplication' element={<ViewLoanOpeningApplication/>}></Route>
-        <Route path='findLoanApplication' element={<FindLoanOpeningApplication/>}></Route>
+            {/* Loan Plans */}
+            <Route path='findLoanPlan' element={<FindLoanPlan />}></Route>
+            <Route path='loanPlansByCategory' element={<LoanPlansByCategory />}></Route>
+            <Route path='addLoanPlan' element={<AddLoanPlan />}></Route>
 
-        {/* Loan Plans */}
-        <Route path='findLoanPlan' element={<FindLoanPlan/>}></Route>
-        <Route path='loanPlansByCategory' element={<LoanPlansByCategory/>}></Route>
-        <Route path='addLoanPlan' element={<AddLoanPlan/>}></Route>
+            {/* Loan Closure Requests */}
+            <Route path='findLoanClosureRequest' element={<FindLoanClosureRequest />}></Route>
+            <Route path='loanClosureRequests' element={<LoanClosureRequests />}></Route>
+            <Route path='viewLoanClosure' element={<ViewLoanClosureRequest />}></Route>
+          </Route>
+        </Route>
 
-        
+        {/* =================================================== TRANSACTION ANALYST ========================================================== */}
+        <Route path='/transactionAnalyst' element={<TransactionAnalystNavbar/>}>
+        <Route path='employeeProfile' element={<EmployeeProfile />}></Route>
 
+        <Route path='transactionSideBar' element={<TransactionsSidebar/>}>
+        <Route path='findTransaction' element={<FindTransaction/>}></Route>
+        <Route path='transactionsByCategory' element={<TransactionsByCategory/>}></Route>
+        <Route path='transactionsForAccount' element={<TransactionsForAccount/>}></Route>
         </Route>
         
-
         </Route>
-
 
 
 

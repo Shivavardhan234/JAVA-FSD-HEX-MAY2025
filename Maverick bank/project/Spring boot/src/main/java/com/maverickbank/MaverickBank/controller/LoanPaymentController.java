@@ -30,6 +30,7 @@ public class LoanPaymentController {
 //--------------------------------------------------- POST ---------------------------------------------------------------
 	
 	 @PostMapping("/add/{loanId}/{amountPaid}")
+	 @CrossOrigin(origins = "http://localhost:5173")
     public LoanPayment addLoanPayment(@PathVariable int loanId,@PathVariable BigDecimal amountPaid,Principal principal) throws ResourceNotFoundException, InvalidInputException, DeletedUserException, InvalidActionException {
 
         return loanPaymentService.addLoanPayment(loanId, amountPaid, principal);
@@ -42,7 +43,7 @@ public class LoanPaymentController {
 	        return loanPaymentService.getAllLoanPayments(principal);
 	    }
 	 
-	 @GetMapping("/get/penalty/{loanId}")
+	 @GetMapping("/get/penalty/{id}")
 	    @CrossOrigin(origins = "http://localhost:5173")
 	 public BigDecimal calculatePenalty(@PathVariable int id, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		 return loanPaymentService.calculatePenalty(id,principal);

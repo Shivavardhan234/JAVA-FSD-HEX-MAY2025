@@ -124,7 +124,7 @@ function FindLoan() {
                                     <td>{loan?.loanPlan.loanType}</td>
                                     <td>{loan?.loanPlan.loanTerm} months</td>
                                     <td>₹{loan?.loanPlan.principalAmount}</td>
-                                    <td>{(loan?.loanPlan.intrestRate * 100).toFixed(2)}%</td>
+                                    <td>{loan?.loanPlan.interestRate}%</td>
                                     <td>₹{loan?.loanPlan.installmentAmount}</td>
                                     <td>{loan?.loanPlan.repaymentFrequency} months</td>
                                     <td>{loan?.loanPlan.gracePeriod} months</td>
@@ -164,7 +164,7 @@ function FindLoan() {
                     </div>
 
                     <div className="card-footer d-flex justify-content-end gap-2">
-                        {loan?.status === "ACTIVE" && loan?.isCleared && (
+                        {loan?.status === "ACTIVE" && loan?.cleared && (
                             <button className="btn btn-success" onClick={handleCloseLoan}>
                                 Close Loan
                             </button>

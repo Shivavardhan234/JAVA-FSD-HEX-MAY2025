@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 function ViewBranchForEmployee() {
     const location = useLocation();
-    const [branch, setBranch] = useState(location.state?.branch || null);
+    const branch = useSelector(state => state.branchStore.branch);
 
     const dispatch = useDispatch();
 
@@ -20,17 +20,17 @@ function ViewBranchForEmployee() {
     const getProfilePath = () => {
         switch (role) {
             case "ACCOUNT_MANAGER":
-                return "/accountManager/accountManagerProfile";
+                return "/accountManager/employeeProfile";
             case "LOAN_OFFICER":
-                return "/loanOfficer/loanOfficerProfile";
+                return "/loanOfficer/employeeProfile";
             case "REPORT_MANAGER":
-                return "/report-manager/profile";
+                return "/reportManager/employeeProfile";
             case "TRANSACTION_ANALYST":
-                return "/transaction-analyst/profile";
+                return "/transactionAnalyst/employeeProfile";
             case "JUNIOR_OPERATIONS_MANAGER":
-                return "/junior-operations-manager/profile";
+                return "/juniorOperationsManager/employeeProfile";
             case "SENIOR_OPERATIONS_MANAGER":
-                return "/senior-operations-manager/profile";
+                return "/seniorOperationsManager/employeeProfile";
             default:
                  logOutAction(dispatch)();
                 localStorage.clear();

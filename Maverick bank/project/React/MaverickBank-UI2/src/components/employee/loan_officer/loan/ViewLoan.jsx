@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { getLoan } from "../../../../store/actions/LoanAction";
 
 function ViewLoan() {
-    const location = useLocation();
     const navigate = useNavigate();
-    const [loan, setLoan] = useState(location.state?.loan || null);
+    const dispatch = useDispatch();
+    const loan = useSelector(state => state.loanStore.loan);
     const [paymentHistory, setPaymentHistory] = useState([]);
     const [message, setMessage] = useState("");
 
@@ -27,6 +29,7 @@ function ViewLoan() {
                 }
             );
             setPaymentHistory(res.data);
+
         } catch (err) {
             handleError(err);
             
@@ -45,8 +48,8 @@ function ViewLoan() {
                     },
                 }
             );
-            setLoan(res.data);
             setMessage("Loan closed successfully.");
+            getLoan(dispatch)(loan.id);
         } catch (err) {
             handleError(err);
             
@@ -79,9 +82,28 @@ function ViewLoan() {
 
     return (
         <>
+          {/* Breadcrumb */}
+            <nav aria-label="breadcrumb" className="mb-3">
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item text-muted">Loans</li>
+
+                    <li className="breadcrumb-item">
+                        <span
+                            role="button"
+                            onClick={() => navigate(`/loanOfficer/loanManagementSidebar/loansByCategory`)}
+                            className="text-decoration-none text-primary"
+                        >
+                            Loans By Category
+                        </span>
+                    </li>
+                    <li className="breadcrumb-item active" aria-current="page">
+                        View Loan
+                    </li>
+                </ol>
+            </nav>
             {message && <div className="alert alert-info">{message}</div>}
 
-            {loan && (
+            {loan && loan.account && (
                 <div className="card shadow-sm">
                     <div className="card-header bg-primary text-white">
                         <h5 className="mb-0">Loan Details</h5>
@@ -89,11 +111,11 @@ function ViewLoan() {
                     <div className="card-body">
                         {/* Account Details */}
                         <h6 className="text-secondary">Account Information</h6>
-                        <p><strong>Account Number:</strong> {loan?.account.accountNumber}</p>
-                        <p><strong>Account Name:</strong> {loan?.account.accountName}</p>
-                        <p><strong>Branch:</strong> {loan?.account.branch.branchName}</p>
-                        <p><strong>IFSC:</strong> {loan?.account.branch.ifsc}</p>
-                        <p><strong>Account Type:</strong> {loan?.account.accountType.accountType}</p>
+                        <p><strong>Account Number:</strong> {loan.account.accountNumber}</p>
+                        <p><strong>Account Name:</strong> {loan.account.accountName}</p>
+                        <p><strong>Branch:</strong> {loan.account.branch.branchName}</p>
+                        <p><strong>IFSC:</strong> {loan.account.branch.ifsc}</p>
+                        <p><strong>Account Type:</strong> {loan.account.accountType.accountType}</p>
 
                         <hr />
 
@@ -115,15 +137,15 @@ function ViewLoan() {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{loan?.loanPlan.loanName}</td>
-                                    <td>{loan?.loanPlan.loanType}</td>
-                                    <td>{loan?.loanPlan.loanTerm} months</td>
-                                    <td>₹{loan?.loanPlan.principalAmount}</td>
-                                    <td>{(loan?.loanPlan.intrestRate * 100).toFixed(2)}%</td>
-                                    <td>₹{loan?.loanPlan.installmentAmount}</td>
-                                    <td>{loan?.loanPlan.repaymentFrequency} months</td>
-                                    <td>{loan?.loanPlan.gracePeriod} months</td>
-                                    <td>{loan?.loanPlan.penaltyRate}%</td>
+                                    <td>{loan.loanPlan.loanName}</td>
+                                    <td>{loan.loanPlan.loanType}</td>
+                                    <td>{loan.loanPlan.loanTerm} months</td>
+                                    <td>₹{loan.loanPlan.principalAmount}</td>
+                                    <td>{(loan.loanPlan.interestRate)}%</td>
+                                    <td>₹{loan.loanPlan.installmentAmount}</td>
+                                    <td>{loan.loanPlan.repaymentFrequency} months</td>
+                                    <td>{loan.loanPlan.gracePeriod} months</td>
+                                    <td>{loan.loanPlan.penaltyRate}%</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -163,7 +185,7 @@ function ViewLoan() {
                     </div>
 
                     <div className="card-footer d-flex justify-content-end gap-2">
-                        {loan?.status === "ACTIVE" && loan?.isCleared && (
+                        {loan?.status === "ACTIVE" && loan?.cleared && (
                             <button className="btn btn-success" onClick={handleCloseLoan}>
                                 Close Loan
                             </button>

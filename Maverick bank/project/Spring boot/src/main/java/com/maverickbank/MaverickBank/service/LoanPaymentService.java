@@ -204,6 +204,10 @@ public class LoanPaymentService {
 		    LocalDate today = LocalDate.now();
 		    LocalDate dueDate = loan.getDueDate();
 		    
+		    if(dueDate==null) {
+		    	return BigDecimal.ZERO;
+		    }
+		    
 		    
 		    
 		    

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { getLoan } from "../../../../store/actions/LoanAction";
+import { useDispatch } from "react-redux";
 
 function LoansByCategory() {
     const [filter, setFilter] = useState("ALL");
@@ -9,6 +11,7 @@ function LoansByCategory() {
     const [currentPage, setCurrentPage] = useState(1);
     const [perPage, setPerPage] = useState(5);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         fetchLoans();
@@ -101,7 +104,9 @@ function LoansByCategory() {
                                 <div className="d-flex justify-content-end mt-3">
                                     <button
                                         className="btn btn-outline-primary btn-sm"
-                                        onClick={() => navigate("/loanOfficer/loanManagementSidebar/viewLoan", { state: { loan } })}
+                                        onClick={() => {
+                                            getLoan(dispatch)(loan.id);
+                                            navigate("/loanOfficer/loanManagementSidebar/viewLoan");}}
                                     >
                                         View Loan
                                     </button>

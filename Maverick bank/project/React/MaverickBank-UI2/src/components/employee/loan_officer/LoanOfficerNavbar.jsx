@@ -1,5 +1,5 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch} from 'react-redux';
 import { logOutAction } from '../../../store/actions/UserAction';
 
 
@@ -20,7 +20,7 @@ function LoanOfficerNavbar() {
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
                 <div className="container-fluid">
                     {/* Logo */}
-                    <Link className="navbar-brand fw-bold" to="/account-manager">
+                    <Link className="navbar-brand fw-bold" to="/loanOfficer">
                         MAVERICK BANK
                     </Link>
 
@@ -33,7 +33,7 @@ function LoanOfficerNavbar() {
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <Link to="/loanOfficer/loanOfficerProfile" className="nav-link">
+                                <Link to="/employeeProfile" className="nav-link">
                                     Profile
                                 </Link>
                             </li>

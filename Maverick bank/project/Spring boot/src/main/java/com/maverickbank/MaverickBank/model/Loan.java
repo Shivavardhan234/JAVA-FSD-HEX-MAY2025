@@ -8,6 +8,8 @@ import com.maverickbank.MaverickBank.exception.InvalidInputException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,6 +30,7 @@ public class Loan {
 	private LocalDate loanStartDate;
 	@Column(name="loan_end_date",nullable=false)
 	private LocalDate loanEndDate;
+	@Enumerated(EnumType.STRING)
 	@Column(name="status",nullable=false)
 	private LoanStatus status;
 	@Column(name="disbursement_date",nullable=false)
@@ -155,9 +158,7 @@ public class Loan {
 
 
 	public void setDueDate(LocalDate dueDate) throws InvalidInputException{
-		if (dueDate == null) {
-            throw new InvalidInputException("Null due date provided. Please provide appropriate due date...!!!");
-        }
+		
 		this.dueDate = dueDate;
 	}
 	

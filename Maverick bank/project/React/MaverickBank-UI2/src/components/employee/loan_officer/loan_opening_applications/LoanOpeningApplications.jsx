@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { getLoanOpeningApplication } from "../../../../store/actions/LoanOpeningApplicationAction";
 
 function LoanOpeningApplications({ isExpanded }) {
     const [filter, setFilter] = useState("ALL");
@@ -9,6 +11,7 @@ function LoanOpeningApplications({ isExpanded }) {
     const [perPage, setPerPage] = useState(5);
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
 
     useEffect(() => {
@@ -112,8 +115,9 @@ function LoanOpeningApplications({ isExpanded }) {
                                 <div>
                                     <button
                                         className="btn btn-outline-primary btn-sm"
-                                        onClick={() => {navigate("/loanOfficer/loanManagementSidebar/viewLoanOpeningApplication",{state:{app}})}}
-                                    >
+                                        onClick={() => {
+                                            getLoanOpeningApplication(dispatch)(app.id);
+                                            navigate("/loanOfficer/loanManagementSidebar/viewLoanOpeningApplication");}}>
                                         View Application
                                     </button>
                                 </div>

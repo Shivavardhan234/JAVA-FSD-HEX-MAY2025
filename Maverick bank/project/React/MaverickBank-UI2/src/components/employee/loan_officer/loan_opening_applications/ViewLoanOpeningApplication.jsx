@@ -1,47 +1,26 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import axios from "axios";
-import { getBankAccount } from "../../../../store/actions/BankAccountAction";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
+import { getLoanOpeningApplication } from "../../../../store/actions/LoanOpeningApplicationAction";
 
 function ViewLoanOpeningApplication() {
-    const location = useLocation();
     const navigate = useNavigate();
-    const [loanApplication, setLoanApplication] = useState(location.state?.app);
-    const selectedLoan = loanApplication.loanPlan;
-    const [loading, setLoading] = useState(true);
+    const loanApplication = useSelector(state => state.loanOpeningApplicationStore.application);
+    const selectedLoan = loanApplication?.loanPlan;
     const [message, setMessage] = useState("");
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        fetchAccountDetails();
-    }, []);
+  
 
-    const fetchAccountDetails = async () => {
-        getBankAccount(dispatch)(loanApplication.account.id);
-    };
+   
 
 
 
-    const account = useSelector(state => state.bankAccount.account);
+    const account = loanApplication?.account;
 
 
-    const refreshApplication = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            const res = await axios.get(
-                `http://localhost:9090/api/loan-opening-application/get/by-id/${loanApplication.id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-            setLoanApplication(res.data);
-        } catch (err) {
-            setMessage("Failed to refresh application.");
-        }
-    };
+ 
 
 
     const handleAccept = async () => {
@@ -57,7 +36,7 @@ function ViewLoanOpeningApplication() {
                 }
             );
             setMessage("Application accepted successfully.");
-            refreshApplication();
+            getLoanOpeningApplication(dispatch)(loanApplication.id);
         } catch (err) {
             setMessage("Failed to accept application.");
         }
@@ -76,7 +55,7 @@ function ViewLoanOpeningApplication() {
                 }
             );
             setMessage("Application rejected.");
-            refreshApplication();
+            getLoanOpeningApplication(dispatch)(loanApplication.id);
         } catch (err) {
             setMessage("Failed to reject application.");
         }
@@ -151,7 +130,7 @@ function ViewLoanOpeningApplication() {
                                     <td>{selectedLoan.loanType}</td>
                                     <td>{selectedLoan.loanTerm} months</td>
                                     <td>₹{selectedLoan.principalAmount}</td>
-                                    <td>{(selectedLoan.intrestRate * 100).toFixed(2)}%</td>
+                                    <td>{selectedLoan.interestRate}%</td>
                                     <td>₹{selectedLoan.installmentAmount}</td>
                                     <td>{selectedLoan.repaymentFrequency} months</td>
                                     <td>{selectedLoan.gracePeriod} months</td>

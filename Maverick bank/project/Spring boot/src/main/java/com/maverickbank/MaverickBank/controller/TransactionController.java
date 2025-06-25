@@ -49,7 +49,7 @@ public class TransactionController {
 
     @GetMapping("/get/by-id/{id}")
     @CrossOrigin(origins = "http://localhost:5173")
-    public Transaction getById(@PathVariable("id") int id, Principal principal) throws DeletedUserException, ResourceNotFoundException, InvalidInputException, InvalidActionException {
+    public Transaction getById(@PathVariable int id, Principal principal) throws DeletedUserException, ResourceNotFoundException, InvalidInputException, InvalidActionException {
         return transactionService.getById(id, principal);
     }
 
@@ -63,14 +63,14 @@ public class TransactionController {
 
     @GetMapping("/get/credits/{startDate}/{endDate}/{accountNumber}")
     @CrossOrigin(origins = "http://localhost:5173")
-    public List<Transaction> getCreditTransactions(@PathVariable LocalDate startDate,@PathVariable LocalDate endDate,@RequestParam(name = "accountNumber", required = false) String accountNumber,Principal principal)
+    public List<Transaction> getCreditTransactions(@PathVariable LocalDate startDate,@PathVariable LocalDate endDate,@PathVariable String accountNumber,Principal principal)
      throws DeletedUserException, InvalidInputException, ResourceNotFoundException, InvalidActionException {
         return transactionService.getCreditTransactions(accountNumber, startDate, endDate, principal);
     }
 
     @GetMapping("/get/debits/{startDate}/{endDate}/{accountNumber}")
     @CrossOrigin(origins = "http://localhost:5173")
-    public List<Transaction> getDebitTransactions(@PathVariable LocalDate startDate,@PathVariable LocalDate endDate,@RequestParam(name = "accountNumber", required = false) String accountNumber,Principal principal)
+    public List<Transaction> getDebitTransactions(@PathVariable LocalDate startDate,@PathVariable LocalDate endDate,@PathVariable String accountNumber,Principal principal)
     		throws DeletedUserException, InvalidInputException, ResourceNotFoundException, InvalidActionException {
         return transactionService.getDebitTransactions(accountNumber, startDate, endDate, principal);
     }

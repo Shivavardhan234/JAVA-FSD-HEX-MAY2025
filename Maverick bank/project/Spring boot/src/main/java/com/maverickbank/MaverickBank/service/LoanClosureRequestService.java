@@ -236,9 +236,8 @@ public class LoanClosureRequestService {
 	    loanClosureRequest.setRequestStatus(ApplicationStatus.ACCEPTED);
 	    loanClosureRequest = loanClosureRequestRepository.save(loanClosureRequest);
 
-	    
-	    loanService.closeLoan(loanClosureRequest.getLoan().getId(), principal);
 
+	    loanService.closeLoan(loanClosureRequest.getLoan().getId(), principal);
 	    return loanClosureRequest;
 	}
 

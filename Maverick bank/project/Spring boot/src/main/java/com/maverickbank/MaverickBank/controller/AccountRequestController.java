@@ -39,22 +39,26 @@ public class AccountRequestController {
 	
 //--------------------------------------------------------- GET ----------------------------------------------------------
 	 @GetMapping("/get/all")
+	 @CrossOrigin(origins = "http://localhost:5173")
 	 public List<AccountRequest> getAllRequests(Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
 	     return accountRequestService.getAllRequests(principal);
 	 }
 
 	 
 	 @GetMapping("/get/by-id/{id}")
+	 @CrossOrigin(origins = "http://localhost:5173")
 	 public AccountRequest getRequestById(@PathVariable int id, Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException  {
 	     return accountRequestService.getRequestById(id, principal);
 	 }
 	 
 	 @GetMapping("/get/by-account-id/{accountId}")
+	 @CrossOrigin(origins = "http://localhost:5173")
 	 public List<AccountRequest> getRequestsByAccountId(@PathVariable int accountId, Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException  {
 	     return accountRequestService.getRequestsByAccountId(accountId, principal);
 	 }
 
 	 @GetMapping("/get/by-status/{status}")
+	 @CrossOrigin(origins = "http://localhost:5173")
 	 public List<AccountRequest> getRequestsByStatus(@PathVariable ApplicationStatus status, Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
 	     return accountRequestService.getRequestsByStatus(status, principal);
 	 }
@@ -65,11 +69,13 @@ public class AccountRequestController {
 	 
 	 
 	 @PutMapping("/update/accept/{requestId}")
+	 @CrossOrigin(origins = "http://localhost:5173")
 	 public AccountRequest acceptRequest(@PathVariable int requestId, Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidActionException, InvalidInputException {
 	     return accountRequestService.acceptRequest(requestId, principal);
 	 }
 
 	 @PutMapping("/update/reject/{requestId}")
+	 @CrossOrigin(origins = "http://localhost:5173")
 	 public AccountRequest rejectRequest(@PathVariable int requestId, Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidActionException, InvalidInputException  {
 	     return accountRequestService.rejectRequest(requestId, principal);
 	 }

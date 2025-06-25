@@ -1,12 +1,17 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { logOutAction } from '../../../store/actions/UserAction';
+import { useEffect } from 'react';
+import { getBranch } from '../../../store/actions/BranchAction';
 
-function AccountManagerNavbar() {
+
+function TransactionAnalystNavbar() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-  
+    
+
+
 
     const logOut = () => {
         logOutAction(dispatch)();
@@ -19,7 +24,7 @@ function AccountManagerNavbar() {
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
                 <div className="container-fluid">
                     {/* Logo */}
-                    <Link className="navbar-brand fw-bold" to="/accountManager">
+                    <Link className="navbar-brand fw-bold" to="/transactionAnalyst/transactionSidebar">
                         MAVERICK BANK
                     </Link>
 
@@ -27,12 +32,12 @@ function AccountManagerNavbar() {
                     <div className="collapse navbar-collapse">
                         <ul className="navbar-nav ms-3">
                             <li className="nav-item border-end border-white pe-3 me-3">
-                                <Link to="/accountManager/bankAccountsSideBar" className="nav-link">
-                                    Accounts Dashboard
+                                <Link to="transactionSidebar" className="nav-link">
+                                    Transactions Dashboard
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <Link to="/employeeProfile" className="nav-link">
+                                <Link to="employeeProfile" className="nav-link">
                                     Profile
                                 </Link>
                             </li>
@@ -54,6 +59,6 @@ function AccountManagerNavbar() {
             </div>
         </>
     );
-}
 
-export default AccountManagerNavbar;
+}
+export default TransactionAnalystNavbar;

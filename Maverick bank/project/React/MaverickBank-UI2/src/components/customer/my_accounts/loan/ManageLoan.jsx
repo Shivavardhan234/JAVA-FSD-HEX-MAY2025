@@ -1,16 +1,43 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate, Outlet, Link } from 'react-router-dom';
 import axios from 'axios';
 import { getLoan } from '../../../../store/actions/LoanAction';
+import { getBankAccount } from '../../../../store/actions/BankAccountAction';
 
 function ManageLoan() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const loan= useSelector(state=> state.loanStore.loan);
+    const accountId = localStorage.getItem("accountId");
+    const loan = useSelector(state => state.loanStore.loan);
     const [showPenalty, setShowPenalty] = useState(false);
     const [message, setMessage] = useState("");
     const loanId = localStorage.getItem("loanId");
+    const account = useSelector(state => state.bankAccount.account);
+
+
+    const [showPayments, setShowPayments] = useState(false);
+    const [payments, setPayments] = useState([]);
+
+
+
+    useEffect(() => {
+            getBankAccount(dispatch)(accountId);
+        }, [])
+
+
+
+    const fetchPayments = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`http://localhost:9090/api/loan-payment/get/by-loan-id/${loanId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setPayments(response.data);
+        } catch (err) {
+            handleError(err);
+        }
+    };
 
     const handleError = (err) => {
         console.log(err);
@@ -24,8 +51,8 @@ function ManageLoan() {
         setTimeout(() => setMessage(""), 3000);
     };
 
-    useEffect(()=>{getLoan(dispatch)(loanId)},[]);
-    
+    useEffect(() => { getLoan(dispatch)(loanId) }, []);
+
 
     const handleLoanClosure = async () => {
         const purpose = prompt("Enter reason to request loan closure:");
@@ -53,6 +80,17 @@ function ManageLoan() {
                 {/* Breadcrumb */}
                 <nav aria-label="breadcrumb" className="p-3">
                     <ol className="breadcrumb mb-0">
+                        <li className="breadcrumb-item">
+                            <span
+                                role="button"
+                                className="text-primary text-decoration-none"
+                                onClick={() =>
+                                    navigate(`/customer/myAccounts/manageBankAccount/${account.accountNumber}`)
+                                }
+                            >
+                                Manage Bank Account
+                            </span>
+                        </li>
                         <li className="breadcrumb-item">
                             <span className="text-muted">My Loans</span>
                         </li>
@@ -124,11 +162,12 @@ function ManageLoan() {
 
                             {/* Pay Installment */}
                             <div className="col-3 d-flex flex-column align-items-center">
-                                <button className="btn btn-outline-success rounded-circle d-flex justify-content-center align-items-center"
-                                    style={{ width: '80px', height: '80px' }}
-                                    onClick={() => navigate("/customer/myAccounts/payInstallment")}>
-                                    <i className="bi bi-currency-rupee fs-4"></i>
-                                </button>
+                                <Link to="/customer/myAccounts/payInstallment">
+                                    <button className="btn btn-outline-success rounded-circle d-flex justify-content-center align-items-center"
+                                        style={{ width: '80px', height: '80px' }}>
+                                        <i className="bi bi-currency-rupee fs-4"></i>
+                                    </button>
+                                </Link>
                                 <p className="mt-2">Pay Installment</p>
                             </div>
 
@@ -136,7 +175,7 @@ function ManageLoan() {
                             <div className="col-3 d-flex flex-column align-items-center">
                                 <button className="btn btn-outline-secondary rounded-circle d-flex justify-content-center align-items-center"
                                     style={{ width: '80px', height: '80px' }}
-                                    onClick={() => navigate("/customer/myAccounts/loanPayments")}>
+                                    onClick={() => { fetchPayments(); setShowPayments(true); }}>
                                     <i className="bi bi-clock-history fs-4"></i>
                                 </button>
                                 <p className="mt-2">Payment History</p>
@@ -144,16 +183,53 @@ function ManageLoan() {
 
                             {/* Close Loan */}
                             <div className="col-3 d-flex flex-column align-items-center">
-                                <button className="btn btn-outline-warning rounded-circle d-flex justify-content-center align-items-center"
-                                    style={{ width: '80px', height: '80px' }}
-                                    onClick={handleLoanClosure}>
-                                    <i className="bi bi-x-circle fs-4"></i>
-                                </button>
+                                <Link to="/customer/myAccounts/loanClosure">
+                                    <button className="btn btn-outline-warning rounded-circle d-flex justify-content-center align-items-center"
+                                        style={{ width: '80px', height: '80px' }}>
+                                        <i className="bi bi-x-circle fs-4"></i>
+                                    </button>
+                                </Link>
                                 <p className="mt-2">Request Closure</p>
                             </div>
 
                         </div>
                     </div>
+                    {showPayments && (
+                        <div className="card mt-4 mx-3 shadow">
+                            <div className="card-header bg-secondary text-white fw-semibold d-flex justify-content-between align-items-center">
+                                <span>Loan Payment History</span>
+                                <button className="btn btn-sm btn-light" onClick={() => { setShowPayments(false) }}>Close Payments</button>
+                            </div>
+                            <div className="card-body table-responsive">
+                                {payments.length > 0 ? (
+                                    <table className="table table-bordered table-striped mb-0">
+                                        <thead className="table-dark">
+                                            <tr>
+                                                <th>Amount Paid</th>
+                                                <th>Amount To Be Paid</th>
+                                                <th>Due Date</th>
+                                                <th>Payment Date</th>
+                                                <th>Penalty</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {payments.map((p, index) => (
+                                                <tr key={index}>
+                                                    <td>₹{p.amountPaid}</td>
+                                                    <td>₹{p.amountToBePaid}</td>
+                                                    <td>{p.dueDate}</td>
+                                                    <td>{p.paymentDate}</td>
+                                                    <td>₹{p.penalty}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                ) : (
+                                    <p className="text-muted">No payments found.</p>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
             </div>

@@ -85,7 +85,7 @@ function LoanPlansByCategory() {
                                     <td>{plan.loanType}</td>
                                     <td>{plan.loanTerm} months</td>
                                     <td>₹{plan.principalAmount}</td>
-                                    <td>{(plan.intrestRate * 100).toFixed(2)}%</td>
+                                    <td>{(plan.interestRate)}%</td>
                                     <td>₹{plan.installmentAmount}</td>
                                     <td>{plan.repaymentFrequency} months</td>
                                     <td>{plan.gracePeriod} months</td>

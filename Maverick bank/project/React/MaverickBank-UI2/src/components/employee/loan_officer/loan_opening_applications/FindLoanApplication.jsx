@@ -131,7 +131,7 @@ function FindLoanOpeningApplication() {
                                     <td>{loanApplication?.loanPlan?.loanType}</td>
                                     <td>{loanApplication?.loanPlan?.loanTerm} months</td>
                                     <td>₹{loanApplication?.loanPlan?.principalAmount}</td>
-                                    <td>{(loanApplication?.loanPlan?.intrestRate * 100).toFixed(2)}%</td>
+                                    <td>{loanApplication?.loanPlan?.interestRate}%</td>
                                     <td>₹{loanApplication?.loanPlan?.installmentAmount}</td>
                                     <td>{loanApplication?.loanPlan?.repaymentFrequency} months</td>
                                     <td>{loanApplication?.loanPlan?.gracePeriod} months</td>

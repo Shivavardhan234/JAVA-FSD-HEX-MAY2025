@@ -190,7 +190,7 @@ function LoanManagementSidebar(){
                     </li>
                     <li className="nav-item border-bottom border-white">
                         <Link
-                            to="/accountManager"
+                            to="findLoanClosureRequest"
                             className={`nav-link d-flex align-items-center px-3 py-2 ${isExpanded ? 'justify-content-start' : 'justify-content-center'}`}
                             style={{
                                 height: '48px',
@@ -225,7 +225,7 @@ function LoanManagementSidebar(){
                     </li>
                     <li className="nav-item border-bottom border-white">
                         <Link
-                            to="/accountManager"
+                            to="loanClosureRequests"
                             className={`nav-link d-flex align-items-center px-3 py-2 ${isExpanded ? 'justify-content-start' : 'justify-content-center'}`}
                             style={{
                                 height: '48px',

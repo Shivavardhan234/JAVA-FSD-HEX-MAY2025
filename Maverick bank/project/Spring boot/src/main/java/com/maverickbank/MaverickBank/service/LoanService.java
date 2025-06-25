@@ -218,7 +218,9 @@ public LoanService(LoanRepository loanRepository, UserRepository userRepository,
 	    if (loan.getStatus() == LoanStatus.CLOSED) {
 	        throw new InvalidActionException("This loan is already closed...!!!");
 	    }
+
 	    loan.setStatus(LoanStatus.CLOSED);
+
 	    return loanRepository.save(loan);
 	}
 	
@@ -302,24 +304,16 @@ public LoanService(LoanRepository loanRepository, UserRepository userRepository,
 
 	    
 	    List<LoanPayment> loanPaymentList = loanPaymentRepository.getByLoan(loanId);
-
-	    BigDecimal totalPaid = BigDecimal.ZERO;
-	    for(LoanPayment l:loanPaymentList) {
-	    	totalPaid=totalPaid.add(l.getAmountPaid());
-	    }
+	    int numberOfPayments = loan.getLoanPlan().getLoanTerm()/loan.getLoanPlan().getRepaymentFrequency();
 
 	    
-	    BigDecimal principalAmount = loan.getLoanPlan().getPrincipalAmount();
-	    BigDecimal intrestRate = loan.getLoanPlan().getInterestRate(); 
-
-	    BigDecimal totalAmountToBePaid = principalAmount.add(principalAmount.multiply(intrestRate)).add(loan.getTotalPenalty());
-
-	    if (totalPaid.compareTo(totalAmountToBePaid) >= 0 ) {
+	    if(loanPaymentList.size() >= numberOfPayments){
 	    	loan.setDueDate(null);
 	        loan.setCleared(true);
 	        return loanRepository.save(loan);
+	    	
 	    }
-
+	   
 	    return loan; 
 	}
 

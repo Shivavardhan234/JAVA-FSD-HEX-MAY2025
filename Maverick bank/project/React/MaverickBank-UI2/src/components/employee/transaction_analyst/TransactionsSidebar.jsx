@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 
 
-function AccountsDashboardSidebar(){
+function TransactionsSidebar(){
      const [isExpanded, setIsExpanded] = useState(false);
 
     return (
@@ -40,7 +40,7 @@ function AccountsDashboardSidebar(){
                             transition: 'opacity 0.3s ease',
                         }}
                     >
-                       Accounts Management
+                       Transactions
                     </span>
                 </div>
 
@@ -49,7 +49,7 @@ function AccountsDashboardSidebar(){
                     {/* Find Employee */}
                     <li className="nav-item border-bottom border-white">
                         <Link
-                            to="findAccount"
+                            to="findTransaction"
                             className={`nav-link d-flex align-items-center px-3 py-2 ${isExpanded ? 'justify-content-start' : 'justify-content-center'}`}
                             style={{
                                 height: '48px',
@@ -77,7 +77,7 @@ function AccountsDashboardSidebar(){
                                     whiteSpace: 'nowrap',
                                 }}
                             >
-                                Find Bank Account
+                                Find Transaction
                             </span>
                         </Link>
                     </li>
@@ -85,7 +85,7 @@ function AccountsDashboardSidebar(){
                     {/* Employees by Category */}
                     <li className="nav-item border-bottom border-white">
                         <Link
-                            to="accountsByCategory"
+                            to="transactionsByCategory"
                             className={`nav-link d-flex align-items-center px-3 py-2 ${isExpanded ? 'justify-content-start' : 'justify-content-center'}`}
                             style={{
                                 height: '48px',
@@ -113,13 +113,13 @@ function AccountsDashboardSidebar(){
                                     whiteSpace: 'nowrap',
                                 }}
                             >
-                                Accounts by Category
+                                Transactions by Category
                             </span>
                         </Link>
                     </li>
                     <li className="nav-item border-bottom border-white">
                         <Link
-                            to="/accountManager/bankAccountsSideBar/findAccountApplication"
+                            to='transactionsForAccount'
                             className={`nav-link d-flex align-items-center px-3 py-2 ${isExpanded ? 'justify-content-start' : 'justify-content-center'}`}
                             style={{
                                 height: '48px',
@@ -147,117 +147,12 @@ function AccountsDashboardSidebar(){
                                     whiteSpace: 'nowrap',
                                 }}
                             >
-                                Find Account Opening <br />
-                                Application
+                                Transactions For <br />
+                                Account
                             </span>
                         </Link>
                     </li>
-                    <li className="nav-item border-bottom border-white">
-                        <Link
-                            to="/accountManager/bankAccountsSideBar/accountApplicationByCategory"
-                            className={`nav-link d-flex align-items-center px-3 py-2 ${isExpanded ? 'justify-content-start' : 'justify-content-center'}`}
-                            style={{
-                                height: '48px',
-                                color: 'white',
-                                transition: 'background-color 0.2s ease, color 0.2s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = '#ffffff';
-                                e.currentTarget.style.color = '#000000';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = '';
-                                e.currentTarget.style.color = '#ffffff';
-                            }}
-                        >
-                            <i className="bi bi-folder2-open fs-5 text-center" style={{ width: '24px' }}></i>
-                            <span
-                                className="ms-2"
-                                style={{
-                                    width: isExpanded ? 'auto' : '0px',
-                                    opacity: isExpanded ? 1 : 0,
-                                    visibility: isExpanded ? 'visible' : 'hidden',
-                                    overflow: 'hidden',
-                                    transition: 'opacity 0.3s ease, width 0.3s ease',
-                                    whiteSpace: 'nowrap',
-                                }}
-                            >
-                                 Account Opening <br />Applications
-                                
-                            </span>
-                        </Link>
-                    </li>
-                    <li className="nav-item border-bottom border-white">
-                        <Link
-                            to="findAccountRequest"
-                            className={`nav-link d-flex align-items-center px-3 py-2 ${isExpanded ? 'justify-content-start' : 'justify-content-center'}`}
-                            style={{
-                                height: '48px',
-                                color: 'white',
-                                transition: 'background-color 0.2s ease, color 0.2s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = '#ffffff';
-                                e.currentTarget.style.color = '#000000';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = '';
-                                e.currentTarget.style.color = '#ffffff';
-                            }}
-                        >
-                            <i className="bi bi-file-earmark-minus fs-5 text-center" style={{ width: '24px' }}></i>
-                            <span
-                                className="ms-2"
-                                style={{
-                                    width: isExpanded ? 'auto' : '0px',
-                                    opacity: isExpanded ? 1 : 0,
-                                    visibility: isExpanded ? 'visible' : 'hidden',
-                                    overflow: 'hidden',
-                                    transition: 'opacity 0.3s ease, width 0.3s ease',
-                                    whiteSpace: 'nowrap',
-                                }}
-                            >
-                                 Find Account Request
-                                
-                            </span>
-                        </Link>
-                    </li>
-                    <li className="nav-item border-bottom border-white">
-                        <Link
-                            to="accountRequestsByCategory"
-                            className={`nav-link d-flex align-items-center px-3 py-2 ${isExpanded ? 'justify-content-start' : 'justify-content-center'}`}
-                            style={{
-                                height: '48px',
-                                color: 'white',
-                                transition: 'background-color 0.2s ease, color 0.2s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = '#ffffff';
-                                e.currentTarget.style.color = '#000000';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = '';
-                                e.currentTarget.style.color = '#ffffff';
-                            }}
-                        >
-                            <i className="bi bi-archive fs-5 text-center" style={{ width: '24px' }}></i>
-                            <span
-                                className="ms-2"
-                                style={{
-                                    width: isExpanded ? 'auto' : '0px',
-                                    opacity: isExpanded ? 1 : 0,
-                                    visibility: isExpanded ? 'visible' : 'hidden',
-                                    overflow: 'hidden',
-                                    transition: 'opacity 0.3s ease, width 0.3s ease',
-                                    whiteSpace: 'nowrap',
-                                }}
-                            >
-                                 Account Requests 
-                                
-                            </span>
-                        </Link>
-                    </li>
-                    
+                   
                 </ul>
             </div>
 
@@ -278,4 +173,4 @@ function AccountsDashboardSidebar(){
     );
 
 }
-export default AccountsDashboardSidebar;
+export default TransactionsSidebar;

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { FaUserCircle } from 'react-icons/fa';
 import { getUserDetails, logOutAction } from '../../store/actions/UserAction';
+import { getBranch } from '../../store/actions/BranchAction';
 
 function EmployeeProfile() {
     const dispatch = useDispatch();
@@ -21,9 +22,9 @@ function EmployeeProfile() {
     const [successMessage, setSuccessMessage] = useState("");
     const [message, setMessage] = useState("");
 
-    useEffect(() => {
-        getUserDetails(dispatch)();
-    }, [])
+    useEffect(()=>{
+        getBranch(dispatch)(employee?.branch?.id);
+    },[])
 
 
     useEffect(() => {

@@ -29,7 +29,7 @@ function SignIn() {
             });
             localStorage.setItem('token', tokenResponse.data);
 
-            await getUserDetails(dispatch)();
+            getUserDetails(dispatch)();
             //console.log(userDet);
 
             localStorage.setItem('password', password);
@@ -56,7 +56,7 @@ function SignIn() {
             {},
             { headers: { Authorization: baererAuthString } }
         );
-        await getUserDetails(dispatch)();
+        getUserDetails(dispatch)();
         setShowInactiveOverlay(false);
         setSuccessMessage("Account activation successfull..!!! ");
             setMessage("");
@@ -114,6 +114,7 @@ function SignIn() {
                         break;
                     case "TRANSACTION_ANALYST":
                         console.log("TRANSACTION_ANALYST dashboard");
+                        navigate('/transactionAnalyst')
                         break;
                     case "JUNIOR_OPERATIONS_MANAGER":
                         console.log("JUNIOR_OPERATIONS_MANAGER dashboard");
