@@ -71,7 +71,7 @@ function ViewLoanOpeningApplication() {
                     <li className="breadcrumb-item">
                         <span
                             role="button"
-                            onClick={() => navigate(`/loanOfficer/loanManagementSidebar/loanOpeningApplications`)}
+                            onClick={() => navigate(-1)}
                             className="text-decoration-none text-primary"
                         >
                             Loan Opening Applications

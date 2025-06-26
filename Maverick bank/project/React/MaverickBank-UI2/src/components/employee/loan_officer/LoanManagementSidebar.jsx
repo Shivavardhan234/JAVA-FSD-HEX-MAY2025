@@ -41,7 +41,7 @@ function LoanManagementSidebar(){
                             transition: 'opacity 0.3s ease',
                         }}
                     >
-                       Accounts Management
+                       Loan Management
                     </span>
                 </div>
 
@@ -50,7 +50,7 @@ function LoanManagementSidebar(){
                     {/* Find Employee */}
                     <li className="nav-item border-bottom border-white">
                         <Link
-                            to="findLoan"
+                            to=""
                             className={`nav-link d-flex align-items-center px-3 py-2 ${isExpanded ? 'justify-content-start' : 'justify-content-center'}`}
                             style={{
                                 height: '48px',

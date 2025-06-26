@@ -111,6 +111,7 @@ function SignIn() {
                         break;
                     case "REPORT_MANAGER":
                         console.log("REPORT_MANAGER dashboard");
+                        navigate('/reportManager')
                         break;
                     case "TRANSACTION_ANALYST":
                         console.log("TRANSACTION_ANALYST dashboard");
@@ -118,9 +119,11 @@ function SignIn() {
                         break;
                     case "JUNIOR_OPERATIONS_MANAGER":
                         console.log("JUNIOR_OPERATIONS_MANAGER dashboard");
+                        navigate('/juniorOperationsManager')
                         break;
                     case "SENIOR_OPERATIONS_MANAGER":
                         console.log("SENIOR_OPERATIONS_MANAGER dashboard");
+                        navigate('/seniorOperationsManager')
                         break;
                     default:
                         console.log("Improper role")

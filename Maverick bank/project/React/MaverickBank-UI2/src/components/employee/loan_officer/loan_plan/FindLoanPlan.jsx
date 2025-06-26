@@ -73,7 +73,7 @@ function FindLoanPlan() {
                                         <td>{loanPlan.loanType}</td>
                                         <td>{loanPlan.loanTerm} months</td>
                                         <td>₹{loanPlan.principalAmount}</td>
-                                        <td>{(loanPlan.intrestRate * 100).toFixed(2)}%</td>
+                                        <td>{loanPlan.interestRate}%</td>
                                         <td>₹{loanPlan.installmentAmount}</td>
                                         <td>{loanPlan.repaymentFrequency} months</td>
                                         <td>{loanPlan.gracePeriod} months</td>

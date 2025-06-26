@@ -58,7 +58,7 @@ function ViewAccountRequest() {
                     <li className="breadcrumb-item">
                         <span
                             role="button"
-                            onClick={() => navigate(`/accountManager/bankAccountsSideBar/accountRequestsByCategory`)}
+                            onClick={() => navigate(-1)}
                             className="text-decoration-none text-primary"
                         >
                             Accounts Request By Category

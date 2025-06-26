@@ -119,7 +119,7 @@ function TransactionsSidebar(){
                     </li>
                     <li className="nav-item border-bottom border-white">
                         <Link
-                            to='transactionsForAccount'
+                            to=''
                             className={`nav-link d-flex align-items-center px-3 py-2 ${isExpanded ? 'justify-content-start' : 'justify-content-center'}`}
                             style={{
                                 height: '48px',

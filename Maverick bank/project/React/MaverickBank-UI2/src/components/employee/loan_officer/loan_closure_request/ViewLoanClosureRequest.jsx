@@ -97,7 +97,7 @@ function ViewLoanClosureRequest() {
                     <li className="breadcrumb-item">
                         <span
                             role="button"
-                            onClick={() => navigate(`/loanOfficer/loanManagementSidebar/loanClosureRequests`)}
+                            onClick={() => navigate(-1)}
                             className="text-decoration-none text-primary"
                         >
                             Loans Closure Requests

@@ -194,7 +194,7 @@ function EmployeeProfile() {
                                             <div className="col-md-12 mb-2"><strong>Branch:</strong> {employee?.branch?.branchName}</div>
                                             <div className="col-md-12 mb-2">
                                                 <button className="btn btn-outline-secondary btn-sm"
-                                                    onClick={() => navigate("/accountManager/viewBranchForAccountManager", { state: { branch: employee.branch } })}>
+                                                    onClick={() => navigate("../viewBranchForEmployee", { state: { branch: employee.branch } })}>
                                                     View Branch
                                                 </button>
                                             </div>

@@ -99,7 +99,7 @@ function LoanClosureRequests() {
                                         <td>
                                             <button
                                                 className="btn btn-outline-primary btn-sm"
-                                                onClick={() => {getLoanClosureRequest(dispatch)(req.id); navigate(`/loanOfficer/loanManagementSidebar/viewLoanClosure`);}}
+                                                onClick={() => {getLoanClosureRequest(dispatch)(req.id); navigate('../viewLoanClosure');}}
                                             >
                                                 View Request
                                             </button>

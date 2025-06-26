@@ -75,7 +75,7 @@ function ViewAccount() {
                     <li className="breadcrumb-item">
                         <span
                             role="button"
-                            onClick={() => navigate(`/accountManager/bankAccountsSideBar/accountsByCategory`)}
+                            onClick={() => navigate(-1)}
                             className="text-decoration-none text-primary"
                         >
                             Accounts By Category

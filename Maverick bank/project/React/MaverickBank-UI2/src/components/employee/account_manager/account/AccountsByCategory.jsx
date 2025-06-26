@@ -130,7 +130,7 @@ function AccountsByCategory() {
                                                 className="btn btn-outline-info btn-sm"
                                                 onClick={() => {
                                                     getBankAccount(dispatch)(acc.id);
-                                                    navigate(`/accountManager/bankAccountsSideBar/viewAccount`);
+                                                    navigate(`../viewAccount`);
                                                 }}
                                             >
                                                 View

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { getUserDetails } from "../../../store/actions/UserAction";
+import { getUserDetails } from "../../store/actions/UserAction";
 import { useDispatch, useSelector } from "react-redux";
 
 

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +32,7 @@ public class FinancialPerformanceReportController {
 	
 //-------------------------------------------------- POST --------------------------------------------------------------
 	 @PostMapping("/generate")
+	 @CrossOrigin(origins = "http://localhost:5173")
 	    public FinancialPerformanceReport generateReport(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
 
 	        return financialPerformanceReportService.generateReport(principal);
@@ -40,16 +42,19 @@ public class FinancialPerformanceReportController {
 //------------------------------------------------- GET ------------------------------------------------------------------
 
 	 @GetMapping("/get/all")
+	 @CrossOrigin(origins = "http://localhost:5173")
 	    public List<FinancialPerformanceReport> getAllReports(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
 	        return financialPerformanceReportService.getAllReports(principal);
 	    }
 
 	    @GetMapping("/get/by-id/{id}")
+	    @CrossOrigin(origins = "http://localhost:5173")
 	    public FinancialPerformanceReport getReportById(@PathVariable int id, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 	        return financialPerformanceReportService.getReportById(id, principal);
 	    }
 
-	    @GetMapping("/get/by-date-range/{startDate}/{enddate}")
+	    @GetMapping("/get/by-date-range/{startDate}/{endDate}")
+	    @CrossOrigin(origins = "http://localhost:5173")
 	    public List<FinancialPerformanceReport> getReportsByDateRange(@PathVariable LocalDate startDate,@PathVariable LocalDate endDate,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 	        return financialPerformanceReportService.getReportsByDateRange(startDate, endDate, principal);
 	    }

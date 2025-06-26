@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,7 @@ public class RegulatoryReportController {
 	
 //---------------------------------------------- POST -------------------------------------------------------------------
 	@PostMapping("/generate")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public RegulatoryReport generateRegulatoryReport(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
 	    return regulatoryReportService.generateRegulatoryReport(principal);
 	}
@@ -38,15 +40,18 @@ public class RegulatoryReportController {
 //----------------------------------------- GET --------------------------------------------------------------------------
 	
 	@GetMapping("/get/all")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public List<RegulatoryReport> getAllReports(Principal principal) throws DeletedUserException, InvalidActionException, InvalidInputException {
 	    return regulatoryReportService.getAllReports(principal);
 	}
 	@GetMapping("/get/by-id/{id}")
+	@CrossOrigin(origins = "http://localhost:5173")
 	public RegulatoryReport getReportById(@PathVariable int id,Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidActionException, InvalidInputException {
 	    return regulatoryReportService.getReportById(id, principal);
 	}
 	@GetMapping("/get/by-date-range/{startDate}/{endDate}")
-	public List<RegulatoryReport> getReportsByDateRange(LocalDate startDate, LocalDate endDate, Principal principal) throws DeletedUserException, InvalidActionException, InvalidInputException, ResourceNotFoundException {
+	@CrossOrigin(origins = "http://localhost:5173")
+	public List<RegulatoryReport> getReportsByDateRange(@PathVariable LocalDate startDate,@PathVariable LocalDate endDate, Principal principal) throws DeletedUserException, InvalidActionException, InvalidInputException, ResourceNotFoundException {
 
 	    return regulatoryReportService.getReportsByDateRange(startDate, endDate,principal);
 	}

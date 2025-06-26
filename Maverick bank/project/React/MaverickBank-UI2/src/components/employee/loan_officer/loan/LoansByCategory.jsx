@@ -106,7 +106,7 @@ function LoansByCategory() {
                                         className="btn btn-outline-primary btn-sm"
                                         onClick={() => {
                                             getLoan(dispatch)(loan.id);
-                                            navigate("/loanOfficer/loanManagementSidebar/viewLoan");}}
+                                            navigate("../viewLoan");}}
                                     >
                                         View Loan
                                     </button>

@@ -117,7 +117,7 @@ function LoanOpeningApplications({ isExpanded }) {
                                         className="btn btn-outline-primary btn-sm"
                                         onClick={() => {
                                             getLoanOpeningApplication(dispatch)(app.id);
-                                            navigate("/loanOfficer/loanManagementSidebar/viewLoanOpeningApplication");}}>
+                                            navigate("../viewLoanOpeningApplication");}}>
                                         View Application
                                     </button>
                                 </div>

@@ -89,7 +89,7 @@ function AccountRequestsByCategory() {
                         className="btn btn-sm btn-primary"
                         onClick={() =>{
                             getAccountRequest(dispatch)(req.id);
-                          navigate(`/accountManager/bankAccountsSideBar/viewAccountRequest`);}}>
+                          navigate(`../viewAccountRequest`);}}>
                         View Request
                       </button>
                     </td>

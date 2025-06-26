@@ -37,7 +37,7 @@ import MyAccountOpeningApplications from './components/customer/account-opening-
 import JointAccountRequests from './components/customer/account-opening-application-management/JointAccountRequests.jsx';
 import AccountManagerNavbar from './components/employee/account_manager/AccountManagerNavbar.jsx';
 import EmployeeProfile from './components/employee/EmployeeProfile.jsx';
-import ViewBranchForEmployee from './components/employee/account_manager/ViewBranchForEmployee.jsx';
+import ViewBranchForEmployee from './components/employee/ViewBranchForEmployee.jsx';
 import AccountsDashboardSidebar from './components/employee/account_manager/AccountsDashboardSideber.jsx';
 import FindAccountOpeningApplication from './components/employee/account_manager/account_opening_application/FindAccountOpeningApplication.jsx';
 import AccountOpeningApplicationByCategory from './components/employee/account_manager/account_opening_application/AccountOpeningApplicationByCategory.jsx';
@@ -81,6 +81,16 @@ import TransactionsSidebar from './components/employee/transaction_analyst/Trans
 import FindTransaction from './components/employee/transaction_analyst/FindTransaction.jsx';
 import TransactionsByCategory from './components/employee/transaction_analyst/TransactionsByCategory.jsx';
 import TransactionsForAccount from './components/employee/transaction_analyst/TransactionsForAccount.jsx';
+import ReportManagerNavbar from './components/employee/report_manager/ReportManagerNavBar.jsx';
+import ReportManagerSideBar from './components/employee/report_manager/ReportManagerSideBar.jsx';
+import GenerateReport from './components/employee/report_manager/GenerateReport.jsx';
+import FindReport from './components/employee/report_manager/FindReport.jsx';
+import FinancialPerformanceReports from './components/employee/report_manager/FinancialPerformanceReports.jsx';
+import RegulatoryReports from './components/employee/report_manager/RegulatoryReports.jsx';
+import ViewFinancialPerformanceReport from './components/employee/report_manager/ViewFinancialPerformanceReport.jsx';
+import ViewRegulatoryReport from './components/employee/report_manager/ViewRegulatoryReport.jsx';
+import JuniorOperationsManagerNavbar from './components/employee/junior_operations_manager/JuniorOperationsManagerNavBar.jsx';
+import SeniorOperationsManagerNavbar from './components/employee/senior_operations_manager/SeniorOperationsManagerNavBar.jsx';
 
 
 
@@ -174,16 +184,16 @@ function App() {
           <Route path="profile" element={<Profile />}></Route>
         </Route>
 
-{/* =============================================================== EMP PROFILR ============================================================ */}
+        {/* =============================================================== EMP PROFILR ============================================================ */}
 
-        
+
 
         {/* ====================================================== ACCOUNT MANAGER =================================================================== */}
 
         {/* Account manager */}
         <Route path='/accountManager' element={<AccountManagerNavbar />}>
           <Route path='employeeProfile' element={<EmployeeProfile />}></Route>
-          <Route path='viewBranchForAccountManager' element={<ViewBranchForEmployee />}></Route>
+          <Route path='viewBranchForEmployee' element={<ViewBranchForEmployee />}></Route>
 
           {/* Accounts Dashboard */}
           <Route path='bankAccountsSideBar' element={<AccountsDashboardSidebar />}>
@@ -192,7 +202,7 @@ function App() {
             <Route path='accountApplicationByCategory' element={<AccountOpeningApplicationByCategory />}></Route>
 
             {/* Bank Account */}
-            <Route path='findAccount' element={<FindBankAccount />}></Route>
+            <Route index element={<FindBankAccount />} />
             <Route path='accountsByCategory' element={<AccountsByCategory />}></Route>
             <Route path='viewAccount' element={<ViewAccount />}></Route>
 
@@ -206,11 +216,12 @@ function App() {
         <Route path='/loanOfficer' element={<LoanOfficerNavbar />}>
           <Route index element={<EmployeeProfile />}></Route>
           <Route path='employeeProfile' element={<EmployeeProfile />}></Route>
+          <Route path='viewBranchForEmployee' element={<ViewBranchForEmployee />}></Route>
           {/* loan Management sidebar */}
           <Route path='loanManagementSidebar' element={<LoanManagementSidebar />}>
 
             {/* loans */}
-            <Route path='findLoan' element={<FindLoan />}></Route>
+            <Route index element={<FindLoan />}></Route>
             <Route path='loansByCategory' element={<LoansByCategory />}></Route>
             <Route path='viewLoan' element={<ViewLoan />}></Route>
             {/* loan Opening Applications */}
@@ -231,16 +242,136 @@ function App() {
         </Route>
 
         {/* =================================================== TRANSACTION ANALYST ========================================================== */}
-        <Route path='/transactionAnalyst' element={<TransactionAnalystNavbar/>}>
-        <Route path='employeeProfile' element={<EmployeeProfile />}></Route>
+        <Route path='/transactionAnalyst' element={<TransactionAnalystNavbar />}>
+          <Route path='employeeProfile' element={<EmployeeProfile />}></Route>
+          <Route path='viewBranchForEmployee' element={<ViewBranchForEmployee />}></Route>
 
-        <Route path='transactionSideBar' element={<TransactionsSidebar/>}>
-        <Route path='findTransaction' element={<FindTransaction/>}></Route>
-        <Route path='transactionsByCategory' element={<TransactionsByCategory/>}></Route>
-        <Route path='transactionsForAccount' element={<TransactionsForAccount/>}></Route>
+          <Route path='transactionSideBar' element={<TransactionsSidebar />}>
+            <Route path='findTransaction' element={<FindTransaction />}></Route>
+            <Route path='transactionsByCategory' element={<TransactionsByCategory />}></Route>
+            <Route index element={<TransactionsForAccount />} />
+          </Route>
         </Route>
-        
+
+
+        {/* ========================================================= REPORT MANAGER ========================================================== */}
+        <Route path='/reportManager' element={<ReportManagerNavbar />}>
+          <Route path='employeeProfile' element={<EmployeeProfile />}></Route>
+          <Route path='viewBranchForEmployee' element={<ViewBranchForEmployee />}></Route>
+          <Route path='reportManagerSidebar' element={<ReportManagerSideBar />}>
+            <Route path='generateReport' element={<GenerateReport />}></Route>
+            <Route index element={<FindReport />} />
+            <Route path='financialPerformanceReports' element={<FinancialPerformanceReports />}></Route>
+            <Route path='regulatoryReports' element={<RegulatoryReports />}></Route>
+            <Route path='viewFinancialPerformanceReport' element={<ViewFinancialPerformanceReport />}></Route>
+            <Route path='viewRegulatoryReport' element={<ViewRegulatoryReport />}></Route>
+          </Route>
         </Route>
+
+{/* ============================================= JUBIOR OPRRATIONS MANAGER ================================================================== */}
+
+        <Route path="/juniorOperationsManager" element={<JuniorOperationsManagerNavbar />}>
+          {/* Profile */}
+          <Route path="employeeProfile" element={<EmployeeProfile />} />
+          <Route path='viewBranchForEmployee' element={<ViewBranchForEmployee />}></Route>
+
+          {/* -------------------- Accounts Dashboard (AccountManager's Sidebar & Routes) -------------------- */}
+          <Route path="bankAccountsSideBar" element={<AccountsDashboardSidebar />}>
+            <Route path="findAccountApplication" element={<FindAccountOpeningApplication />} />
+            <Route path="accountApplicationByCategory" element={<AccountOpeningApplicationByCategory />} />
+
+            <Route index element={<FindBankAccount />} />
+            <Route path="accountsByCategory" element={<AccountsByCategory />} />
+            <Route path="viewAccount" element={<ViewAccount />} />
+
+            <Route path="findAccountRequest" element={<FindAccountRequest />} />
+            <Route path="accountRequestsByCategory" element={<AccountRequestsByCategory />} />
+            <Route path="viewAccountRequest" element={<ViewAccountRequest />} />
+          </Route>
+
+          {/* -------------------- Transactions Dashboard (TransactionAnalyst's Sidebar & Routes) -------------------- */}
+          <Route path="transactionSideBar" element={<TransactionsSidebar />}>
+            <Route path="findTransaction" element={<FindTransaction />} />
+            <Route path="transactionsByCategory" element={<TransactionsByCategory />} />
+            <Route index element={<TransactionsForAccount />} />
+          </Route>
+
+          {/* -------------------- Report Management (ReportManager's Sidebar & Routes) -------------------- */}
+          <Route path="reportManagerSidebar" element={<ReportManagerSideBar />}>
+            <Route path="generateReport" element={<GenerateReport />} />
+            <Route index element={<FindReport />} />
+            <Route path="financialPerformanceReports" element={<FinancialPerformanceReports />} />
+            <Route path="regulatoryReports" element={<RegulatoryReports />} />
+            <Route path="viewFinancialPerformanceReport" element={<ViewFinancialPerformanceReport />} />
+            <Route path="viewRegulatoryReport" element={<ViewRegulatoryReport />} />
+          </Route>
+        </Route>
+
+
+
+        {/* ================================================ SENIOR OPERATIONS MANAGER ======================================================== */}
+
+ <Route path="/seniorOperationsManager" element={<SeniorOperationsManagerNavbar />}>
+          {/* Profile */}
+          <Route path="employeeProfile" element={<EmployeeProfile />} />
+          <Route path='viewBranchForEmployee' element={<ViewBranchForEmployee />}></Route>
+
+          {/* -------------------- Accounts Dashboard (AccountManager's Sidebar & Routes) -------------------- */}
+          <Route path="bankAccountsSideBar" element={<AccountsDashboardSidebar />}>
+            <Route path="findAccountApplication" element={<FindAccountOpeningApplication />} />
+            <Route path="accountApplicationByCategory" element={<AccountOpeningApplicationByCategory />} />
+
+            <Route index element={<FindBankAccount />} />
+            <Route path="accountsByCategory" element={<AccountsByCategory />} />
+            <Route path="viewAccount" element={<ViewAccount />} />
+
+            <Route path="findAccountRequest" element={<FindAccountRequest />} />
+            <Route path="accountRequestsByCategory" element={<AccountRequestsByCategory />} />
+            <Route path="viewAccountRequest" element={<ViewAccountRequest />} />
+          </Route>
+
+          {/* -------------------- Transactions Dashboard (TransactionAnalyst's Sidebar & Routes) -------------------- */}
+          <Route path="transactionSideBar" element={<TransactionsSidebar />}>
+            <Route path="findTransaction" element={<FindTransaction />} />
+            <Route path="transactionsByCategory" element={<TransactionsByCategory />} />
+            <Route index element={<TransactionsForAccount />} />
+          </Route>
+
+          {/* -------------------- Report Management (ReportManager's Sidebar & Routes) -------------------- */}
+          <Route path="reportManagerSidebar" element={<ReportManagerSideBar />}>
+            <Route path="generateReport" element={<GenerateReport />} />
+            <Route index element={<FindReport />} />
+            <Route path="financialPerformanceReports" element={<FinancialPerformanceReports />} />
+            <Route path="regulatoryReports" element={<RegulatoryReports />} />
+            <Route path="viewFinancialPerformanceReport" element={<ViewFinancialPerformanceReport />} />
+            <Route path="viewRegulatoryReport" element={<ViewRegulatoryReport />} />
+          </Route>
+          {/* ------------------------------------------------ LOAN MANAGEMENT ---------------------------------------- */}
+            {/* loan Management sidebar */}
+          <Route path='loanManagementSidebar' element={<LoanManagementSidebar />}>
+
+            {/* loans */}
+            <Route index element={<FindLoan />}></Route>
+            <Route path='loansByCategory' element={<LoansByCategory />}></Route>
+            <Route path='viewLoan' element={<ViewLoan />}></Route>
+            {/* loan Opening Applications */}
+            <Route path='loanOpeningApplications' element={<LoanOpeningApplications />}></Route>
+            <Route path='viewLoanOpeningApplication' element={<ViewLoanOpeningApplication />}></Route>
+            <Route path='findLoanApplication' element={<FindLoanOpeningApplication />}></Route>
+
+            {/* Loan Plans */}
+            <Route path='findLoanPlan' element={<FindLoanPlan />}></Route>
+            <Route path='loanPlansByCategory' element={<LoanPlansByCategory />}></Route>
+            <Route path='addLoanPlan' element={<AddLoanPlan />}></Route>
+
+            {/* Loan Closure Requests */}
+            <Route path='findLoanClosureRequest' element={<FindLoanClosureRequest />}></Route>
+            <Route path='loanClosureRequests' element={<LoanClosureRequests />}></Route>
+            <Route path='viewLoanClosure' element={<ViewLoanClosureRequest />}></Route>
+          </Route>
+
+        </Route>
+
 
 
 

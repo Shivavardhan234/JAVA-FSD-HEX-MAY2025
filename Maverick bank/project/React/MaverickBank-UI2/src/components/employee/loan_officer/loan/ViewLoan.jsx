@@ -90,7 +90,7 @@ function ViewLoan() {
                     <li className="breadcrumb-item">
                         <span
                             role="button"
-                            onClick={() => navigate(`/loanOfficer/loanManagementSidebar/loansByCategory`)}
+                            onClick={() => navigate(-1)}
                             className="text-decoration-none text-primary"
                         >
                             Loans By Category

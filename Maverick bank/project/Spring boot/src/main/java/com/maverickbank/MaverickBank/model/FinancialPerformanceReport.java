@@ -31,9 +31,7 @@ public class FinancialPerformanceReport {
 	    @Column(name="total_loan_amount issued",nullable=false)
 	    private BigDecimal totalLoanAmountIssued;      
 	    @Column(name="total_loan_repayment",nullable=false)
-	    private BigDecimal totalLoanRepayment;   
-	    @Column(name="total_interest_earned",nullable=false)
-	    private BigDecimal totalInterestEarned;   
+	    private BigDecimal totalLoanRepayment;    
 	    @Column(name="total_transactions",nullable=false)
 	    private int totalTransactions;   
 	    @Column(name="total_number_of_transactions",nullable=false)
@@ -49,7 +47,7 @@ public class FinancialPerformanceReport {
 		}
 		public FinancialPerformanceReport(int id, LocalDate reportDate, BigDecimal totalDeposits,
 				int totalNumberOfLoansIssued, int totalNumberOfActiveLoans, BigDecimal totalLoanAmountIssued,
-				BigDecimal totalLoanRepayment, BigDecimal totalInterestEarned, int totalTransactions,
+				BigDecimal totalLoanRepayment,  int totalTransactions,
 				BigDecimal totaltransactionAmount) {
 			super();
 			this.id = id;
@@ -59,7 +57,6 @@ public class FinancialPerformanceReport {
 			this.totalNumberOfActiveLoans = totalNumberOfActiveLoans;
 			this.totalLoanAmountIssued = totalLoanAmountIssued;
 			this.totalLoanRepayment = totalLoanRepayment;
-			this.totalInterestEarned = totalInterestEarned;
 			this.totalTransactions = totalTransactions;
 			this.totaltransactionAmount = totaltransactionAmount;
 		}
@@ -90,9 +87,7 @@ public class FinancialPerformanceReport {
 		public BigDecimal getTotalLoanRepayment() {
 			return totalLoanRepayment;
 		}
-		public BigDecimal getTotalInterestEarned() {
-			return totalInterestEarned;
-		}
+		
 		public int getTotalTransactions() {
 			return totalTransactions;
 		}
@@ -155,12 +150,7 @@ public class FinancialPerformanceReport {
 	        this.totalLoanRepayment = totalLoanRepayment;
 	    }
 
-	    public void setTotalInterestEarned(BigDecimal totalInterestEarned) throws InvalidInputException {
-	        if (totalInterestEarned == null) {
-	                 }
-	       
-	        this.totalInterestEarned = totalInterestEarned;
-	    }
+	   
 	    
 	    
 
