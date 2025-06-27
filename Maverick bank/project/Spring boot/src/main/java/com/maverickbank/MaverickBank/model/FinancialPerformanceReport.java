@@ -114,7 +114,7 @@ public class FinancialPerformanceReport {
 
 	    public void setTotalDeposits(BigDecimal totalDeposits) throws InvalidInputException {
 	        if (totalDeposits == null|| (totalDeposits.compareTo(BigDecimal.ZERO) < 0)) {
-	            throw new InvalidInputException("Invalid total deposits provided. please provide appropriate total deposits...!!! ");
+	            throw new InvalidInputException("Invalid total deposits provided. please provide appropriate total deposits...!!!");
 	        }
 	        
 	        this.totalDeposits = totalDeposits;

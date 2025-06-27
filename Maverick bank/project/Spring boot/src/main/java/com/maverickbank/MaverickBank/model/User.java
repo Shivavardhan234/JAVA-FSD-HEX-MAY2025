@@ -114,7 +114,7 @@ public class User {
 	 * @throws InvalidInputException
 	 */
 	public void setPassword(String password)throws InvalidInputException {
-		if(password==null || (password.trim().length()<8)||!password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[`~!@#$%^&*()_+=\\\\/?>\\[\\]\\-{}.,<';:]).+$")) {
+		if(password==null || (password.trim().length()<8)||!password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[`~!@#$%^&*()_+=\\\\/?>\\[\\]\\-{}.,<';]).+$")) {
 			throw new InvalidInputException("Password is Invalid. Please enter appropriate Password...!!!");
 		}
 		this.password = password;
