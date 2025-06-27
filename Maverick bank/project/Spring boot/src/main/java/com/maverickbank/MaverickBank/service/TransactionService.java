@@ -201,16 +201,7 @@ public class TransactionService {
         return transactionList;
     }
 
-    
-    /**
-     * @param accountNumber
-     * @param principal
-     * @return
-     */
-    public Object generateAccountStatement(String accountNumber, Principal principal) {
-        // For now, return all transactions of account; you can add summary (credit/debit total) later.
-        return transactionRepository.findAllByAccountNumber(accountNumber);
-    }
+  
 
     
     /**

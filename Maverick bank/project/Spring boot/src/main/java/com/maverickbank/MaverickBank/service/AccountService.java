@@ -70,7 +70,7 @@ public AccountService(AccountRepository accountRepository, UserRepository userRe
 	    
 	    String accountNumber=AccountNumberGenerator.accountNumberGenerator();
 	    
-	    while(accountRepository.getByAccountNumber(accountNumber)!=null) {
+	    while(accountRepository.getByAccountNumber(accountNumber)!=null  ) {
 	    	accountNumber=AccountNumberGenerator.accountNumberGenerator();
 	    }
 	    

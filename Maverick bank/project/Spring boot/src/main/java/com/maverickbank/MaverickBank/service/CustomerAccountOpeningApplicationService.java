@@ -279,6 +279,9 @@ public class CustomerAccountOpeningApplicationService {
 	        }
 	        return customerAccountOpeningApplicationList;
 	    }
+	    
+	    
+	    
 	    public List<CustomerAccountOpeningApplication> getByCustomerIdAndStatus(int customerId,ApplicationStatus status, Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
 	    	 User currentUser = userRepository.getByUsername(principal.getName());
 		        UserValidation.checkActiveStatus(currentUser.getStatus());

@@ -26,7 +26,8 @@ import jakarta.persistence.Id;
 	public class Transaction {
 		@Id
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
-		private int id;
+		@Column(name="id")
+		private int transactionId;
 		@Column(name="from_details",nullable=false)
 		private String fromDetails;
 		@Enumerated(EnumType.STRING)
@@ -83,7 +84,7 @@ import jakarta.persistence.Id;
 
 
 		public LocalTime getTransactionTime() {return transactionTime;}
-		public int getTransactionId() {return id;}
+		public int getTransactionId() {return transactionId;}
 		public String getFromDetails() {return fromDetails;}
 		public PaymentMedium getFromPaymentMedium() { return fromPaymentMedium;}
 		public String getToDetails() {return toDetails;}
@@ -101,7 +102,7 @@ import jakarta.persistence.Id;
 		    if (transactionId <= 0) {
 		        throw new InvalidInputException("Invalid transaction id. Transaction id should be greater than zero...!!!");
 		    }
-		    this.id = transactionId;
+		    this.transactionId = transactionId;
 		}
 
 		public void setFromDetails(String fromDetails) throws InvalidInputException {
@@ -179,6 +180,10 @@ import jakarta.persistence.Id;
 		    
 		    this.transactionDescription = transactionDescription.trim();
 		}
+
+
+
+		
 
 		
 

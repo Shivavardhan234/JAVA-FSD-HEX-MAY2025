@@ -1,15 +1,8 @@
 package com.maverickbank.MaverickBank;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.security.Principal;
@@ -28,7 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.Gender;
 import com.maverickbank.MaverickBank.enums.Role;
-import com.maverickbank.MaverickBank.exception.InvalidActionException;
 import com.maverickbank.MaverickBank.exception.InvalidInputException;
 import com.maverickbank.MaverickBank.exception.ResourceExistsException;
 import com.maverickbank.MaverickBank.exception.ResourceNotFoundException;
@@ -57,13 +49,13 @@ class EmployeeServiceTest {
     private UserService userService;
 
     // Sample data for tests
-    User sampleUserEmployee;
-    User sampleUserAdmin;
-    Employee sampleEmployee1;
-    Employee sampleEmployee2;
-    Branch sampleBranch;
-    Principal samplePrincipalEmployee;
-    Principal samplePrincipalAdmin;
+    private   User sampleUserEmployee;
+    private   User sampleUserAdmin;
+    private   Employee sampleEmployee1;
+    private  Employee sampleEmployee2;
+    private  Branch sampleBranch;
+    private  Principal samplePrincipalEmployee;
+    private  Principal samplePrincipalAdmin;
 
     @BeforeEach
     public void init() throws InvalidInputException {
@@ -210,287 +202,289 @@ class EmployeeServiceTest {
         assertEquals(expectedList, actualList);
         
     }
-
-   
+    
+    
     
     @Test
-    public void testGetEmployeeByUsername_Success() throws Exception {
-        // Arrange
-        when(userRepository.getByUsername(samplePrincipalEmployee.getName())).thenReturn(sampleUserEmployee);
-        when(employeeRepository.getEmployeeByUsername("empuser1")).thenReturn(sampleEmployee1);
+    public void testGetEmployeeByUsername() throws Exception {
+        // Case 1: Success
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
+        when(employeeRepository.getEmployeeByUsername("username1")).thenReturn(sampleEmployee1);
 
-        // Act
-        Employee foundEmployee = employeeService.getEmployeeByUsername("empuser1", samplePrincipalEmployee);
+        Employee result = employeeService.getEmployeeByUsername("username1", samplePrincipalEmployee);
 
-        // Assert
-        assertNotNull(foundEmployee);
-        assertEquals("John Doe", foundEmployee.getName());
-        verify(userRepository).getByUsername(samplePrincipalEmployee.getName());
-        verify(employeeRepository).getEmployeeByUsername("empuser1");
-    }
+        assertEquals(101, result.getId());
+        assertEquals("John Doe", result.getName());
+        assertEquals("9876543210", result.getContactNumber());
+        assertEquals(sampleUserEmployee, result.getUser());
 
-    @Test
-    public void testGetEmployeeByUsername_NotFound() {
-        // Arrange
-        when(userRepository.getByUsername(samplePrincipalEmployee.getName())).thenReturn(sampleUserEmployee);
-        when(employeeRepository.getEmployeeByUsername("nonexistentuser")).thenReturn(null);
+        // Case 2: Employee not found
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
+        when(employeeRepository.getEmployeeByUsername("username2")).thenReturn(null);
 
-        // Act & Assert
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            employeeService.getEmployeeByUsername("nonexistentuser", samplePrincipalEmployee);
+        ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
+            employeeService.getEmployeeByUsername("username2", samplePrincipalEmployee);
         });
-        assertEquals("No employee record found with given username...!!!", exception.getMessage());
-        verify(userRepository).getByUsername(samplePrincipalEmployee.getName());
-        verify(employeeRepository).getEmployeeByUsername("nonexistentuser");
+
+        assertEquals("No employee record found with given username...!!!", e.getMessage());
     }
     
-
+    
+    
     @Test
-    public void testGetEmployeeByContactNumber_Success() throws Exception {
-        // Arrange
-        when(userRepository.getByUsername(samplePrincipalEmployee.getName())).thenReturn(sampleUserEmployee);
+    public void testGetEmployeeByContactNumber() throws Exception {
+        // Case 1: Success
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
         when(employeeRepository.getByContactNumber("9876543210")).thenReturn(sampleEmployee1);
 
-        // Act
-        Employee foundEmployee = employeeService.getEmployeeByContactNumber("9876543210", samplePrincipalEmployee);
+        Employee result = employeeService.getEmployeeByContactNumber("9876543210", samplePrincipalEmployee);
 
-        // Assert
-        assertNotNull(foundEmployee);
-        assertEquals("John Doe", foundEmployee.getName());
-        verify(userRepository).getByUsername(samplePrincipalEmployee.getName());
-        verify(employeeRepository).getByContactNumber("9876543210");
-    }
+        assertEquals(101, result.getId());
+        assertEquals("John Doe", result.getName());
+        assertEquals("9876543210", result.getContactNumber());
+        assertEquals(sampleUserEmployee, result.getUser());
 
-    @Test
-    public void testGetEmployeeByContactNumber_NotFound() {
-        // Arrange
-        when(userRepository.getByUsername(samplePrincipalEmployee.getName())).thenReturn(sampleUserEmployee);
-        when(employeeRepository.getByContactNumber("0000000000")).thenReturn(null);
+        // Case 2: Employee not found
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
+        when(employeeRepository.getByContactNumber("1231231234")).thenReturn(null);
 
-        // Act & Assert
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            employeeService.getEmployeeByContactNumber("0000000000", samplePrincipalEmployee);
+        ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
+            employeeService.getEmployeeByContactNumber("1231231234", samplePrincipalEmployee);
         });
-        assertEquals("No employee record found with given contact number...!!!", exception.getMessage());
-        verify(userRepository).getByUsername(samplePrincipalEmployee.getName());
-        verify(employeeRepository).getByContactNumber("0000000000");
+
+        assertEquals("No employee record found with given contact number...!!!", e.getMessage());
     }
 
-
-
+    
     @Test
-    public void testGetEmployeeByEmail_Success() throws Exception {
-        // Arrange
-        when(userRepository.getByUsername(samplePrincipalEmployee.getName())).thenReturn(sampleUserEmployee);
+    public void testGetEmployeeByEmail() throws Exception {
+        // Case 1: Success
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
         when(employeeRepository.getByEmail("john.doe@example.com")).thenReturn(sampleEmployee1);
 
-        // Act
-        Employee foundEmployee = employeeService.getEmployeeByEmail("john.doe@example.com", samplePrincipalEmployee);
+        Employee result = employeeService.getEmployeeByEmail("john.doe@example.com", samplePrincipalEmployee);
 
-        // Assert
-        assertNotNull(foundEmployee);
-        assertEquals("John Doe", foundEmployee.getName());
-        verify(userRepository).getByUsername(samplePrincipalEmployee.getName());
-        verify(employeeRepository).getByEmail("john.doe@example.com");
-    }
+        assertEquals(101, result.getId());
+        assertEquals("John Doe", result.getName());
+        assertEquals("john.doe@example.com", result.getEmail());
+        assertEquals(sampleUserEmployee, result.getUser());
 
-    @Test
-    public void testGetEmployeeByEmail_NotFound() {
-        // Arrange
-        when(userRepository.getByUsername(samplePrincipalEmployee.getName())).thenReturn(sampleUserEmployee);
-        when(employeeRepository.getByEmail("nonexistent@example.com")).thenReturn(null);
+        // Case 2: Employee not found
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
+        when(employeeRepository.getByEmail("not.found@example.com")).thenReturn(null);
 
-        // Act & Assert
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            employeeService.getEmployeeByEmail("nonexistent@example.com", samplePrincipalEmployee);
+        ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
+            employeeService.getEmployeeByEmail("not.found@example.com", samplePrincipalEmployee);
         });
-        assertEquals("No employee record found with given email...!!!", exception.getMessage());
-        verify(userRepository).getByUsername(samplePrincipalEmployee.getName());
-        verify(employeeRepository).getByEmail("nonexistent@example.com");
+
+        assertEquals("No employee record found with given email...!!!", e.getMessage());
     }
 
- 
-
+    
+    
     @Test
-    public void testGetEmployeeById_Success() throws Exception {
-        // Arrange
-        when(userRepository.getByUsername(samplePrincipalEmployee.getName())).thenReturn(sampleUserEmployee);
+    public void testGetEmployeeById() throws Exception {
+        // Case 1: Success
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
         when(employeeRepository.findById(101)).thenReturn(Optional.of(sampleEmployee1));
 
-        // Act
-        Employee foundEmployee = employeeService.getEmployeeById(101, samplePrincipalEmployee);
+        Employee result = employeeService.getEmployeeById(101, samplePrincipalEmployee);
 
-        // Assert
-        assertNotNull(foundEmployee);
-        assertEquals("John Doe", foundEmployee.getName());
-        verify(userRepository).getByUsername(samplePrincipalEmployee.getName());
-        verify(employeeRepository).findById(101);
-    }
+        assertEquals(101, result.getId());
+        assertEquals("John Doe", result.getName());
+        assertEquals("9876543210", result.getContactNumber());
+        assertEquals(sampleUserEmployee, result.getUser());
 
-    @Test
-    public void testGetEmployeeById_NotFound() {
-        // Arrange
-        when(userRepository.getByUsername(samplePrincipalEmployee.getName())).thenReturn(sampleUserEmployee);
+        // Case 2: Employee not found
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
         when(employeeRepository.findById(999)).thenReturn(Optional.empty());
 
-        // Act & Assert
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+        ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
             employeeService.getEmployeeById(999, samplePrincipalEmployee);
         });
-        assertEquals("No employee record with given id...!!!", exception.getMessage());
-        verify(userRepository).getByUsername(samplePrincipalEmployee.getName());
-        verify(employeeRepository).findById(999);
+
+        assertEquals("No employee record with given id...!!!", e.getMessage());
     }
 
-  
-
+    
     @Test
-    public void testGetEmployeeByUserId_Success() throws Exception {
-        // Arrange
-        when(userRepository.getByUsername(samplePrincipalEmployee.getName())).thenReturn(sampleUserEmployee);
-        when(employeeRepository.getEmployeeByUserId(sampleUserEmployee.getId())).thenReturn(sampleEmployee1);
+    public void testGetEmployeeByUserId() throws Exception {
+        // Case 1: Success
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
+        when(employeeRepository.getEmployeeByUserId(1)).thenReturn(sampleEmployee1);
 
-        // Act
-        Employee foundEmployee = employeeService.getEmployeeByUserId(sampleUserEmployee.getId(), samplePrincipalEmployee);
+        Employee result = employeeService.getEmployeeByUserId(1, samplePrincipalEmployee);
 
-        // Assert
-        assertNotNull(foundEmployee);
-        assertEquals("John Doe", foundEmployee.getName());
-        verify(userRepository).getByUsername(samplePrincipalEmployee.getName());
-        verify(employeeRepository).getEmployeeByUserId(sampleUserEmployee.getId());
-    }
+        assertEquals(101, result.getId());
+        assertEquals("John Doe", result.getName());
+        assertEquals("9876543210", result.getContactNumber());
+        assertEquals(sampleUserEmployee, result.getUser());
 
-    @Test
-    public void testGetEmployeeByUserId_NotFound() {
-        // Arrange
-        when(userRepository.getByUsername(samplePrincipalEmployee.getName())).thenReturn(sampleUserEmployee);
+        // Case 2: Employee not found
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
         when(employeeRepository.getEmployeeByUserId(999)).thenReturn(null);
 
-        // Act & Assert
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+        ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
             employeeService.getEmployeeByUserId(999, samplePrincipalEmployee);
         });
-        assertEquals("No employee record with the given user id...!!!", exception.getMessage());
-        verify(userRepository).getByUsername(samplePrincipalEmployee.getName());
-        verify(employeeRepository).getEmployeeByUserId(999);
+
+        assertEquals("No employee record with the given user id...!!!", e.getMessage());
     }
 
- 
+    
     @Test
-    public void testGetEmployeeByDesignation_Success() throws Exception {
-        // Arrange
-        when(userRepository.getByUsername(samplePrincipalAdmin.getName())).thenReturn(sampleUserAdmin);
-        when(employeeRepository.getEmployeeByDesignation("LOAN_OFFICER")).thenReturn(Arrays.asList(sampleEmployee1));
+    public void testGetEmployeeByDesignation() throws Exception {
+        // Case 1: Success
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
+        when(employeeRepository.getEmployeeByDesignation("LOAN_OFFICER"))
+            .thenReturn(Arrays.asList(sampleEmployee1));
 
-        // Act
-        List<Employee> employees = employeeService.getEmployeeByDesignation("LOAN_OFFICER", samplePrincipalAdmin);
+        List<Employee> result = employeeService.getEmployeeByDesignation("LOAN_OFFICER", samplePrincipalEmployee);
 
-        // Assert
-        assertNotNull(employees);
-        assertEquals(1, employees.size());
-        assertEquals("John Doe", employees.get(0).getName());
-        verify(userRepository).getByUsername(samplePrincipalAdmin.getName());
-        verify(employeeRepository).getEmployeeByDesignation("LOAN_OFFICER");
-    }
+        
+        assertEquals(Arrays.asList(sampleEmployee1), result);
 
-    @Test
-    public void testGetEmployeeByDesignation_NotFound() {
-        // Arrange
-        when(userRepository.getByUsername(samplePrincipalAdmin.getName())).thenReturn(sampleUserAdmin);
-        when(employeeRepository.getEmployeeByDesignation("NON_EXISTENT")).thenReturn(null); // Or an empty list
+        // Case 2: Employee list is null
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
+        when(employeeRepository.getEmployeeByDesignation("ACCOUNT_MANAGER"))
+            .thenReturn(null);
 
-        // Act & Assert
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            employeeService.getEmployeeByDesignation("NON_EXISTENT", samplePrincipalAdmin);
+        ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
+            employeeService.getEmployeeByDesignation("ACCOUNT_MANAGER", samplePrincipalEmployee);
         });
-        assertEquals("No employee record found with given designation...!!!", exception.getMessage());
-        verify(userRepository).getByUsername(samplePrincipalAdmin.getName());
-        verify(employeeRepository).getEmployeeByDesignation("NON_EXISTENT");
+
+        assertEquals("No employee record found with given designation...!!!", e.getMessage());
     }
+    
+    
+    
+    @Test
+    public void testGetEmployeeByBranchId() throws Exception {
+        // Case 1: Success
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
+        when(employeeRepository.getEmployeeByBranchId(1))
+            .thenReturn(Arrays.asList(sampleEmployee1,sampleEmployee2));
+
+        List<Employee> result = employeeService.getEmployeeByBranchId(1, samplePrincipalEmployee);
+
+        assertEquals(Arrays.asList(sampleEmployee1,sampleEmployee2), result);
+
+        // Case 2: Employee list is null
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
+        when(employeeRepository.getEmployeeByBranchId(99)).thenReturn(null);
+
+        ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
+            employeeService.getEmployeeByBranchId(99, samplePrincipalEmployee);
+        });
+
+        assertEquals("No employee record found with given branch id...!!!", e.getMessage());
+    }
+    
+    
+    @Test
+    public void testGetEmployeeByStatus() throws Exception {
+        // Case 1: Success (ACTIVE)
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
+        when(employeeRepository.getEmployeeByStatus(ActiveStatus.ACTIVE))
+            .thenReturn(Arrays.asList(sampleEmployee1));
+
+        List<Employee> result = employeeService.getEmployeeByStatus(ActiveStatus.ACTIVE, samplePrincipalEmployee);
+
+        assertEquals(Arrays.asList(sampleEmployee1), result);
+
+        // Case 2: No employee found for status
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
+        when(employeeRepository.getEmployeeByStatus(ActiveStatus.SUSPENDED))
+            .thenReturn(null);
+
+        ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
+            employeeService.getEmployeeByStatus(ActiveStatus.SUSPENDED, samplePrincipalEmployee);
+        });
+
+        assertEquals("No employee record found with given activity status...!!!", e.getMessage());
+    }
+
+    
+    
+    @Test
+    public void testGetCurrentEmployee() throws Exception {
+        // Case 1: Success
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
+        when(employeeRepository.getEmployeeByUserId(1)).thenReturn(sampleEmployee1);
+
+        Employee result = employeeService.getCurrentEmployee(samplePrincipalEmployee);
+
+        assertEquals(101, result.getId());
+        assertEquals("John Doe", result.getName());
+        assertEquals("9876543210", result.getContactNumber());
+        assertEquals(sampleUserEmployee, result.getUser());
+    }
+    
+    
+    
+  //=============================================== UPDATE ===========================================
+    
+    @Test
+    public void testUpdateEmployeePersonalDetails() throws Exception {
+        // Case 1: Successful update of all fields
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
+        when(employeeRepository.getEmployeeByUserId(1)).thenReturn(sampleEmployee1);
+        when(employeeRepository.save(sampleEmployee1)).thenReturn(sampleEmployee1);
+
+        Employee updatedInput = new Employee();
+        updatedInput.setName("Updated Name");
+        updatedInput.setDob(LocalDate.of(1990, 5, 20));
+        updatedInput.setGender(Gender.MALE);
+        updatedInput.setEmail("updated.email@example.com");
+        updatedInput.setContactNumber("9999999999");
+        updatedInput.setAddress("New Address Lane");
+
+        Employee result = employeeService.updateEmployeePersonalDetails(updatedInput, samplePrincipalEmployee);
+
+        assertEquals("Updated Name", result.getName());
+        assertEquals(LocalDate.of(1990, 5, 20), result.getDob());
+        assertEquals(Gender.MALE, result.getGender());
+        assertEquals("updated.email@example.com", result.getEmail());
+        assertEquals("9999999999", result.getContactNumber());
+        assertEquals("New Address Lane", result.getAddress());
+
+        
+    }
+    
+    @Test
+    public void testUpdateEmployeeProfessionalDetails() throws Exception {
+        // Case: Successful update of branch and designation
+        when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
+        when(employeeRepository.getEmployeeByUserId(1)).thenReturn(sampleEmployee1);
+        when(employeeRepository.save(sampleEmployee1)).thenReturn(sampleEmployee1);
+
+        Branch updatedBranch = new Branch();
+        updatedBranch.setId(2);
+        updatedBranch.setIfsc("MVRK0000002");
+        updatedBranch.setBranchName("NEW_DELHI");
+        updatedBranch.setAddress("456 Connaught Place");
+        updatedBranch.setContactNumber("9988776655");
+        updatedBranch.setEmail("delhi.mvrkBank@gmail.com");
+        updatedBranch.setStatus(ActiveStatus.ACTIVE);
+
+        Employee updatedInput = new Employee();
+        updatedInput.setBranch(updatedBranch);
+        updatedInput.setDesignation("SENIOR_OPERATIONS_MANAGER");
+
+        Employee result = employeeService.updateEmployeeProfessionalDetails(updatedInput, samplePrincipalEmployee);
+
+        assertEquals(updatedBranch, result.getBranch());
+        assertEquals("SENIOR_OPERATIONS_MANAGER", result.getDesignation());
+    }
+
+
+
+
+
 
    
-    @Test
-    public void testGetEmployeeByBranch_Success() throws Exception {
-        // Arrange
-        when(userRepository.getByUsername(samplePrincipalAdmin.getName())).thenReturn(sampleUserAdmin);
-        when(employeeRepository.getEmployeeByBranch("MUMBAI_CITY")).thenReturn(Arrays.asList(sampleEmployee1, sampleEmployee2));
-
-        // Act
-        List<Employee> employees = employeeService.getEmployeeByBranch("MUMBAI_CITY", samplePrincipalAdmin);
-
-        // Assert
-        assertNotNull(employees);
-        assertEquals(2, employees.size());
-        assertEquals("John Doe", employees.get(0).getName());
-        assertEquals("Jane Smith", employees.get(1).getName());
-        verify(userRepository).getByUsername(samplePrincipalAdmin.getName());
-        verify(employeeRepository).getEmployeeByBranch("MUMBAI_CITY");
-    }
-
-    @Test
-    public void testGetEmployeeByBranch_NotFound() {
-        // Arrange
-        when(userRepository.getByUsername(samplePrincipalAdmin.getName())).thenReturn(sampleUserAdmin);
-        when(employeeRepository.getEmployeeByBranch("NON_EXISTENT_BRANCH")).thenReturn(null); // Or an empty list
-
-        // Act & Assert
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            employeeService.getEmployeeByBranch("NON_EXISTENT_BRANCH", samplePrincipalAdmin);
-        });
-        assertEquals("No employee record found with given branch...!!!", exception.getMessage());
-        verify(userRepository).getByUsername(samplePrincipalAdmin.getName());
-        verify(employeeRepository).getEmployeeByBranch("NON_EXISTENT_BRANCH");
-    }
-
-
-
-    @Test
-    public void testGetCurrentEmployee_Success() throws Exception {
-        // Arrange
-        when(userRepository.getByUsername(samplePrincipalEmployee.getName())).thenReturn(sampleUserEmployee);
-        when(employeeRepository.getEmployeeByUserId(sampleUserEmployee.getId())).thenReturn(sampleEmployee1);
-
-        // Act
-        Employee currentEmployee = employeeService.getCurrentEmployee(samplePrincipalEmployee);
-
-        // Assert
-        assertNotNull(currentEmployee);
-        assertEquals("John Doe", currentEmployee.getName());
-        verify(userRepository).getByUsername(samplePrincipalEmployee.getName());
-        verify(employeeRepository).getEmployeeByUserId(sampleUserEmployee.getId());
-    }
-
-
-
-    @Test
-    public void testUpdateEmployeePersonalDetails_Success() throws Exception {
-        // Arrange
-        Employee updateInfo = new Employee();
-        updateInfo.setName("Johnathan Doe");
-        updateInfo.setEmail("johnathan.doe.updated@example.com");
-        updateInfo.setDob(LocalDate.of(1986, 2, 20)); // New DOB
-        updateInfo.setContactNumber("9988776655"); // New Contact
-
-        when(userRepository.getByUsername(samplePrincipalEmployee.getName())).thenReturn(sampleUserEmployee);
-        when(employeeRepository.getEmployeeByUserId(sampleUserEmployee.getId())).thenReturn(sampleEmployee1);
-        when(employeeRepository.save(any(Employee.class))).thenReturn(sampleEmployee1); // Return the modified sampleEmployee1
-
-        // Act
-        Employee updatedEmployee = employeeService.updateEmployeePersonalDetails(updateInfo, samplePrincipalEmployee);
-
-        // Assert
-        assertNotNull(updatedEmployee);
-        assertEquals("Johnathan Doe", updatedEmployee.getName());
-        assertEquals("johnathan.doe.updated@example.com", updatedEmployee.getEmail());
-        assertEquals(LocalDate.of(1986, 2, 20), updatedEmployee.getDob());
-        assertEquals("9988776655", updatedEmployee.getContactNumber());
-        // Verify that original fields remain if not updated
-        assertEquals(Gender.MALE, updatedEmployee.getGender()); // Gender wasn't updated
-
-        verify(userRepository).getByUsername(samplePrincipalEmployee.getName());
-        verify(employeeRepository).getEmployeeByUserId(sampleUserEmployee.getId());
-        verify(employeeRepository).save(sampleEmployee1); // Verify save was called with the modified object
-    }
+    
+ 
     
    
     @AfterEach

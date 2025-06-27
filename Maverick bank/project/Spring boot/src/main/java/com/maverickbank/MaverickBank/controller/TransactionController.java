@@ -76,10 +76,7 @@ public class TransactionController {
     }
     
     
-    @GetMapping("/get/account-statement/{accountNumber}")
-    public Object generateAccountStatement(@PathVariable String accountNumber,Principal principal) {
-    	return transactionService.generateAccountStatement(accountNumber, principal);
-    }
+   
 
     
     @GetMapping("/get/last-transactions/{accountNumber}/{count}")

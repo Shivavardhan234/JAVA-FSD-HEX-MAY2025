@@ -25,6 +25,7 @@ import com.maverickbank.MaverickBank.exception.InvalidInputException;
 import com.maverickbank.MaverickBank.exception.ResourceExistsException;
 import com.maverickbank.MaverickBank.exception.ResourceNotFoundException;
 import com.maverickbank.MaverickBank.model.User;
+import com.maverickbank.MaverickBank.model.users.CIO;
 import com.maverickbank.MaverickBank.model.users.Customer;
 import com.maverickbank.MaverickBank.repository.CustomerRepository;
 import com.maverickbank.MaverickBank.repository.UserRepository;
@@ -49,12 +50,12 @@ class CustomerServiceTest {
 
 	
 
-	User sampleUser1;
-	User sampleUser2;
-	Customer sampleCustomer1;
-	Customer sampleCustomer2;
-	Principal samplePrincipal1;
-	Principal samplePrincipal2;
+	private	User sampleUser1;
+	private User sampleUser2;
+	private	Customer sampleCustomer1;
+	private	Customer sampleCustomer2;
+	private	Principal samplePrincipal1;
+	private	Principal samplePrincipal2;
 	
 	
 	
@@ -262,6 +263,10 @@ class CustomerServiceTest {
 	    }
 	 
 	 
+	    
+
+
+
 	 
 	 
 	 

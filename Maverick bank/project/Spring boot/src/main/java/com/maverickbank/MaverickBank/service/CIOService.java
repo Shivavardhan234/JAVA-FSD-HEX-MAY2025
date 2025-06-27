@@ -14,7 +14,6 @@ import com.maverickbank.MaverickBank.exception.ResourceExistsException;
 import com.maverickbank.MaverickBank.exception.ResourceNotFoundException;
 import com.maverickbank.MaverickBank.model.User;
 import com.maverickbank.MaverickBank.model.users.CIO;
-import com.maverickbank.MaverickBank.model.users.Customer;
 import com.maverickbank.MaverickBank.repository.CIORepository;
 import com.maverickbank.MaverickBank.repository.UserRepository;
 import com.maverickbank.MaverickBank.validation.ActorValidation;
@@ -117,6 +116,19 @@ public class CIOService {
 		}
 		return cio;
 	}
+	
+	public List<CIO> getByStatus(ActiveStatus status, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		User currentUser= userRepository.getByUsername(principal.getName());
+		UserValidation.checkActiveStatus(currentUser.getStatus());
+		List<CIO> cioList = cioRepository.getCioByStatus(status);
+		if(cioList==null || cioList.isEmpty()) {
+			throw new ResourceNotFoundException("No cio records with the given active status...!!!");
+		}
+		
+		return cioList;
+	
+	}
+	
 
 //--------------------------------------------- UPDATE ------------------------------------------------------------------
 	public CIO updateCIO(CIO cio, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
@@ -159,17 +171,6 @@ public class CIOService {
 	}
 
 
-	public List<CIO> getByStatus(ActiveStatus status, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
-		User currentUser= userRepository.getByUsername(principal.getName());
-		UserValidation.checkActiveStatus(currentUser.getStatus());
-		List<CIO> cioList = cioRepository.getCioByStatus(status);
-		if(cioList==null || cioList.isEmpty()) {
-			throw new ResourceNotFoundException("No cio records with the given active status...!!!");
-		}
-		
-		return cioList;
-	
-	}
 	
 	
 	
