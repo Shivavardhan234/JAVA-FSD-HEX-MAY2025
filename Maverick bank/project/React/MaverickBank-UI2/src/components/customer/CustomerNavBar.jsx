@@ -31,7 +31,10 @@ function CustomerNavBar() {
                                 <Link to="/customer/accountApplications" className="nav-link">Account Opening Application Management</Link>
                             </li>
                             <li className="nav-item">
-                                <Link to="/customer/" className="nav-link">Profile</Link>
+                                <Link to="/customer/profile" className="nav-link">Profile</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/customer/" className="nav-link">Home</Link>
                             </li>
                         </ul>
                     </div>

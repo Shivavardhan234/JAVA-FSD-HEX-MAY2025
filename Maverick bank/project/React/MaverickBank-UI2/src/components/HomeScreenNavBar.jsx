@@ -12,7 +12,7 @@ function HomeScreenNavBar() {
                     </Link>
 
                     
-                    <Link className="nav-link text-light ms-3" to="/home">
+                    <Link className="nav-link text-light ms-3" to="/">
                         Home <span className="visually-hidden">(current)</span>
                     </Link>
 

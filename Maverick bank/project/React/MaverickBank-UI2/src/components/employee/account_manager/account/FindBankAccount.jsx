@@ -33,7 +33,7 @@ function FindBankAccount() {
                     headers: { Authorization: `Bearer ${token}` },
                 });
             } else {
-                res = await axios.get(`http://localhost:9090/api/account/get/by-account-number/${searchInput}`, {
+                res = await axios.get(`http://localhost:9090/api/account/get/by-account-number?accountNumber=${searchInput}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
             }

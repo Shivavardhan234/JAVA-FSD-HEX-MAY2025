@@ -37,6 +37,11 @@ function LoanOfficerNavbar() {
                                     Profile
                                 </Link>
                             </li>
+                             <li className="nav-item">
+                                <Link to="" className="nav-link">
+                                    Home
+                                </Link>
+                            </li>
                         </ul>
                     </div>
 

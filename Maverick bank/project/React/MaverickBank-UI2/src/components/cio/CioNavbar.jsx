@@ -40,6 +40,9 @@ function CioNavbar() {
                             <li className="nav-item ">
                                 <Link to="/cio/profile" className="nav-link">Profile</Link>
                             </li>
+                            <li className="nav-item ">
+                                <Link to="/cio/" className="nav-link">Home</Link>
+                            </li>
                         </ul>
                     </div>
 

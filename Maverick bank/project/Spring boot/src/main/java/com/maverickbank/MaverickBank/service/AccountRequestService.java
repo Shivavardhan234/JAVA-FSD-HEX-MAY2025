@@ -21,6 +21,7 @@ import com.maverickbank.MaverickBank.model.Loan;
 import com.maverickbank.MaverickBank.model.User;
 import com.maverickbank.MaverickBank.repository.AccountRepository;
 import com.maverickbank.MaverickBank.repository.AccountRequestRepository;
+import com.maverickbank.MaverickBank.repository.LoanRepository;
 import com.maverickbank.MaverickBank.repository.UserRepository;
 import com.maverickbank.MaverickBank.validation.UserValidation;
 
@@ -30,17 +31,17 @@ public class AccountRequestService {
 	private AccountRequestRepository accountRequestRepository;
 	private AccountRepository accountRepository;
 	private UserRepository userRepository;
-	private LoanService loanService;
+	private LoanRepository loanRepository;
 	
 
 
 	public AccountRequestService(AccountRequestRepository accountRequestRepository, AccountRepository accountRepository,
-			UserRepository userRepository, LoanService loanService) {
+			UserRepository userRepository,LoanRepository loanRepository) {
 		super();
 		this.accountRequestRepository = accountRequestRepository;
 		this.accountRepository = accountRepository;
 		this.userRepository = userRepository;
-		this.loanService = loanService;
+		this.loanRepository=loanRepository;
 	}
 
 
@@ -71,7 +72,7 @@ public class AccountRequestService {
 			    	throw new InvalidActionException("This account has some amount in it. You cannot close the account...!!!");
 			    }
 	    
-			    List<Loan> loanList=loanService.getLoansByAccountId(accountId, principal);
+			    List<Loan> loanList=loanRepository.getByAccountId(accountId);
 			    
 			    for(Loan l : loanList) {
 			    	if(l.isCleared()==false) {

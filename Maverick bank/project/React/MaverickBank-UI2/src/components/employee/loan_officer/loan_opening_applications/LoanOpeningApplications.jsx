@@ -7,9 +7,12 @@ import { getLoanOpeningApplication } from "../../../../store/actions/LoanOpening
 function LoanOpeningApplications({ isExpanded }) {
     const [filter, setFilter] = useState("ALL");
     const [applications, setApplications] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [perPage, setPerPage] = useState(5);
+
+    const [page, setPage] = useState(0);
+    const [size, setSize] = useState(5);
+
     const [message, setMessage] = useState("");
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -18,14 +21,14 @@ function LoanOpeningApplications({ isExpanded }) {
 
         fetchApplications();
 
-    }, [filter]);
+    }, [filter, page, size]);
 
     const fetchApplications = async () => {
         try {
             let url =
                 filter === "ALL"
-                    ? `http://localhost:9090/api/loan-opening-application/get/all`
-                    : `http://localhost:9090/api/loan-opening-application/get/by-status/${filter}`;
+                    ? `http://localhost:9090/api/loan-opening-application/get/all?page=${page}&size=${size}`
+                    : `http://localhost:9090/api/loan-opening-application/get/by-status/${filter}?page=${page}&size=${size}`;
 
             const token = localStorage.getItem("token");
             const res = await axios.get(url, {
@@ -34,20 +37,14 @@ function LoanOpeningApplications({ isExpanded }) {
                 },
             });
             setApplications(res.data);
-            setMessage("");
-            setCurrentPage(1); 
+            setMessage(""); 
         } catch (err) {
             setApplications([]);
             setMessage("Unable to fetch loan applications.");
         }
     };
 
-    // Pagination Logic
-    const totalPages = Math.ceil(applications.length / perPage);
-    const currentApplications = applications.slice(
-        (currentPage - 1) * perPage,
-        currentPage * perPage
-    );
+    
 
 
    
@@ -82,10 +79,10 @@ function LoanOpeningApplications({ isExpanded }) {
                         </div>
                     )}
 
-                    {currentApplications.length === 0 ? (
+                    {applications.length === 0 ? (
                         <p className="text-muted text-center">No applications found.</p>
                     ) : (
-                        currentApplications.map((app, idx) => (
+                        applications.map((app, idx) => (
                              <div
                                 key={idx}
                                 className="list-group-item mb-3 p-3 border rounded bg-light d-flex justify-content-between align-items-center"
@@ -133,10 +130,10 @@ function LoanOpeningApplications({ isExpanded }) {
                         <span className="me-2">Items per page:</span>
                         <select
                             className="form-select w-auto"
-                            value={perPage}
+                            value={size}
                             onChange={(e) => {
-                                setPerPage(Number(e.target.value));
-                                setCurrentPage(1);
+                                setSize(e.target.value);
+                                setPage(0);
                             }}
                         >
                             {[5, 10, 20].map((num) => (
@@ -148,34 +145,19 @@ function LoanOpeningApplications({ isExpanded }) {
                     </div>
 
                     <ul className="pagination mb-0">
-                        <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                            <button
-                                className="page-link"
-                                onClick={() => setCurrentPage((prev) => prev - 1)}
-                            >
+                        <li className="page-item">
+                            <button className="page-link" onClick={() => setPage(page - 1)}>
                                 &laquo;
                             </button>
                         </li>
-                        {Array.from({ length: totalPages }, (_, i) => (
-                            <li
-                                key={i}
-                                className={`page-item ${currentPage === i + 1 ? "active" : ""}`}
-                            >
-                                <button
-                                    className="page-link"
-                                    onClick={() => setCurrentPage(i + 1)}
-                                >
-                                    {i + 1}
+                        
+                            <li key={page} className="page-item" >
+                                <button className="page-link" >
+                                    {page + 1}
                                 </button>
                             </li>
-                        ))}
-                        <li
-                            className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}
-                        >
-                            <button
-                                className="page-link"
-                                onClick={() => setCurrentPage((prev) => prev + 1)}
-                            >
+                        <li className="page-item">
+                            <button className="page-link" onClick={() => setPage(page + 1)}>
                                 &raquo;
                             </button>
                         </li>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 function TransactionsForAccount() {
@@ -8,6 +8,15 @@ function TransactionsForAccount() {
     const [type, setType] = useState("ALL");
     const [transactions, setTransactions] = useState([]);
     const [message, setMessage] = useState("");
+
+    const [page, setPage] = useState(0);
+    const [size, setSize] = useState(5);
+
+
+
+    useEffect(()=>{
+        handleSearch();
+    },[page,size]);
 
     const handleSearch = async () => {
         setMessage("");
@@ -22,11 +31,11 @@ function TransactionsForAccount() {
         let url = "";
 
         if (type === "ALL") {
-            url = `http://localhost:9090/api/transaction/get/by-date-range/${startDate}/${endDate}?accountNumber=${accountNumber}`;
+            url = `http://localhost:9090/api/transaction/get/by-date-range/${startDate}/${endDate}?accountNumber=${accountNumber}&page=${page}&size=${size}`;
         } else if (type === "CREDITS") {
-            url = `http://localhost:9090/api/transaction/get/credits/${startDate}/${endDate}/${accountNumber}`;
+            url = `http://localhost:9090/api/transaction/get/credits/${startDate}/${endDate}?accountNumber=${accountNumber}&page=${page}&size=${size}`;
         } else if (type === "DEBITS") {
-            url = `http://localhost:9090/api/transaction/get/debits/${startDate}/${endDate}/${accountNumber}`;
+            url = `http://localhost:9090/api/transaction/get/debits/${startDate}/${endDate}?accountNumber=${accountNumber}&page=${page}&size=${size}`;
         }
 
         try {
@@ -129,6 +138,47 @@ function TransactionsForAccount() {
                             )}
                         </tbody>
                     </table>
+                </div>
+
+
+
+                <div className="card-footer d-flex justify-content-between align-items-center bg-light">
+                    <div className="d-flex align-items-center">
+                        <span className="me-2">Items per page:</span>
+                        <select
+                            className="form-select w-auto"
+                            value={size}
+                            onChange={(e) => {
+                                setSize(e.target.value);
+                                setPage(0);
+                            }}
+                        >
+                            {[10, 20,50,100].map((num) => (
+                                <option key={num} value={num}>
+                                    {num}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <ul className="pagination mb-0">
+                        <li className="page-item">
+                            <button className="page-link" onClick={() => setPage(page - 1)}>
+                                &laquo;
+                            </button>
+                        </li>
+                        
+                            <li key={page} className="page-item" >
+                                <button className="page-link" >
+                                    {page + 1}
+                                </button>
+                            </li>
+                        <li className="page-item">
+                            <button className="page-link" onClick={() => setPage(page + 1)}>
+                                &raquo;
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

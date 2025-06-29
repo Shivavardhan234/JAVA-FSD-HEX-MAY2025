@@ -8,14 +8,26 @@ function TransactionsByCategory() {
     const [transactions, setTransactions] = useState([]);
     const [error, setError] = useState("");
 
+
+     const [page, setPage] = useState(0);
+    const [size, setSize] = useState(5);
+
+
+
+    useEffect(()=>{
+        fetchTransactions();
+    },[page,size]);
+
+
+
     const fetchTransactions = async () => {
         setError("");
         setTransactions([]);
         const token = localStorage.getItem("token");
-        let url = "http://localhost:9090/api/transaction/get/all";
+        let url = `http://localhost:9090/api/transaction/get/all?page=${page}&size=${size}`;
 
         if (filter === "BY_DATE_RANGE" && startDate && endDate) {
-            url = `http://localhost:9090/api/transaction/get/by-date-range/${startDate}/${endDate}`;
+            url = `http://localhost:9090/api/transaction/get/by-date-range/${startDate}/${endDate}?page=${page}&size=${size}`;
         }
 
         try {
@@ -90,7 +102,6 @@ function TransactionsByCategory() {
                                 <th>Amount</th>
                                 <th>Date</th>
                                 <th>Time</th>
-                                <th>Description</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -111,13 +122,53 @@ function TransactionsByCategory() {
                                         <td>₹{t.transactionAmount}</td>
                                         <td>{t.transactionDate}</td>
                                         <td>{t.transactionTime}</td>
-                                        <td>{t.description || "-"}</td>
                                     </tr>
                                 ))
                             )}
                         </tbody>
                     </table>
                 </div>
+
+
+                <div className="card-footer d-flex justify-content-between align-items-center bg-light">
+                    <div className="d-flex align-items-center">
+                        <span className="me-2">Items per page:</span>
+                        <select
+                            className="form-select w-auto"
+                            value={size}
+                            onChange={(e) => {
+                                setSize(e.target.value);
+                                setPage(0);
+                            }}
+                        >
+                            {[10, 20,50,100].map((num) => (
+                                <option key={num} value={num}>
+                                    {num}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <ul className="pagination mb-0">
+                        <li className="page-item">
+                            <button className="page-link" onClick={() => setPage(page - 1)}>
+                                &laquo;
+                            </button>
+                        </li>
+                        
+                            <li key={page} className="page-item" >
+                                <button className="page-link" >
+                                    {page + 1}
+                                </button>
+                            </li>
+                        <li className="page-item">
+                            <button className="page-link" onClick={() => setPage(page + 1)}>
+                                &raquo;
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
             </div>
         </div>
     );

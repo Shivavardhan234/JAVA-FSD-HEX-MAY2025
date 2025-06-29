@@ -103,7 +103,7 @@ function App() {
 
         {/* Home screen */}
         <Route path='/' element={<HomeScreenNavBar />}>
-          <Route path='home' element={<HomeScreen />}></Route>
+          <Route index element={<HomeScreen />}></Route>
           <Route path='signin' element={<SignIn />}></Route>
           <Route path='signup' element={<SignUp />}></Route>
         </Route>
@@ -111,7 +111,8 @@ function App() {
         {/* ============================================================ CUSTOMER ==================================================================== */}
         {/* Customer */}
         <Route path='/customer' element={<CustomerNavBar />}>
-          <Route index element={<CustomerProfile />}></Route>
+          <Route index element={<HomeScreen />}></Route>
+          <Route path='profile' element={<CustomerProfile />}></Route>
 
 
 
@@ -147,7 +148,7 @@ function App() {
         {/* ====================================================== CIO / ADMIN ======================================================================= */}
         {/* CIO */}
         <Route path='/cio' element={<CioNavbar />}>
-
+        <Route index element={<HomeScreen />}></Route>
           {/* Customer Accounts */}
           <Route path='customerAccounts' element={<CustomerAccountsSideBar />}>
             <Route index element={<FindCustomer />}></Route>
@@ -194,6 +195,7 @@ function App() {
 
         {/* Account manager */}
         <Route path='/accountManager' element={<AccountManagerNavbar />}>
+        <Route index element={<HomeScreen />}></Route>
           <Route path='employeeProfile' element={<EmployeeProfile />}></Route>
           <Route path='viewBranchForEmployee' element={<ViewBranchForEmployee />}></Route>
 
@@ -216,7 +218,7 @@ function App() {
 
         {/* ====================================================== LOAN OFFICER ====================================================================== */}
         <Route path='/loanOfficer' element={<LoanOfficerNavbar />}>
-          <Route index element={<EmployeeProfile />}></Route>
+          <Route index element={<HomeScreen />}></Route>
           <Route path='employeeProfile' element={<EmployeeProfile />}></Route>
           <Route path='viewBranchForEmployee' element={<ViewBranchForEmployee />}></Route>
           {/* loan Management sidebar */}
@@ -245,6 +247,7 @@ function App() {
 
         {/* =================================================== TRANSACTION ANALYST ========================================================== */}
         <Route path='/transactionAnalyst' element={<TransactionAnalystNavbar />}>
+        <Route index element={<HomeScreen />}></Route>
           <Route path='employeeProfile' element={<EmployeeProfile />}></Route>
           <Route path='viewBranchForEmployee' element={<ViewBranchForEmployee />}></Route>
 
@@ -258,6 +261,7 @@ function App() {
 
         {/* ========================================================= REPORT MANAGER ========================================================== */}
         <Route path='/reportManager' element={<ReportManagerNavbar />}>
+        <Route index element={<HomeScreen />}></Route>
           <Route path='employeeProfile' element={<EmployeeProfile />}></Route>
           <Route path='viewBranchForEmployee' element={<ViewBranchForEmployee />}></Route>
           <Route path='reportManagerSidebar' element={<ReportManagerSideBar />}>
@@ -273,6 +277,7 @@ function App() {
 {/* ============================================= JUBIOR OPRRATIONS MANAGER ================================================================== */}
 
         <Route path="/juniorOperationsManager" element={<JuniorOperationsManagerNavbar />}>
+        <Route index element={<HomeScreen />}></Route>
           {/* Profile */}
           <Route path="employeeProfile" element={<EmployeeProfile />} />
           <Route path='viewBranchForEmployee' element={<ViewBranchForEmployee />}></Route>
@@ -314,6 +319,7 @@ function App() {
         {/* ================================================ SENIOR OPERATIONS MANAGER ======================================================== */}
 
  <Route path="/seniorOperationsManager" element={<SeniorOperationsManagerNavbar />}>
+ <Route index element={<HomeScreen />}></Route>
           {/* Profile */}
           <Route path="employeeProfile" element={<EmployeeProfile />} />
           <Route path='viewBranchForEmployee' element={<ViewBranchForEmployee />}></Route>

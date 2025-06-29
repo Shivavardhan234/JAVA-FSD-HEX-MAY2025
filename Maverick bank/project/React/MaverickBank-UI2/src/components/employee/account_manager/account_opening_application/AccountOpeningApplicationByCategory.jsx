@@ -6,20 +6,37 @@ function AccountOpeningApplicationByCategory() {
     const [applications, setApplications] = useState([]);
     const [filter, setFilter] = useState("ALL");
     const [message, setMessage] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const [perPage, setPerPage] = useState(5);
+
+    const [page, setPage] = useState(0);
+    const [size, setSize] = useState(5);
+
+
     const [applicationData, setApplicationData] = useState(null);
     const [accountHolders, setAccountHolders] = useState([]);
     const [showOverlay, setShowOverlay] = useState(false);
+
+
     const token = localStorage.getItem("token");
     const bearerAuth = "Bearer " + token;
+
+
+ useEffect(() => {
+        fetchApplications();
+    }, [page,size]);
+
+
+ useEffect(() => {
+        fetchApplications();
+    }, [filter]);
+
+
 
     const fetchApplications = async () => {
         try {
             const url =
                 filter === "ALL"
-                    ? "http://localhost:9090/api/account-opening-application/get/all"
-                    : `http://localhost:9090/api/account-opening-application/get/by-employee-approval-status/${filter}`;
+                    ? `http://localhost:9090/api/account-opening-application/get/all?page=${page}&size=${size}`
+                    : `http://localhost:9090/api/account-opening-application/get/by-employee-approval-status/${filter}?page=${page}&size=${size}`;
             const res = await axios.get(url, {
                 headers: { Authorization: bearerAuth },
             });
@@ -108,14 +125,8 @@ function AccountOpeningApplicationByCategory() {
         }
     };
 
-    const totalPages = Math.ceil(applications.length / perPage);
-    const indexOfLast = currentPage * perPage;
-    const indexOfFirst = indexOfLast - perPage;
-    const currentApplications = applications.slice(indexOfFirst, indexOfLast);
 
-    useEffect(() => {
-        fetchApplications();
-    }, [filter]);
+   
 
     return (
         <div className="d-flex flex-column" style={{ height: "calc(100vh - 56px)", marginLeft: "70px", padding: "20px" }}>
@@ -138,7 +149,7 @@ function AccountOpeningApplicationByCategory() {
 
                 <div className="card-body overflow-auto" style={{ maxHeight: "70vh" }}>
                     {message && <div className="alert alert-danger">{message}</div>}
-                    {currentApplications.map((app, idx) => (
+                    {applications.map((app, idx) => (
                         <div key={idx} className="list-group-item p-0 mb-3 border rounded overflow-hidden bg-white">
                             <div className="px-3 py-2 bg-light border-bottom">
                                 <h5 className="mb-0">{app.accountType.accountType}</h5>
@@ -175,10 +186,11 @@ function AccountOpeningApplicationByCategory() {
                     <div className="d-flex align-items-center">
                         <span className="me-2">Items per page:</span>
                         <Form.Select
-                            value={perPage}
+                            value={size}
                             onChange={(e) => {
-                                setCurrentPage(1);
-                                setPerPage(Number(e.target.value));
+                                setSize(Number(e.target.value));
+                                setPage(0);
+                                
                             }}
                             style={{ width: "80px" }}
                         >
@@ -189,16 +201,15 @@ function AccountOpeningApplicationByCategory() {
                     </div>
                     <nav>
                         <ul className="pagination mb-0">
-                            <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                                <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>&laquo;</button>
+                            <li className="page-item">
+                                <button className="page-link" onClick={() => setPage(page - 1)}>&laquo;</button>
                             </li>
-                            {[...Array(totalPages).keys()].map(i => (
-                                <li key={i} className={`page-item ${currentPage === i + 1 ? "active" : ""}`}>
-                                    <button className="page-link" onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+                            
+                                <li key={page} className="page-item">
+                                    <button className="page-link" >{page + 1}</button>
                                 </li>
-                            ))}
-                            <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                                <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)}>&raquo;</button>
+                            <li className="page-item">
+                                <button className="page-link" onClick={() => setPage(page + 1)}>&raquo;</button>
                             </li>
                         </ul>
                     </nav>

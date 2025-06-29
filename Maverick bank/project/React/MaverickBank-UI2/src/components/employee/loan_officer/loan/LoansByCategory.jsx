@@ -8,8 +8,8 @@ function LoansByCategory() {
     const [filter, setFilter] = useState("ALL");
     const [loans, setLoans] = useState([]);
     const [message, setMessage] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const [perPage, setPerPage] = useState(5);
+    const [page, setPage] = useState(0);
+    const [size, setSize] = useState(5);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -17,13 +17,17 @@ function LoansByCategory() {
         fetchLoans();
     }, [filter]);
 
+    useEffect(() => {
+        fetchLoans();
+    }, [page,size]);
+
     const fetchLoans = async () => {
         try {
             const token = localStorage.getItem("token");
             let url =
                 filter === "ALL"
-                    ? "http://localhost:9090/api/loan/get/all"
-                    : `http://localhost:9090/api/loan/get/by-status/${filter}`;
+                    ? `http://localhost:9090/api/loan/get/all?page=${page}&size=${size}`
+                    : `http://localhost:9090/api/loan/get/by-status/${filter}?page=${page}&size=${size}`;
 
             const res = await axios.get(url, {
                 headers: {
@@ -33,7 +37,6 @@ function LoansByCategory() {
 
             setLoans(res.data);
             setMessage("");
-            setCurrentPage(1);
         } catch (err) {
             setLoans([]);
             handleError(err);
@@ -63,8 +66,7 @@ function LoansByCategory() {
 
     }
 
-    const totalPages = Math.ceil(loans.length / perPage);
-    const currentLoans = loans.slice((currentPage - 1) * perPage, currentPage * perPage);
+
 
     return (
         <div className="d-flex flex-column" style={{ marginLeft: "70px", padding: "20px" }}>
@@ -90,10 +92,10 @@ function LoansByCategory() {
                         </div>
                     )}
 
-                    {currentLoans.length === 0 ? (
+                    {loans.length === 0 ? (
                         <p className="text-muted text-center">No loans found.</p>
                     ) : (
-                        currentLoans.map((loan, idx) => (
+                        loans.map((loan, idx) => (
                             <div key={idx} className="list-group-item mb-3 p-3 border rounded bg-light">
                                 <h5 className="mb-2 text-dark">Loan ID: {loan.id}</h5>
                                 <p className="mb-1"><strong>Status:</strong> {loan.status}</p>
@@ -123,10 +125,10 @@ function LoansByCategory() {
                         <span className="me-2">Items per page:</span>
                         <select
                             className="form-select w-auto"
-                            value={perPage}
+                            value={size}
                             onChange={(e) => {
-                                setPerPage(Number(e.target.value));
-                                setCurrentPage(1);
+                                setSize(e.target.value);
+                                setPage(0);
                             }}
                         >
                             {[5, 10, 20].map((num) => (
@@ -138,29 +140,19 @@ function LoansByCategory() {
                     </div>
 
                     <ul className="pagination mb-0">
-                        <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                            <button
-                                className="page-link"
-                                onClick={() => setCurrentPage((prev) => prev - 1)}
-                            >
+                        <li className="page-item">
+                            <button className="page-link" onClick={() => setPage(page-1)}>
                                 &laquo;
                             </button>
                         </li>
-                        {Array.from({ length: totalPages }, (_, i) => (
-                            <li
-                                key={i}
-                                className={`page-item ${currentPage === i + 1 ? "active" : ""}`}
-                            >
-                                <button className="page-link" onClick={() => setCurrentPage(i + 1)}>
-                                    {i + 1}
+                        
+                            <li key={page} className="page-item">
+                                <button className="page-link" >
+                                    {page + 1}
                                 </button>
                             </li>
-                        ))}
-                        <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                            <button
-                                className="page-link"
-                                onClick={() => setCurrentPage((prev) => prev + 1)}
-                            >
+                        <li className="page-item">
+                            <button className="page-link" onClick={() => setPage(page+1)}>
                                 &raquo;
                             </button>
                         </li>

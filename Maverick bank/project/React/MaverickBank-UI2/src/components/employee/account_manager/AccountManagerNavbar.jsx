@@ -36,6 +36,11 @@ function AccountManagerNavbar() {
                                     Profile
                                 </Link>
                             </li>
+                            <li className="nav-item">
+                                <Link to="/accountManager/" className="nav-link">
+                                    Home
+                                </Link>
+                            </li>
                         </ul>
                     </div>
 
