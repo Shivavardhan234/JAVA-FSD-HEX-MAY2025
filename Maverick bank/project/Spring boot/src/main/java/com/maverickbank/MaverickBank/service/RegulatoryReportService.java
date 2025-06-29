@@ -4,6 +4,8 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.maverickbank.MaverickBank.enums.LoanStatus;
@@ -85,10 +87,12 @@ public class RegulatoryReportService {
 	
 	
 	//---------------------------------------------- GET -----------------------------------------------------------------
-	public List<RegulatoryReport> getAllReports(Principal principal) throws DeletedUserException, InvalidActionException, InvalidInputException {
+	public List<RegulatoryReport> getAllReports(Integer page, Integer size, Principal principal) throws DeletedUserException, InvalidActionException, InvalidInputException {
 		 User currentUser = userRepository.getByUsername(principal.getName());
 		    UserValidation.checkActiveStatus(currentUser.getStatus());
-        return regulatoryReportRepository.findAll();
+		    
+		    Pageable pageable = PageRequest.of(page, size);
+        return regulatoryReportRepository.findAll(pageable).getContent();
     }
 
     
@@ -100,11 +104,14 @@ public class RegulatoryReportService {
     }
 
     
-    public List<RegulatoryReport> getReportsByDateRange(LocalDate startDate, LocalDate endDate, Principal principal) throws DeletedUserException, InvalidActionException, InvalidInputException, ResourceNotFoundException {
+    public List<RegulatoryReport> getReportsByDateRange(Integer page, Integer size,LocalDate startDate, LocalDate endDate, Principal principal) throws DeletedUserException, InvalidActionException, InvalidInputException, ResourceNotFoundException {
     	 User currentUser = userRepository.getByUsername(principal.getName());
  	    UserValidation.checkActiveStatus(currentUser.getStatus());
- 	   List<RegulatoryReport> regulatoryReportList=regulatoryReportRepository.getByReportDateRange(startDate, endDate);
- 	   if(regulatoryReportList==null||regulatoryReportList.isEmpty()) {
+ 	    
+ 	   Pageable pageable = PageRequest.of(page, size);
+ 	    
+ 	   List<RegulatoryReport> regulatoryReportList=regulatoryReportRepository.getByReportDateRange(startDate, endDate,pageable);
+ 	   if(regulatoryReportList.isEmpty()) {
  		   throw new ResourceNotFoundException("No Regulatory report found in the given date range...!!!");
  	   }
         return regulatoryReportList;

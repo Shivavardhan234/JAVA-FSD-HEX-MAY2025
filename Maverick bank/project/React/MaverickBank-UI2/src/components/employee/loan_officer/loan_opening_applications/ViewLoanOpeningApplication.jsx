@@ -6,17 +6,12 @@ import { getLoanOpeningApplication } from "../../../../store/actions/LoanOpening
 
 function ViewLoanOpeningApplication() {
     const navigate = useNavigate();
-    const loanApplication = useSelector(state => state.loanOpeningApplicationStore.application);
-    const selectedLoan = loanApplication?.loanPlan;
     const [message, setMessage] = useState("");
     const dispatch = useDispatch();
 
-  
-
-   
-
-
-
+    
+    const loanApplication = useSelector(state => state.loanOpeningApplicationStore.application);
+    const selectedLoan = loanApplication?.loanPlan;
     const account = loanApplication?.account;
 
 
@@ -89,6 +84,8 @@ function ViewLoanOpeningApplication() {
                     <h5 className="mb-0">Loan Opening Application</h5>
                 </div>
 
+
+                {selectedLoan && account && (
                 <div className="card-body">
 
                     <>
@@ -100,11 +97,11 @@ function ViewLoanOpeningApplication() {
 
                         {/* Account Details */}
                         <h6 className="text-secondary">Account Information</h6>
-                        <p><strong>Account Number:</strong> {account?.accountNumber}</p>
-                        <p><strong>Account Name:</strong> {account?.accountName}</p>
-                        <p><strong>Branch:</strong> {account?.branch?.branchName}</p>
-                        <p><strong>IFSC:</strong> {account?.branch?.ifsc}</p>
-                        <p><strong>Account Type:</strong> {account?.accountType?.accountType}</p>
+                        <p><strong>Account Number:</strong> {account.accountNumber}</p>
+                        <p><strong>Account Name:</strong> {account.accountName}</p>
+                        <p><strong>Branch:</strong> {account.branch?.branchName}</p>
+                        <p><strong>IFSC:</strong> {account.branch?.ifsc}</p>
+                        <p><strong>Account Type:</strong> {account.accountType?.accountType}</p>
 
                         <hr />
 
@@ -135,13 +132,17 @@ function ViewLoanOpeningApplication() {
                                     <td>{selectedLoan.repaymentFrequency} months</td>
                                     <td>{selectedLoan.gracePeriod} months</td>
                                     <td>{selectedLoan.penaltyRate}%</td>
+                                
 
                                 </tr>
                             </tbody>
                         </table>
+                       
                     </>
 
                 </div>
+                )}
+                
 
                 <div className="card-footer d-flex justify-content-end gap-2">
                     {loanApplication.status === "PENDING" && (
@@ -154,6 +155,7 @@ function ViewLoanOpeningApplication() {
                             </button>
                         </>
                     )}
+                    
 
                 </div>
             </div>

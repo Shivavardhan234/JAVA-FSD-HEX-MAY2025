@@ -2,22 +2,25 @@ import { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate} from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { getEmployee } from "../../../store/actions/EmployeeAction";
 
 function EmployeesByCategory() {
     const [employees, setEmployees] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [employeesPerPage, setEmployeesPerPage] = useState(10);
+    const [page, setPage] = useState(0);
+    const [size, setSize] = useState(10);
     const [filter, setFilter] = useState("ALL");
     const [designation, setDesignation] = useState("LOAN_OFFICER");
     const [branchId, setBranchId] = useState("");
     const [message, setMessage] = useState("");
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    const indexOfLast = currentPage * employeesPerPage;
-    const indexOfFirst = indexOfLast - employeesPerPage;
-    const currentEmployees = employees.slice(indexOfFirst, indexOfLast);
-    const totalPages = Math.ceil(employees.length / employeesPerPage);
+    useEffect(() => {
+        fetchEmployees();
+    }, [page]);
+    
 
     useEffect(() => {
         fetchEmployees();
@@ -31,19 +34,19 @@ function EmployeesByCategory() {
 
             switch (filter) {
                 case "ALL":
-                    url = "http://localhost:9090/api/employee/get/all";
+                    url = `http://localhost:9090/api/employee/get/all?page=${page}&size=${size}`;
                     break;
                 case "ACTIVE":
                 case "INACTIVE":
                 case "SUSPENDED":
                 case "DELETED":
-                    url = `http://localhost:9090/api/employee/get/by-status/${filter}`;
+                    url = `http://localhost:9090/api/employee/get/by-status/${filter}?page=${page}&size=${size}`;
                     break;
                 case "DESIGNATION":
-                    url = `http://localhost:9090/api/employee/get/by-designation/${designation}`;
+                    url = `http://localhost:9090/api/employee/get/by-designation?designation=${designation}&page=${page}&size=${size}`;
                     break;
                 case "BRANCH":
-                    url = `http://localhost:9090/api/employee/get/by-branch-id/${branchId}`;
+                    url = `http://localhost:9090/api/employee/get/by-branch-id/${branchId}?page=${page}&size=${size}`;
                     break;
                 default:
                     return;
@@ -54,7 +57,6 @@ function EmployeesByCategory() {
             });
 
             setEmployees(response.data);
-            setCurrentPage(1);
         } catch (err) {
             console.error(err);
             setEmployees([]);
@@ -104,7 +106,7 @@ function EmployeesByCategory() {
                                 "JUNIOR_OPERATIONS_MANAGER",
                                 "SENIOR_OPERATIONS_MANAGER"
                             ].map((role) => (
-                                <option key={role} value={role}>{role.replace(/_/g, ' ')}</option>
+                                <option key={role} value={role}>{role}</option>
                             ))}
                         </Form.Select>
                     )}
@@ -119,7 +121,7 @@ function EmployeesByCategory() {
 
                 {/* Body */}
                 <div className="card-body flex-grow-1 overflow-auto border-top border-bottom-0">
-                    {currentEmployees.map((emp, idx) => (
+                    {employees.map((emp, idx) => (
                         <div key={idx} className="list-group-item p-0 mb-3 border rounded overflow-hidden bg-white">
                             <div className="px-3 py-2 bg-light border-bottom">
                                 <h5 className="mb-0">Employee ID: {emp.id}</h5>
@@ -129,11 +131,11 @@ function EmployeesByCategory() {
                                 <div>
                                     <p className="mb-1"><strong>Name:</strong> {emp.name}</p>
                                     <p className="mb-1"><strong>Phone:</strong> {emp.contactNumber}</p>
-                                    <p className="mb-1"><strong>Designation:</strong> {emp.designation.replace(/_/g, ' ')}</p>
+                                    <p className="mb-1"><strong>Designation:</strong> {emp.designation}</p>
                                     <p className="mb-0"><strong>Branch:</strong> {emp.branch?.branchName}</p>
                                 </div>
 
-                                <Button variant="outline-primary" size="sm" onClick={() => navigate("/cio/employeeAccounts/viewEmployee", { state: { emp } })}>View Employee</Button>
+                                <Button variant="outline-primary" size="sm" onClick={() =>{getEmployee(dispatch)(emp.id); navigate("../viewEmployee");}}>View Employee</Button>
                             </div>
                         </div>
                     ))}
@@ -144,10 +146,10 @@ function EmployeesByCategory() {
                     <div className="d-flex align-items-center">
                         <span className="me-2">Items per page:</span>
                         <Form.Select
-                            value={employeesPerPage}
+                            value={size}
                             onChange={(e) => {
-                                setCurrentPage(1);
-                                setEmployeesPerPage(Number(e.target.value));
+                                setSize(Number(e.target.value));
+                                setPage(0);
                             }}
                             style={{ width: "80px" }}
                         >
@@ -159,23 +161,21 @@ function EmployeesByCategory() {
 
                     <nav>
                         <ul className="pagination mb-0">
-                            <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                                <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>&laquo;</button>
+                            <li className="page-item">
+                                <button className="page-link" onClick={() => setPage(page - 1)}>&laquo;</button>
                             </li>
-                            {[...Array(totalPages).keys()].map(i => (
-                                <li key={i} className={`page-item ${currentPage === i + 1 ? "active" : ""}`}>
-                                    <button className="page-link" onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+                            
+                                <li key={page} className="page-item">
+                                    <button className="page-link" >{page + 1}</button>
                                 </li>
-                            ))}
-                            <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                                <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)}>&raquo;</button>
+                            
+                            <li className="page-item">
+                                <button className="page-link" onClick={() => setPage(page + 1)}>&raquo;</button>
                             </li>
                         </ul>
                     </nav>
 
-                    <div className="text-muted small">
-                        Page {currentPage} of {totalPages}
-                    </div>
+                    
                 </div>
             </div>
         </div>

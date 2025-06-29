@@ -8,7 +8,10 @@ function FindLoanOpeningApplication() {
     const [loanApplication, setLoanApplication] = useState(null);
     const [message, setMessage] = useState("");
     const dispatch = useDispatch();
-    const account = useSelector((state) => state.bankAccount.account);
+
+
+
+
 
     const handleSearch = async () => {
         setMessage("");
@@ -28,7 +31,7 @@ function FindLoanOpeningApplication() {
             setLoanApplication(res.data);
             getBankAccount(dispatch)(res.data.account.id);
         } catch (err) {
-            setMessage("Application not found or access denied.");
+            setMessage("Application not found .");
         }
     };
 
@@ -45,7 +48,7 @@ function FindLoanOpeningApplication() {
                 }
             );
             setMessage("Application accepted.");
-            handleSearch(); // re-fetch
+            handleSearch(); 
         } catch (err) {
             setMessage("Failed to accept.");
         }
@@ -64,7 +67,7 @@ function FindLoanOpeningApplication() {
                 }
             );
             setMessage("Application rejected.");
-            handleSearch(); // re-fetch
+            handleSearch(); 
         } catch (err) {
             setMessage("Failed to reject.");
         }
@@ -72,7 +75,7 @@ function FindLoanOpeningApplication() {
 
     return (
         <>
-                       {/* Header with search */}
+                       
     
 
             {/* Message */}
@@ -99,14 +102,14 @@ function FindLoanOpeningApplication() {
                 </div>
            
                     </div>
-
+                    {loanApplication && loanApplication?.account&&loanApplication?.loanPlan&&(
                     <div className="card-body">
                         <h6 className="text-secondary">Account Information</h6>
-                        <p><strong>Account Number:</strong> {account?.accountNumber}</p>
-                        <p><strong>Account Name:</strong> {account?.accountName}</p>
-                        <p><strong>Branch:</strong> {account?.branch?.branchName}</p>
-                        <p><strong>IFSC:</strong> {account?.branch?.ifsc}</p>
-                        <p><strong>Account Type:</strong> {account?.accountType?.accountType}</p>
+                        <p><strong>Account Number:</strong> {loanApplication.account.accountNumber}</p>
+                        <p><strong>Account Name:</strong> {loanApplication.account.accountName}</p>
+                        <p><strong>Branch:</strong> {loanApplication.account.branch?.branchName}</p>
+                        <p><strong>IFSC:</strong> {loanApplication.account.branch?.ifsc}</p>
+                        <p><strong>Account Type:</strong> {loanApplication.account.accountType?.accountType}</p>
 
                         <hr />
 
@@ -127,19 +130,20 @@ function FindLoanOpeningApplication() {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{loanApplication?.loanPlan?.loanName}</td>
-                                    <td>{loanApplication?.loanPlan?.loanType}</td>
-                                    <td>{loanApplication?.loanPlan?.loanTerm} months</td>
-                                    <td>₹{loanApplication?.loanPlan?.principalAmount}</td>
-                                    <td>{loanApplication?.loanPlan?.interestRate}%</td>
-                                    <td>₹{loanApplication?.loanPlan?.installmentAmount}</td>
-                                    <td>{loanApplication?.loanPlan?.repaymentFrequency} months</td>
-                                    <td>{loanApplication?.loanPlan?.gracePeriod} months</td>
-                                    <td>{loanApplication?.loanPlan?.penaltyRate}%</td>
+                                    <td>{loanApplication.loanPlan.loanName}</td>
+                                    <td>{loanApplication.loanPlan.loanType}</td>
+                                    <td>{loanApplication.loanPlan.loanTerm} months</td>
+                                    <td>₹{loanApplication.loanPlan.principalAmount}</td>
+                                    <td>{loanApplication.loanPlan.interestRate}%</td>
+                                    <td>₹{loanApplication.loanPlan.installmentAmount}</td>
+                                    <td>{loanApplication.loanPlan.repaymentFrequency} months</td>
+                                    <td>{loanApplication.loanPlan.gracePeriod} months</td>
+                                    <td>{loanApplication.loanPlan.penaltyRate}%</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
+                    )}
 
                     <div className="card-footer d-flex justify-content-end gap-2">
                         {loanApplication?.status === "PENDING" && (
@@ -153,7 +157,9 @@ function FindLoanOpeningApplication() {
                             </>
                         )}
                     </div>
+                    
                 </div>
+                
             
         </>
     );

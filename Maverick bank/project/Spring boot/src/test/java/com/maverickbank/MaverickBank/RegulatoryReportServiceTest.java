@@ -18,6 +18,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.LoanStatus;
@@ -125,9 +128,10 @@ class RegulatoryReportServiceTest {
 
         
         List<RegulatoryReport> reportList = Arrays.asList(sampleReport1, sampleReport2);
-        when(regulatoryReportRepository.findAll()).thenReturn(reportList);
+        Page<RegulatoryReport> mockPage = new PageImpl<>(reportList);
+        when(regulatoryReportRepository.findAll(PageRequest.of(0, 10))).thenReturn(mockPage);
 
-        List<RegulatoryReport> result = regulatoryReportService.getAllReports(samplePrincipal);
+        List<RegulatoryReport> result = regulatoryReportService.getAllReports(0,10,samplePrincipal);
 
         assertEquals(2, result.size());
         assertEquals(sampleReport1, result.get(0));
@@ -174,33 +178,26 @@ class RegulatoryReportServiceTest {
 
         /* -------- Case 1: reports found in range -------- */
         List<RegulatoryReport> reportsInRange = Arrays.asList(sampleReport1, sampleReport2);
-        when(regulatoryReportRepository.getByReportDateRange(startDate, endDate))
+        when(regulatoryReportRepository.getByReportDateRange(startDate, endDate,PageRequest.of(0, 10)))
                 .thenReturn(reportsInRange);
 
         List<RegulatoryReport> result =
-                regulatoryReportService.getReportsByDateRange(startDate, endDate, samplePrincipal);
+                regulatoryReportService.getReportsByDateRange(0,10,startDate, endDate, samplePrincipal);
 
         assertEquals(2, result.size());
         assertEquals(sampleReport1, result.get(0));
         assertEquals(sampleReport2, result.get(1));
 
         /* -------- Case 2: empty list returned -------- */
-        when(regulatoryReportRepository.getByReportDateRange(startDate, endDate))
+        when(regulatoryReportRepository.getByReportDateRange(startDate, endDate,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList());
 
         ResourceNotFoundException ex1 = assertThrows(ResourceNotFoundException.class, () -> {
-            regulatoryReportService.getReportsByDateRange(startDate, endDate, samplePrincipal);
+            regulatoryReportService.getReportsByDateRange(0,10,startDate, endDate, samplePrincipal);
         });
         assertEquals("No Regulatory report found in the given date range...!!!", ex1.getMessage());
 
-        /* -------- Case 3: repository returns null -------- */
-        when(regulatoryReportRepository.getByReportDateRange(startDate, endDate))
-                .thenReturn(null);
-
-        ResourceNotFoundException ex2 = assertThrows(ResourceNotFoundException.class, () -> {
-            regulatoryReportService.getReportsByDateRange(startDate, endDate, samplePrincipal);
-        });
-        assertEquals("No Regulatory report found in the given date range...!!!", ex2.getMessage());
+      
     }
 
 

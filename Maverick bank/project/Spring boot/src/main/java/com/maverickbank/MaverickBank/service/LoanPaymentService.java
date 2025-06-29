@@ -186,7 +186,7 @@ public class LoanPaymentService {
         
         List<LoanPayment> loanPaymentList = loanPaymentRepository.getByLoan(loanId);
         
-        if(loanPaymentList==null||loanPaymentList.isEmpty()) {
+        if(loanPaymentList.isEmpty()) {
         	throw new ResourceNotFoundException("No loan payments found for the fiven loan id...!!!");
         }
         
@@ -195,6 +195,15 @@ public class LoanPaymentService {
 
 
 
+	/**
+	 * @param id
+	 * @param principal
+	 * @return
+	 * @throws InvalidInputException
+	 * @throws InvalidActionException
+	 * @throws DeletedUserException
+	 * @throws ResourceNotFoundException
+	 */
 	public BigDecimal calculatePenalty(int id, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		 User currentUser = userRepository.getByUsername(principal.getName());
 		    UserValidation.checkActiveStatus(currentUser.getStatus());

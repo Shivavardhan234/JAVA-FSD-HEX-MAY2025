@@ -2,6 +2,7 @@ package com.maverickbank.MaverickBank.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -19,7 +20,7 @@ public interface AccountRequestRepository extends JpaRepository<AccountRequest, 
 	    List<AccountRequest> findByAccountId(int accountId);
 
 	    @Query("SELECT r FROM AccountRequest r WHERE r.requestStatus = ?1")
-	    List<AccountRequest> findByRequestStatus(ApplicationStatus requestStatus);
+	    List<AccountRequest> findByRequestStatus(ApplicationStatus requestStatus, Pageable pageable);
 
 
 	    @Query("SELECT r FROM AccountRequest r WHERE r.account.id = ?1 AND r.requestStatus = ?2")

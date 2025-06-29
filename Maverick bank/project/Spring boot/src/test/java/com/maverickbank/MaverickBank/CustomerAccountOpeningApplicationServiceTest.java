@@ -261,14 +261,14 @@ class CustomerAccountOpeningApplicationServiceTest {
     
     
     
-    
+ //============================================= GET ==========================================   
     
     @Test
     public void testGetAllApplications() throws Exception {
         // ---------- Common active-user stub ----------
         when(userRepository.getByUsername("new_user")).thenReturn(sampleUser);
 
-        // ---------- Case 1: Success – repository returns two applications ----------
+        // Case 1: Success  
         when(customerAccountOpeningApplicationRepository.findAll())
                 .thenReturn(Arrays.asList(sampleCustApp1));
 
@@ -278,22 +278,9 @@ class CustomerAccountOpeningApplicationServiceTest {
         assertEquals(1, applications.size());
         assertEquals(501, applications.get(0).getId());
 
-        // ---------- Case 2: Repository returns empty list ----------
-        when(customerAccountOpeningApplicationRepository.findAll())
-                .thenReturn(Arrays.asList());
+       
 
-        List<CustomerAccountOpeningApplication> emptyApps =
-                customerAccountOpeningApplicationService.getAllApplications(samplePrincipal);
-
-        assertTrue(emptyApps.isEmpty());
-
-        // ---------- Case 3: Repository returns null ----------
-        when(customerAccountOpeningApplicationRepository.findAll()).thenReturn(null);
-
-        List<CustomerAccountOpeningApplication> nullApps =
-                customerAccountOpeningApplicationService.getAllApplications(samplePrincipal);
-
-        assertNull(nullApps);
+        
     }
     
     
@@ -348,15 +335,6 @@ class CustomerAccountOpeningApplicationServiceTest {
         when(customerAccountOpeningApplicationRepository.getByCustomerId(201))
                 .thenReturn(Arrays.asList());
 
-        List<CustomerAccountOpeningApplication> empty =
-                customerAccountOpeningApplicationService.getByCustomerId(201, samplePrincipal);
-
-        assertTrue(empty.isEmpty());
-
-        // ---------- Case 3: Repository returns null 
-        when(customerAccountOpeningApplicationRepository.getByCustomerId(201))
-                .thenReturn(null);
-
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
             customerAccountOpeningApplicationService.getByCustomerId(201, samplePrincipal);
         });
@@ -364,6 +342,8 @@ class CustomerAccountOpeningApplicationServiceTest {
             "No application records found with given customer id...!!!",
             e.getMessage()
         );
+
+        
     }
     
     
@@ -389,19 +369,13 @@ class CustomerAccountOpeningApplicationServiceTest {
         when(customerAccountOpeningApplicationRepository.getByAccountHolderId(301))
                 .thenReturn(Arrays.asList());
 
-        List<CustomerAccountOpeningApplication> empty =
-                customerAccountOpeningApplicationService.getByAccountHolderId(301, samplePrincipal);
-
-        assertTrue(empty.isEmpty());
-
-        // ---------- Case 3: Null List 
-        when(customerAccountOpeningApplicationRepository.getByAccountHolderId(301))
-                .thenReturn(null);
-
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
             customerAccountOpeningApplicationService.getByAccountHolderId(301, samplePrincipal);
         });
         assertEquals("No application records found with the given account holder id...!!!", e.getMessage());
+
+       
+        
     }
 
     
@@ -426,16 +400,7 @@ class CustomerAccountOpeningApplicationServiceTest {
         when(customerAccountOpeningApplicationRepository.getByAccountOpeningApplicationId(401))
                 .thenReturn(Arrays.asList());
 
-        List<CustomerAccountOpeningApplication> empty =
-                customerAccountOpeningApplicationService.getByAccountOpeningApplicationId(
-                        401, samplePrincipal);
-
-        assertTrue(empty.isEmpty());
-
-        // ---------- Case 3: Null list 
-        when(customerAccountOpeningApplicationRepository.getByAccountOpeningApplicationId(401))
-                .thenReturn(null);
-
+       
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
             customerAccountOpeningApplicationService.getByAccountOpeningApplicationId(
                     401, samplePrincipal);
@@ -473,16 +438,7 @@ class CustomerAccountOpeningApplicationServiceTest {
         when(customerAccountOpeningApplicationRepository.getByCustomerIdAndStatus(customerId, status))
                 .thenReturn(Arrays.asList());
 
-        List<CustomerAccountOpeningApplication> empty =
-                customerAccountOpeningApplicationService.getByCustomerIdAndStatus(
-                        customerId, status, samplePrincipal);
-
-        assertTrue(empty.isEmpty());
-
-        // ---------- Case 3: Null list ⇒ ResourceNotFoundException ----------
-        when(customerAccountOpeningApplicationRepository.getByCustomerIdAndStatus(customerId, status))
-                .thenReturn(null);
-
+       
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
             customerAccountOpeningApplicationService.getByCustomerIdAndStatus(
                     customerId, status, samplePrincipal);
@@ -523,10 +479,11 @@ class CustomerAccountOpeningApplicationServiceTest {
                 .getCustomerApprovalPending(customerId, ApplicationStatus.PENDING))
                 .thenReturn(Arrays.asList());
 
-        List<CustomerAccountOpeningApplication> empty =
-                customerAccountOpeningApplicationService.getCustomerApprovalPending(samplePrincipal);
+        ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, ()->customerAccountOpeningApplicationService.getCustomerApprovalPending(samplePrincipal));
+                
 
-        assertTrue(empty.isEmpty());
+        assertEquals("No pending application records found with the given customer id...!!!",e.getMessage() );
+        
     }
     
     

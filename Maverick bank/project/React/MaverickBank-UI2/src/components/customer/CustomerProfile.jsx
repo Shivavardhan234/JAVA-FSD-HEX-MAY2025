@@ -35,15 +35,7 @@ function CustomerProfile() {
     //--------------------------------------------------------- GET CUSTOMER DETAILS FROM REDUX STORE --------------------------------------------
     let customer = useSelector(state => state.user.userDetails);
 
-    //------ on refresh, re-dispatch --------------------------
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            getUserDetails(dispatch)();
-        } else {
-            navigate("/");
-        }
-    }, []);
+    
 
     //--------------------------------------------------------- IF CUSTOMER IS NOT NULL DISPLAY THE VALUES ----------------------------------------
     useEffect(() => {

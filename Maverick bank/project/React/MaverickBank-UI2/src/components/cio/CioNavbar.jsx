@@ -26,7 +26,7 @@ function CioNavbar() {
                     <div className="collapse navbar-collapse">
                         <ul className="navbar-nav ms-3">
                             <li className="nav-item border-end border-white pe-3 me-3">
-                                <Link to="/cio/" className="nav-link">Customer Accounts</Link>
+                                <Link to="/cio/customerAccounts" className="nav-link">Customer Accounts</Link>
                             </li>
                             <li className="nav-item border-end border-white pe-3 me-3">
                                 <Link to="/cio/employeeAccounts" className="nav-link">Employee Accounts</Link>

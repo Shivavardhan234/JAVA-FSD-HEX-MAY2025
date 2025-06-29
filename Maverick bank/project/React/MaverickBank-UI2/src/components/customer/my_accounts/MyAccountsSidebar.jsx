@@ -1,71 +1,74 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { getUserDetails } from '../../../store/actions/UserAction';
 import axios from 'axios';
+import { getBankAccount } from '../../../store/actions/BankAccountAction';
 
 function MyAccountsSidebar() {
     const [isExpanded, setIsExpanded] = useState(false);
     const [accounts, setAccounts] = useState([]);
     const [message, setMessage] = useState("");
     const [suspendedAccount, setSuspendedAccount] = useState(null);
+    const [showSuspensionOverlay, setShowSuspensionOverlay] = useState(false);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
     const customer = useSelector(state => state.user.userDetails);
 
-    const [showSuspensionOverlay, setShowSuspensionOverlay] = useState(false);
+    
+
+    
 
     useEffect(() => {
-        getUserDetails(dispatch)();
-    }, [dispatch]);
-
-    useEffect(() => {
-        const fetchAccounts = async () => {
-            if (!customer || !customer.id) return;
-
-            try {
-                const token = localStorage.getItem('token');
-                const bearerAuth = 'Bearer ' + token;
-
-                const response = await axios.get(
-                    `http://localhost:9090/api/customer-account/get/by-customer-id/${customer.id}`,
-                    {
-                        headers: {
-                            Authorization: bearerAuth,
-                        },
-                    }
-                );
-
-                const customerAccounts = response.data || [];
-                const extractedAccounts = customerAccounts.map(ca => ca.account).filter(account => account.accountStatus !== 'CLOSED');
-
-                setAccounts(extractedAccounts);
-            } catch (err) {
-                console.log(err);
-
-                if (err.response && err.response.data) {
-                    const errorData = err.response.data;
-
-
-                    const firstKey = Object.keys(errorData)[0];
-                    setMessage(errorData[firstKey]);
-                } else {
-                    setMessage("Something went wrong. Try again.");
-                }
-            }
-        };
-
         fetchAccounts();
-    }, [customer]);
+    }, []);
+
+
+
+
+    const fetchAccounts = async () => {
+        if (!customer || !customer.id) return;
+
+        try {
+            const token = localStorage.getItem('token');
+            const bearerAuth = 'Bearer ' + token;
+
+            const response = await axios.get(
+                `http://localhost:9090/api/customer-account/get/by-customer-id/${customer.id}`,
+                {
+                    headers: {
+                        Authorization: bearerAuth,
+                    },
+                }
+            );
+
+            const customerAccounts = response.data || [];
+            const extractedAccounts = customerAccounts.map(ca => ca.account).filter(account => account.accountStatus !== 'CLOSED');
+
+            setAccounts(extractedAccounts);
+        } catch (err) {
+            console.log(err);
+
+            if (err.response && err.response.data) {
+                const errorData = err.response.data;
+
+
+                const firstKey = Object.keys(errorData)[0];
+                setMessage(errorData[firstKey]);
+            } else {
+                setMessage("Something went wrong. Try again.");
+            }
+        }
+    };
+
+
+
 
     const handleAccountClick = (account) => {
         if (account.accountStatus === "OPEN") {
 
-            if (localStorage.getItem("accountId")) {
-                localStorage.removeItem("accountId");
-            }
-            localStorage.setItem("accountId", account.id);
+            getBankAccount(dispatch)(account.id);
 
             navigate(`manageBankAccount/${account.accountNumber}`);
             return;
@@ -110,7 +113,17 @@ function MyAccountsSidebar() {
             alert("Request to reopen account sent successfully!");
 
         } catch (error) {
-            console.error("Failed to send reopen request", error);
+             console.log(err);
+
+            if (err.response && err.response.data) {
+                const errorData = err.response.data;
+
+
+                const firstKey = Object.keys(errorData)[0];
+                setMessage(errorData[firstKey]);
+            } else {
+                setMessage("Something went wrong. Try again.");
+            }
             alert("Failed to send request.");
         } finally {
             setSuspendedAccount(null);
@@ -235,7 +248,7 @@ function MyAccountsSidebar() {
 
                             {/* Footer */}
                             <div className="d-flex justify-content-around mt-3">
-                                <button className="btn btn-warning" onClick={handleRequestOpening}>
+                                <button className="btn btn-warning" onClick={() => handleRequestOpening()}>
                                     Request for Opening
                                 </button>
                                 <button className="btn btn-secondary" onClick={() => setShowSuspensionOverlay(false)}>

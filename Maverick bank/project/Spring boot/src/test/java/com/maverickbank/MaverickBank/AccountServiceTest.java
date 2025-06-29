@@ -3,12 +3,8 @@ package com.maverickbank.MaverickBank;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,6 +22,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.maverickbank.MaverickBank.enums.AccountStatus;
@@ -43,7 +42,6 @@ import com.maverickbank.MaverickBank.model.AccountHolder;
 import com.maverickbank.MaverickBank.model.AccountType;
 import com.maverickbank.MaverickBank.model.Branch;
 import com.maverickbank.MaverickBank.model.CustomerAccount;
-import com.maverickbank.MaverickBank.model.Transaction;
 import com.maverickbank.MaverickBank.model.User;
 import com.maverickbank.MaverickBank.model.users.Customer;
 import com.maverickbank.MaverickBank.repository.AccountRepository;
@@ -242,33 +240,28 @@ class AccountServiceTest {
     public void testGetAllAccounts() throws Exception {
         /* ---------- Common active-user stub ---------- */
         when(userRepository.getByUsername("new_user")).thenReturn(sampleUser);
-
+        Page<Account> mockPage = new PageImpl<>(Arrays.asList(sampleAccount1, sampleAccount2));
         /* ---------- Case 1 – Success: repository returns two accounts ---------- */
-        when(accountRepository.findAll())
-                .thenReturn(Arrays.asList(sampleAccount1, sampleAccount2));
+        when(accountRepository.findAll(PageRequest.of(0, 10)))
+                .thenReturn(mockPage);
 
         List<Account> result =
-                accountService.getAllAccounts(samplePrincipal);
+                accountService.getAllAccounts(0,10,samplePrincipal);
 
         assertEquals(2, result.size());
         assertEquals(301, result.get(0).getId());
         assertEquals(302, result.get(1).getId());
 
-        /* ---------- Case 2 – Empty list ---------- */
-        when(accountRepository.findAll()).thenReturn(Arrays.asList());
+        /* ---------- Case 2 - Empty list ---------- */
+        Page<Account> emptyMockPage= new PageImpl<>(Arrays.asList());
+        when(accountRepository.findAll(PageRequest.of(0, 10))).thenReturn(emptyMockPage);
 
-        List<Account> empty =
-                accountService.getAllAccounts(samplePrincipal);
+        List<Account> empty = 
+                accountService.getAllAccounts(0,10,samplePrincipal);
 
         assertTrue(empty.isEmpty());
 
-        /* ---------- Case 3 – Repository returns null ---------- */
-        when(accountRepository.findAll()).thenReturn(null);
-
-        List<Account> nullResult =
-                accountService.getAllAccounts(samplePrincipal);
-
-        assertNull(nullResult);
+        
     }
     
     
@@ -340,27 +333,27 @@ class AccountServiceTest {
 
         int branchId = 101;  // sampleBranch1 ID
 
-        /* ---------- Case 1: Success – list returned ---------- */
+        /* ---------- Case 1: Success - list returned ---------- */
         // Link accounts to branch only inside this test
         sampleAccount1.setBranch(sampleBranch1);
         sampleAccount2.setBranch(sampleBranch1);
 
-        when(accountRepository.getByBranchId(branchId))
+        when(accountRepository.getByBranchId(branchId,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList(sampleAccount1, sampleAccount2));
 
         List<Account> accounts =
-                accountService.getAccountsByBranchId(branchId, samplePrincipal);
+                accountService.getAccountsByBranchId(0,10,branchId, samplePrincipal);
 
         assertEquals(2, accounts.size());
         assertEquals(301, accounts.get(0).getId());
         assertEquals(302, accounts.get(1).getId());
 
         /* ---------- Case 2: Empty list  ---------- */
-        when(accountRepository.getByBranchId(branchId))
+        when(accountRepository.getByBranchId(branchId,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList());
 
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
-            accountService.getAccountsByBranchId(branchId, samplePrincipal);
+            accountService.getAccountsByBranchId(0,10,branchId, samplePrincipal);
         });
         assertEquals(
             "No account records found with the given branch id...!!!",
@@ -379,23 +372,23 @@ class AccountServiceTest {
         // Ensure our sample has the correct status for this test
         sampleAccount1.setAccountStatus(AccountStatus.OPEN);
 
-        /* ---------- Case 1: Success – list returned for OPEN ---------- */
-        when(accountRepository.getByAccountStatus(AccountStatus.OPEN))
+        /* ---------- Case 1: Success - list returned for OPEN ---------- */
+        when(accountRepository.getByAccountStatus(AccountStatus.OPEN,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList(sampleAccount1));
 
         List<Account> openAccounts =
-                accountService.getAccountsByStatus(AccountStatus.OPEN, samplePrincipal);
+                accountService.getAccountsByStatus(0,10,AccountStatus.OPEN, samplePrincipal);
 
         assertEquals(1, openAccounts.size());
         assertEquals(301, openAccounts.get(0).getId());
         assertEquals(AccountStatus.OPEN, openAccounts.get(0).getAccountStatus());
 
         /* ---------- Case 2: Empty list ---------- */
-        when(accountRepository.getByAccountStatus(AccountStatus.OPEN))
+        when(accountRepository.getByAccountStatus(AccountStatus.OPEN,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList());
 
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
-            accountService.getAccountsByStatus(AccountStatus.OPEN, samplePrincipal);
+            accountService.getAccountsByStatus(0,10,AccountStatus.OPEN, samplePrincipal);
         });
         assertEquals(
             "No account records found with the given account status...!!!",
@@ -417,22 +410,22 @@ class AccountServiceTest {
         sampleAccount1.setAccountType(sampleAccountType1);
 
         /* ---------- Case 1: Success – list returned ---------- */
-        when(accountRepository.getByAccountTypeId(typeId))
+        when(accountRepository.getByAccountTypeId(typeId,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList(sampleAccount1));
 
         List<Account> result =
-                accountService.getAccountsByAccountTypeId(typeId, samplePrincipal);
+                accountService.getAccountsByAccountTypeId(0,10,typeId, samplePrincipal);
 
         assertEquals(1, result.size());
         assertEquals(301, result.get(0).getId());
         assertEquals(sampleAccountType1, result.get(0).getAccountType());
 
         /* ---------- Case 2: Empty list  ---------- */
-        when(accountRepository.getByAccountTypeId(typeId))
+        when(accountRepository.getByAccountTypeId(typeId,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList());
 
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
-            accountService.getAccountsByAccountTypeId(typeId, samplePrincipal);
+            accountService.getAccountsByAccountTypeId(0,10,typeId, samplePrincipal);
         });
         assertEquals(
             "No account records found with the given account type id...!!!",
@@ -675,7 +668,7 @@ class AccountServiceTest {
         // ---------- Case 1: success ----------
         sampleAccount1.setKycCompliant(false);
         when(accountRepository.findById(301)).thenReturn(Optional.of(sampleAccount1));
-
+        when(accountRepository.save(sampleAccount1)).thenReturn(sampleAccount1);
         Account updated = accountService.updateKyc(301, true, samplePrincipal);
 
         assertTrue(updated.getKycCompliant());

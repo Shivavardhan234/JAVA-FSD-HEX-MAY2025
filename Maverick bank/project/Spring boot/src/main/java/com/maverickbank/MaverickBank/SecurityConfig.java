@@ -35,14 +35,14 @@ public class SecurityConfig {
 					.requestMatchers("/api/user/get/by-id/{id}").hasAnyAuthority("ADMIN")
 					.requestMatchers("/api/user/get/details").authenticated()
 					//----------------------- put ---------------------------------------
-					.requestMatchers("/api/user/update/username/{username}").authenticated()
-					.requestMatchers("/api/user/update/password/password/{oldPassword}/{newPassword}").authenticated()
+					.requestMatchers("/api/user/update/username").authenticated()
+					.requestMatchers("/api/user/update/password").authenticated()
 					.requestMatchers("/api/user/update/role/{id}/{newRole}").hasAnyAuthority("ADMIN")
-					.requestMatchers("/api/user/update/deactivate/{password}").authenticated()
-					.requestMatchers("/api/user/update/activate/{password}").authenticated()
+					.requestMatchers("/api/user/update/deactivate").authenticated()
+					.requestMatchers("/api/user/update/activate").authenticated()
 					.requestMatchers("/api/user/update/status/{id}/{status}").hasAnyAuthority("ADMIN")
 					
-					.requestMatchers("/api/user/update/delete/{password}").hasAnyAuthority("CUSTOMER")
+					.requestMatchers("/api/user/update/delete").hasAnyAuthority("CUSTOMER")
 					//---------------------- utils ---------------------------------------
 					.requestMatchers("/api/user/token/v2").authenticated()
 					.requestMatchers("/api/user/token/v1").authenticated()
@@ -56,12 +56,12 @@ public class SecurityConfig {
 					
 					//----------------------- get --------------------------------------------
 					.requestMatchers("/api/customer/get/all").hasAnyAuthority("ADMIN")
-					.requestMatchers("/api/customer/get/by-id").permitAll()
+					.requestMatchers("/api/customer/get/by-id/{id}").permitAll()
 					.requestMatchers("/api/customer/get/current").hasAnyAuthority("CUSTOMER")
-					.requestMatchers("/api/customer/get/by-user-id").hasAnyAuthority("ADMIN")
+					.requestMatchers("/api/customer/get/by-user-id/{id}").hasAnyAuthority("ADMIN")
 					
 					//---------------------- put ----------------------------------------------
-					.requestMatchers("/api/customer/update/customer").hasAnyAuthority("CUSTOMER")
+					.requestMatchers("/api/customer/update").hasAnyAuthority("CUSTOMER")
 
 					
 					
@@ -74,11 +74,11 @@ public class SecurityConfig {
 					.requestMatchers("/api/employee/get/all").hasAnyAuthority("ADMIN")
 					.requestMatchers("/api/employee/get/by-id/{id}").hasAnyAuthority("ADMIN")
 					.requestMatchers("/api/employee/get/by-user-id/{id}").hasAnyAuthority("ADMIN")
-					.requestMatchers("/api/employee/get/by-designation/{designation}").hasAnyAuthority("ADMIN")
-					.requestMatchers("/api/employee/get/by-branch/{branch}").hasAnyAuthority("ADMIN")
-					.requestMatchers("/api/employee/get/by-username/{username}").hasAnyAuthority("ADMIN")
-					.requestMatchers("/api/employee/get/by-email/{email}").hasAnyAuthority("ADMIN")
-					.requestMatchers("/api/employee/get/by-contactNumber/{contactNumber}").hasAnyAuthority("ADMIN")
+					.requestMatchers("/api/employee/get/by-designation").hasAnyAuthority("ADMIN")
+					.requestMatchers("/api/employee/get/by-branch").hasAnyAuthority("ADMIN")
+					.requestMatchers("/api/employee/get/by-username").hasAnyAuthority("ADMIN")
+					.requestMatchers("/api/employee/get/by-email").hasAnyAuthority("ADMIN")
+					.requestMatchers("/api/employee/get/by-contactNumber").hasAnyAuthority("ADMIN")
 					.requestMatchers("/api/employee/get/current-employee").hasAnyAuthority(" LOAN_OFFICER", "ACCOUNT_MANAGER", "TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					//------------------------ update ---------------------------------
 					.requestMatchers("/api/employee/update/personal-details").hasAnyAuthority("ADMIN")
@@ -110,8 +110,9 @@ public class SecurityConfig {
 				//----------------------------- put -------------------------------------------
 					.requestMatchers("/api/branch/activate").hasAnyAuthority("ADMIN")
 					.requestMatchers("/api/branch/deactivate").hasAnyAuthority("ADMIN")
-					.requestMatchers("/api/branch/update/contact-number/{id}/{contactNumber}").hasAnyAuthority("ADMIN")
-					.requestMatchers("/api/branch/update/email/{id}/{email}").hasAnyAuthority("ADMIN")
+					.requestMatchers("/api/branch/update/contact-number/{id}").hasAnyAuthority("ADMIN")
+					.requestMatchers("/api/branch/update/email/{id}").hasAnyAuthority("ADMIN")
+					.requestMatchers("/api/branch/update").hasAnyAuthority("ADMIN")
 					
 					
 	  //==================================== ACCOUNT TYPE =============================================
@@ -147,10 +148,10 @@ public class SecurityConfig {
 				//------------------------------------- get ----------------------------------------------
 					.requestMatchers("/api/account-holder/get/all").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/account-holder/get/by-id/{id}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
-					.requestMatchers("/api/account-holder/get/by-email/{email}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
-					.requestMatchers("/api/account-holder/get/by-contact/{contactNumber}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
-					.requestMatchers("/api/account-holder/get/by-aadhar/{aadharNumber}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
-					.requestMatchers("/api/account-holderupdate/get/by-pan/{panCardNumber}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-holder/get/by-email").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-holder/get/by-contact").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-holder/get/by-aadhar").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account-holderupdate/get/by-pan").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 				//------------------------------------- put ------------------------------------------------
 					.requestMatchers("/api/account-holder/update").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					
@@ -181,11 +182,11 @@ public class SecurityConfig {
 				//------------------------------------- get ----------------------------------------------
 					.requestMatchers("/api/transaction/get/all").hasAnyAuthority("ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/transaction/get/by-id/{id}").hasAnyAuthority("TRANSACTION_ANALYST","ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
-					.requestMatchers("/api/transaction/get/by-date-range/{startDate}/{endDate}/{accountNumber}").hasAnyAuthority("CUSTOMER","ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
-					.requestMatchers("/api/transaction/get/credits/{startDate}/{endDate}/{accountNumber}").hasAnyAuthority("ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
-					.requestMatchers("/api/transaction/get/debits/{startDate}/{endDate}/{accountNumber}").hasAnyAuthority("ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
-					.requestMatchers("/api/transaction/get/account-statement/{accountNumber}").hasAnyAuthority("CUSTOMER")
-					.requestMatchers("/api/transaction/get/last-transactions/{accountNumber}/{count}").hasAnyAuthority("CUSTOMER","ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/transaction/get/by-date-range/{startDate}/{endDate}").hasAnyAuthority("CUSTOMER","ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/transaction/get/credits/{startDate}/{endDate}").hasAnyAuthority("ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/transaction/get/debits/{startDate}/{endDate}").hasAnyAuthority("ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/transaction/get/account-statement").hasAnyAuthority("CUSTOMER")
+					.requestMatchers("/api/transaction/get/transactions-for-account").hasAnyAuthority("CUSTOMER","ACCOUNT_MANAGER","TRANSACTION_ANALYST", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 				
 					
 					
@@ -197,13 +198,18 @@ public class SecurityConfig {
 				//------------------------------------- get ----------------------------------------------
 					.requestMatchers("/api/account/get/all").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/account/get/by-id/{id}").hasAnyAuthority("CUSTOMER","LOAN_OFFICER","ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
-					.requestMatchers("/api/account/get/by-account-number/{accountNumber}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account/get/by-account-number").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/account/get/by-branch-id/{id}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/account/get/by-account-status/{accountStatus}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/account/get/by-account-type-id/{id}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 				//------------------------------------- put ------------------------------------------------
-					.requestMatchers("/api/account/update/name/{accountId}/{newName}update").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account/update/name/{accountId}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/account/update/status/{accountId}/{status}").hasAnyAuthority("ACCOUNT_MANAGER", "JUNIOR_OPERATIONS_MANAGER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/account/update/withdraw/{accountId}/{amount}/{medium}").hasAnyAuthority("CUSTOMER")
+					.requestMatchers("/api/account/update/deposit/{accountId}/{amount}/{medium}").hasAnyAuthority("CUSTOMER")
+					.requestMatchers("/api/account/update/transfer/{fromAccountId}/{amount}").hasAnyAuthority("CUSTOMER")
+					
+					
 					
 					
 	//========================================== CUSTOMER ACCOUNT ================================================	
@@ -267,12 +273,12 @@ public class SecurityConfig {
 					.requestMatchers("/api/loan/add/{loanApplicationId}").hasAnyAuthority("CUSTOMER")
 				//------------------------------------- get ----------------------------------------------
 					.requestMatchers("/api/loan/get/all").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
-					.requestMatchers("/api/loan/get/by-id/{id}").hasAnyAuthority("CUSTOMER","LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan/get/by-id/{loanId}").hasAnyAuthority("CUSTOMER","LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/loan/get/by-account-id/{accountId}").hasAnyAuthority("CUSTOMER","LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/loan/get/by-account-id-status/{accountId}/{status}").hasAnyAuthority("CUSTOMER","LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/loan/get/by-status/{status}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
 				//------------------------------------- put ------------------------------------------------
-					.requestMatchers("/api/loan/update/close/{id}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
+					.requestMatchers("/api/loan/update/close/{loanId}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/loan/update/penalty/{loanId}/{penalty}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/loan/update/due-date/{loanId}/{dueDate}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/loan/update/is-cleared/{loanId}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
@@ -289,7 +295,7 @@ public class SecurityConfig {
 	//=================================================== LOAN CLOSURE REQUEST ========================================================
 
 				//------------------------------------ post ---------------------------------------------	
-					.requestMatchers("/api/loan-closure/add/{loanId}/{purpose}").hasAnyAuthority("CUSTOMER")
+					.requestMatchers("/api/loan-closure/add/{loanId}").hasAnyAuthority("CUSTOMER")
 				//------------------------------------- get ----------------------------------------------
 					.requestMatchers("/api/loan-closure/get/all").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")
 					.requestMatchers("/api/loan-closure/get/by-id/{id}").hasAnyAuthority("LOAN_OFFICER", "SENIOR_OPERATIONS_MANAGER")

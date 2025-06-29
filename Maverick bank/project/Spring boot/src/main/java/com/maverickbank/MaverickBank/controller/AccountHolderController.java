@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.maverickbank.MaverickBank.exception.DeletedUserException;
@@ -41,20 +42,20 @@ public class AccountHolderController {
   public AccountHolder getAccountHolderById(@PathVariable int id, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
 	  return accountHolderService.getAccountHolderById(id,principal);
   }
-  @GetMapping("/get/by-email/{email}")
-  public List<AccountHolder> getAccountHolderByEmail(@PathVariable String email, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
+  @GetMapping("/get/by-email")
+  public List<AccountHolder> getAccountHolderByEmail(@RequestParam String email, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
 	  return accountHolderService.getAccountHolderByEmail(email,principal);
   }
-  @GetMapping("/get/by-contact/{contactNumber}")
-  public List<AccountHolder> getAccountHolderByContactNumber(@PathVariable String contactNumber, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
+  @GetMapping("/get/by-contact")
+  public List<AccountHolder> getAccountHolderByContactNumber(@RequestParam String contactNumber, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
 	  return accountHolderService.getAccountHolderByContactNumber(contactNumber,principal);
   }
-  @GetMapping("/get/by-aadhar/{aadharNumber}")
-  public List<AccountHolder> getAccountHolderByAadharNumber(@PathVariable String aadharNumber, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
+  @GetMapping("/get/by-aadhar")
+  public List<AccountHolder> getAccountHolderByAadharNumber(@RequestParam String aadharNumber, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
 	  return accountHolderService.getAccountHolderByAadharNumber(aadharNumber,principal);
   }
-  @GetMapping("/get/by-pan/{panCardNumber}")
-  public List<AccountHolder> getAccountHolderByPanCardNumber(@PathVariable String panCardNumber, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
+  @GetMapping("/get/by-pan")
+  public List<AccountHolder> getAccountHolderByPanCardNumber(@RequestParam String panCardNumber, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
 	  return accountHolderService.getAccountHolderByPanCardNumber(panCardNumber,principal);
   }
   

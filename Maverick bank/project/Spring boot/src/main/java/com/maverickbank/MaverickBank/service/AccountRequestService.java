@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.maverickbank.MaverickBank.enums.AccountStatus;
@@ -103,11 +105,11 @@ public class AccountRequestService {
 	
 //--------------------------------------------- GET ----------------------------------------------------------------------
 	
-	public List<AccountRequest> getAllRequests(Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
+	public List<AccountRequest> getAllRequests(Integer page, Integer size, Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
 	    User currentUser = userRepository.getByUsername(principal.getName());
 	    UserValidation.checkActiveStatus(currentUser.getStatus());
-	    
-	    return accountRequestRepository.findAll();
+	    Pageable pageable = PageRequest.of(page, size);
+	    return accountRequestRepository.findAll(pageable).getContent();
 	}
 	
 	
@@ -133,11 +135,11 @@ public class AccountRequestService {
 	}
 
 	
-	public List<AccountRequest> getRequestsByStatus(ApplicationStatus status, Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
+	public List<AccountRequest> getRequestsByStatus(Integer page, Integer size, ApplicationStatus status, Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
 	    User currentUser = userRepository.getByUsername(principal.getName());
 	    UserValidation.checkActiveStatus(currentUser.getStatus());
-	    
-	    return accountRequestRepository.findByRequestStatus(status);
+	    Pageable pageable = PageRequest.of(page, size);
+	    return accountRequestRepository.findByRequestStatus(status,pageable);
 	}
 
 	

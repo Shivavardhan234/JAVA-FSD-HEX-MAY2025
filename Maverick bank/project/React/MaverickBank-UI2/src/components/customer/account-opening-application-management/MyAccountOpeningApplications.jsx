@@ -14,18 +14,16 @@ function MyAccountOpeningApplications() {
     const [applications, setApplications] = useState([]);
     const [filter, setFilter] = useState("ALL");
     const [message, setMessage] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const [perPage, setPerPage] = useState(10);
     const [applicationData, setApplicationData] = useState();
     const [accountHolders, setAccountHolders] = useState([]);
     const [showOverlay, setShowOverlay] = useState(false);
 
-    const indexOfLast = currentPage * perPage;
-    const indexOfFirst = indexOfLast - perPage;
-    const currentApplications = applications.slice(indexOfFirst, indexOfLast);
-    const totalPages = Math.ceil(applications.length / perPage);
+    
 
     useEffect(() => { getUserDetails(dispatch)(); }, []);
+
+    
+
     useEffect(() => {
         if (customer && customer.id) {
             fetchApplications();
@@ -49,8 +47,8 @@ function MyAccountOpeningApplications() {
             });
 
             setApplications(response.data);
-            setCurrentPage(1);
         } catch (err) {
+            setApplications([]);
             console.error(err);
             setMessage("Unable to fetch applications.");
         }
@@ -138,7 +136,7 @@ function MyAccountOpeningApplications() {
                             {message}
                         </div>
                     )}
-                    {currentApplications.map((app, idx) => (
+                    {applications.map((app, idx) => (
                         <div
                             key={idx}
                             className="list-group-item p-0 mb-3 border rounded overflow-hidden bg-white"
@@ -185,40 +183,7 @@ function MyAccountOpeningApplications() {
                     ))}
                 </div>
 
-                {/* Footer */}
-                <div className="card-footer d-flex justify-content-between align-items-center bg-light">
-                    <div className="d-flex align-items-center">
-                        <span className="me-2">Items per page:</span>
-                        <Form.Select
-                            value={perPage}
-                            onChange={(e) => {
-                                setCurrentPage(1);
-                                setPerPage(Number(e.target.value));
-                            }}
-                            style={{ width: "80px" }}
-                        >
-                            {[5, 10, 20].map(num => (
-                                <option key={num} value={num}>{num}</option>
-                            ))}
-                        </Form.Select>
-                    </div>
-
-                    <nav>
-                        <ul className="pagination mb-0">
-                            <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                                <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>&laquo;</button>
-                            </li>
-                            {[...Array(totalPages).keys()].map(i => (
-                                <li key={i} className={`page-item ${currentPage === i + 1 ? "active" : ""}`}>
-                                    <button className="page-link" onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
-                                </li>
-                            ))}
-                            <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                                <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)}>&raquo;</button>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
+               
             </div>
             {showOverlay && (
                 <div

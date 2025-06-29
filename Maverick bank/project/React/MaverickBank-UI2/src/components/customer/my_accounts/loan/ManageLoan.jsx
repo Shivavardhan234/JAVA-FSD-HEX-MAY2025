@@ -2,35 +2,31 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Outlet, Link } from 'react-router-dom';
 import axios from 'axios';
-import { getLoan } from '../../../../store/actions/LoanAction';
-import { getBankAccount } from '../../../../store/actions/BankAccountAction';
 
 function ManageLoan() {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const accountId = localStorage.getItem("accountId");
-    const loan = useSelector(state => state.loanStore.loan);
+
     const [showPenalty, setShowPenalty] = useState(false);
     const [message, setMessage] = useState("");
-    const loanId = localStorage.getItem("loanId");
-    const account = useSelector(state => state.bankAccount.account);
 
+
+
+    const account = useSelector(state => state.bankAccount.account);
+    const loan = useSelector(state => state.loanStore.loan);
 
     const [showPayments, setShowPayments] = useState(false);
     const [payments, setPayments] = useState([]);
 
+  
 
 
-    useEffect(() => {
-            getBankAccount(dispatch)(accountId);
-        }, [])
 
 
 
     const fetchPayments = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`http://localhost:9090/api/loan-payment/get/by-loan-id/${loanId}`, {
+            const response = await axios.get(`http://localhost:9090/api/loan-payment/get/by-loan-id/${loan.id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setPayments(response.data);
@@ -51,25 +47,9 @@ function ManageLoan() {
         setTimeout(() => setMessage(""), 3000);
     };
 
-    useEffect(() => { getLoan(dispatch)(loanId) }, []);
 
 
-    const handleLoanClosure = async () => {
-        const purpose = prompt("Enter reason to request loan closure:");
-        if (!purpose || !purpose.trim()) return;
 
-        try {
-            await axios.post(`http://localhost:8080/api/loan-closure/add/${loanId}/${purpose}`, {}, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`
-                }
-            });
-            setMessage("Loan closure request submitted successfully.");
-            setTimeout(() => setMessage(""), 3000);
-        } catch (err) {
-            handleError(err);
-        }
-    };
 
 
 

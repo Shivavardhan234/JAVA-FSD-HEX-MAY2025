@@ -2,6 +2,7 @@ package com.maverickbank.MaverickBank.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,7 +16,7 @@ public interface LoanOpeningApplicationRepository extends JpaRepository<LoanOpen
 	
 	
 	@Query("SELECT l FROM LoanOpeningApplication l WHERE l.account.id = ?1 AND l.status = ?2")
-	List<LoanOpeningApplication> getByAccountIdAndStatus(int accountId,ApplicationStatus status);
+	List<LoanOpeningApplication> getByAccountIdAndStatus(int accountId,ApplicationStatus status, Pageable pageable);
 
 	
 	
@@ -24,7 +25,7 @@ public interface LoanOpeningApplicationRepository extends JpaRepository<LoanOpen
 
 
 	@Query("SELECT l FROM LoanOpeningApplication l WHERE l.account.id=?1")
-	List<LoanOpeningApplication> getByAccountId(int accountId);
+	List<LoanOpeningApplication> getByAccountId(int accountId, Pageable pageable);
 
 
 	@Query("SELECT l FROM LoanOpeningApplication l WHERE l.loanPlan.id=?1")
@@ -32,7 +33,7 @@ public interface LoanOpeningApplicationRepository extends JpaRepository<LoanOpen
 
 
 	@Query("SELECT l FROM LoanOpeningApplication l WHERE  l.status = ?1")
-	List<LoanOpeningApplication> getByStatus(ApplicationStatus status);
+	List<LoanOpeningApplication> getByStatus(ApplicationStatus status, Pageable pageable);
 	
 	
 }

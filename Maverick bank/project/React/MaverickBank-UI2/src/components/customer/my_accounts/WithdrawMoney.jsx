@@ -7,20 +7,17 @@ import { getBankAccount } from '../../../store/actions/BankAccountAction';
 
 function WithdrawMoney() {
     const navigate = useNavigate();
-     const accountId = localStorage.getItem("accountId");
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        getBankAccount(dispatch)(accountId);
-    }, [])
-
-    const account = useSelector(state => state.bankAccount.account);
 
     const [amount, setAmount] = useState('');
     const [medium, setMedium] = useState('UPI');
     const [pin, setPin] = useState('');
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+
+
+        const account = useSelector(state => state.bankAccount.account);
 
     const handleError=(err)=>{
         {
@@ -38,8 +35,7 @@ function WithdrawMoney() {
         }
     }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         try {
             const token = localStorage.getItem("token");
             const headers = {
@@ -47,12 +43,13 @@ function WithdrawMoney() {
             };
 
             await axios.put(
-                `http://localhost:9090/api/account/update/withdraw/${account?.id}/${amount}/${medium}/${pin}`,
+                `http://localhost:9090/api/account/update/withdraw/${account?.id}/${amount}/${medium}?pin=${pin}`,
                 {},
                 { headers }
             );
 
             setMessage('Withdrawal successful!');
+            getBankAccount(dispatch)(account.id);
             setError('');
             setAmount('');
             setPin('');
@@ -94,7 +91,7 @@ function WithdrawMoney() {
                     {message && <div className="alert alert-success">{message}</div>}
                     {error && <div className="alert alert-danger">{error}</div>}
 
-                    <Form onSubmit={handleSubmit}>
+                    <Form >
                         {/* Account Number */}
                         <Form.Group className="mb-3">
                             <Form.Label>Account Number</Form.Label>
@@ -133,7 +130,7 @@ function WithdrawMoney() {
                             />
                         </Form.Group>
 
-                        <Button variant="danger" type="submit">
+                        <Button variant="danger" type="button" onClick={()=>handleSubmit()}>
                             Withdraw
                         </Button>
                     </Form>

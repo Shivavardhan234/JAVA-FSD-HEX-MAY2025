@@ -1,24 +1,35 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
-function MyLoanApplications({ isExpanded }) {
+function MyLoanApplications() {
     const [filter, setFilter] = useState("ALL");
     const [applications, setApplications] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [perPage, setPerPage] = useState(5);
+    const [page, setPage] = useState(0);
+    const [size, setSize] = useState(5);
     const [message, setMessage] = useState("");
+
     const navigate = useNavigate();
 
-    const accountId = localStorage.getItem("accountId");
+    const account = useSelector(state => state.bankAccount.account);
+    const accountId=account?.id;
 
     useEffect(() => {
-        const fetchApplications = async () => {
+        fetchApplications();
+    }, [filter, accountId]);
+
+    useEffect(() => {
+        fetchApplications();
+    }, [page,size]);
+
+
+      const fetchApplications = async () => {
             try {
                 let url =
                     filter === "ALL"
-                        ? `http://localhost:9090/api/loan-opening-application/get/by-account-id/${accountId}`
-                        : `http://localhost:9090/api/loan-opening-application/get/by-account-id-status/${accountId}/${filter}`;
+                        ? `http://localhost:9090/api/loan-opening-application/get/by-account-id/${accountId}?page=${page}&size=${size}`
+                        : `http://localhost:9090/api/loan-opening-application/get/by-account-id-status/${accountId}/${filter}?page=${page}&size=${size}`;
 
                 const token = localStorage.getItem("token");
                 const res = await axios.get(url, {
@@ -28,22 +39,13 @@ function MyLoanApplications({ isExpanded }) {
                 });
                 setApplications(res.data);
                 setMessage("");
-                setCurrentPage(1); // Reset to page 1 on filter change
             } catch (err) {
                 setApplications([]);
                 setMessage("Unable to fetch loan applications.");
             }
         };
 
-        if (accountId) fetchApplications();
-    }, [filter, accountId]);
 
-    // Pagination Logic
-    const totalPages = Math.ceil(applications.length / perPage);
-    const currentApplications = applications.slice(
-        (currentPage - 1) * perPage,
-        currentPage * perPage
-    );
 
     return (
         <div
@@ -58,7 +60,7 @@ function MyLoanApplications({ isExpanded }) {
                         <span
                             role="button"
                             onClick={() =>
-                                navigate(`/customer/myAccounts/manageBankAccount/${accountId}`)
+                                navigate(`../manageBankAccount/${accountId}`)
                             }
                             className="text-decoration-none text-primary"
                         >
@@ -68,7 +70,7 @@ function MyLoanApplications({ isExpanded }) {
                     <li className="breadcrumb-item">
                         <span
                             role="button"
-                            onClick={() => navigate(`/customer/myAccounts/myLoans`)}
+                            onClick={() => navigate(`../myLoans`)}
                             className="text-decoration-none text-primary"
                         >
                             My Loans
@@ -103,10 +105,10 @@ function MyLoanApplications({ isExpanded }) {
                         </div>
                     )}
 
-                    {currentApplications.length === 0 ? (
+                    {applications.length === 0 ? (
                         <p className="text-muted text-center">No applications found.</p>
                     ) : (
-                        currentApplications.map((app, idx) => (
+                        applications.map((app, idx) => (
                             <div
                                 key={idx}
                                 className="list-group-item mb-3 p-3 border rounded bg-light"
@@ -145,10 +147,10 @@ function MyLoanApplications({ isExpanded }) {
                             <span className="me-2">Items per page:</span>
                             <select
                                 className="form-select w-auto"
-                                value={perPage}
+                                value={size}
                                 onChange={(e) => {
-                                    setPerPage(Number(e.target.value));
-                                    setCurrentPage(1);
+                                    setPage(0);
+                                    setSize(Number(e.target.value));
                                 }}
                             >
                                 {[5, 10, 20].map((num) => (
@@ -160,34 +162,20 @@ function MyLoanApplications({ isExpanded }) {
                         </div>
 
                         <ul className="pagination mb-0">
-                            <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                                <button
-                                    className="page-link"
-                                    onClick={() => setCurrentPage((prev) => prev - 1)}
-                                >
+                            <li className="page-item">
+                                <button className="page-link" onClick={() => setPage(page - 1)} >
                                     &laquo;
                                 </button>
                             </li>
-                            {Array.from({ length: totalPages }, (_, i) => (
-                                <li
-                                    key={i}
-                                    className={`page-item ${currentPage === i + 1 ? "active" : ""}`}
-                                >
-                                    <button
-                                        className="page-link"
-                                        onClick={() => setCurrentPage(i + 1)}
-                                    >
-                                        {i + 1}
+                            
+                                <li key={page} className="page-item" >
+                                    <button className="page-link"  >
+                                        {page + 1}
                                     </button>
                                 </li>
-                            ))}
-                            <li
-                                className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}
-                            >
-                                <button
-                                    className="page-link"
-                                    onClick={() => setCurrentPage((prev) => prev + 1)}
-                                >
+                           
+                            <li className="page-item" >
+                                <button className="page-link" onClick={() => setPage(page + 1)} >
                                     &raquo;
                                 </button>
                             </li>

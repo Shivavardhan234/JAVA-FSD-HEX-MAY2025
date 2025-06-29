@@ -86,8 +86,9 @@ public class CustomerController {
 	}
 	@GetMapping("/get/by-status/{status}")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<Customer> getCustomerByStatus(@PathVariable ActiveStatus status, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
-		return customerService.getCustomerByStatus(status,principal);
+	public List<Customer> getCustomerByStatus(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,@PathVariable ActiveStatus status, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		return customerService.getCustomerByStatus(page,size,status,principal);
 	}
 	
 	

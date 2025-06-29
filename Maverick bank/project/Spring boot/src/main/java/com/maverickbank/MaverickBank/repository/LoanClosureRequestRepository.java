@@ -2,6 +2,7 @@ package com.maverickbank.MaverickBank.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -19,6 +20,6 @@ public interface LoanClosureRequestRepository extends JpaRepository<LoanClosureR
 	List<LoanClosureRequest> findByLoanId(int loanId);
 
 	@Query("SELECT l FROM LoanClosureRequest l WHERE  l.requestStatus=?1")
-	List<LoanClosureRequest> getByRequestStatus(ApplicationStatus status);
+	List<LoanClosureRequest> getByRequestStatus(ApplicationStatus status, Pageable pageable);
 
 }

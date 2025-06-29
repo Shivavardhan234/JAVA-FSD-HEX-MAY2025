@@ -20,6 +20,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.PaymentMedium;
@@ -28,6 +31,7 @@ import com.maverickbank.MaverickBank.enums.TransactionType;
 import com.maverickbank.MaverickBank.exception.InvalidActionException;
 import com.maverickbank.MaverickBank.exception.InvalidInputException;
 import com.maverickbank.MaverickBank.exception.ResourceNotFoundException;
+import com.maverickbank.MaverickBank.model.Account;
 import com.maverickbank.MaverickBank.model.Transaction;
 import com.maverickbank.MaverickBank.model.User;
 import com.maverickbank.MaverickBank.repository.AccountRepository;
@@ -41,6 +45,8 @@ class TransactionServiceTest {
 
 	 @InjectMocks
 	    private TransactionService transactionService;
+	 
+	 	
 
 	    @Mock
 	    private TransactionRepository transactionRepository;
@@ -176,9 +182,10 @@ class TransactionServiceTest {
 	    public void testGetAllTransactions() throws Exception {
 	        
 	        when(userRepository.getByUsername("new_user")).thenReturn(sampleUser);
-	        when(transactionRepository.findAll()).thenReturn(Arrays.asList(sampleTransaction1, sampleTransaction2));
+	        Page<Transaction> mockPage = new PageImpl<>(Arrays.asList(sampleTransaction1, sampleTransaction2));
+	        when(transactionRepository.findAll(PageRequest.of(0,10))).thenReturn(mockPage);
 
-	        List<Transaction> result = transactionService.getAllTransactions(samplePrincipal);
+	        List<Transaction> result = transactionService.getAllTransactions(0,10,samplePrincipal);
 	        assertEquals(Arrays.asList(sampleTransaction1, sampleTransaction2), result);
 
 	       
@@ -211,21 +218,22 @@ class TransactionServiceTest {
 	        LocalDate endDate = LocalDate.of(2025, 1, 10);
 
 	        // Case 1:
-	        String accNum = "1234567890";
-	        when(transactionRepository.findByAccountNumberAndDateRange(accNum, startDate, endDate))
-	            .thenReturn(Arrays.asList(sampleTransaction1, sampleTransaction2)); // Both refer to 1234567890
+	        String accountNumber = "1234567890";
+	        when(accountRepository.getByAccountNumber(accountNumber)).thenReturn(new Account());
+	        when(transactionRepository.findByAccountNumberAndDateRange(accountNumber, startDate, endDate,PageRequest.of(0,10)))
+	            .thenReturn(Arrays.asList(sampleTransaction1, sampleTransaction2)); 
 
-	        List<Transaction> resultWithAcc = transactionService.getTransactionsByDateRange(Optional.of(accNum), startDate, endDate, samplePrincipal);
+	        List<Transaction> resultWithAcc = transactionService.getTransactionsByDateRange(0,10,Optional.of(accountNumber), startDate, endDate, samplePrincipal);
 
 	        assertEquals(2, resultWithAcc.size());
 	        assertEquals(TransactionType.DEBT, resultWithAcc.get(0).getTransactionType());
 	        assertEquals(TransactionType.CREDIT, resultWithAcc.get(1).getTransactionType());
 
 	        // Case 2: Without account number 
-	        when(transactionRepository.findByDateRange(startDate, endDate))
+	        when(transactionRepository.findByDateRange(startDate, endDate,PageRequest.of(0,10)))
 	            .thenReturn(Arrays.asList(sampleTransaction1, sampleTransaction2));
 
-	        List<Transaction> resultWithoutAcc = transactionService.getTransactionsByDateRange(Optional.empty(), startDate, endDate, samplePrincipal);
+	        List<Transaction> resultWithoutAcc = transactionService.getTransactionsByDateRange(0,10,Optional.empty(), startDate, endDate, samplePrincipal);
 
 	        assertEquals(Arrays.asList(sampleTransaction1, sampleTransaction2), resultWithoutAcc);
 	    }
@@ -237,15 +245,15 @@ class TransactionServiceTest {
 	        // Arrange
 	        when(userRepository.getByUsername("new_user")).thenReturn(sampleUser);
 
-	        String accNum = "1234567890";
+	        String accountNumber = "1234567890";
 	        LocalDate startDate = LocalDate.of(2024, 12, 1);
 	        LocalDate endDate = LocalDate.of(2025, 1, 10);
-
-	        when(transactionRepository.findCredits(accNum, startDate, endDate))
+	        when(accountRepository.getByAccountNumber(accountNumber)).thenReturn(new Account());
+	        when(transactionRepository.findCredits(accountNumber, startDate, endDate,PageRequest.of(0,10)))
 	            .thenReturn(Arrays.asList(sampleTransaction2)); 
 
 	        
-	        List<Transaction> result = transactionService.getCreditTransactions(accNum, startDate, endDate, samplePrincipal);
+	        List<Transaction> result = transactionService.getCreditTransactions(0,10,accountNumber, startDate, endDate, samplePrincipal);
 
 	        
 	        assertEquals(Arrays.asList(sampleTransaction2), result);
@@ -259,15 +267,15 @@ class TransactionServiceTest {
 	        
 	        when(userRepository.getByUsername("new_user")).thenReturn(sampleUser);
 
-	        String accNum = "1234567890";
+	        String accountNumber = "1234567890";
 	        LocalDate startDate = LocalDate.of(2024, 12, 1);
 	        LocalDate endDate = LocalDate.of(2025, 1, 10);
-
-	        when(transactionRepository.findDebits(accNum, startDate, endDate))
+	        when(accountRepository.getByAccountNumber(accountNumber)).thenReturn(new Account());
+	        when(transactionRepository.findDebits(accountNumber, startDate, endDate,PageRequest.of(0,10)))
 	            .thenReturn(Arrays.asList(sampleTransaction1)); 
 
 	        
-	        List<Transaction> result = transactionService.getDebitTransactions(accNum, startDate, endDate, samplePrincipal);
+	        List<Transaction> result = transactionService.getDebitTransactions(0,10,accountNumber, startDate, endDate, samplePrincipal);
 
 	        
 	        assertEquals(Arrays.asList(sampleTransaction1), result);
@@ -277,24 +285,24 @@ class TransactionServiceTest {
 
 	    
 	    @Test
-	    public void testGetNumberOfTransactions() throws Exception {
+	    public void testGetTransactionsForAccount() throws Exception {
 	        
 	        when(userRepository.getByUsername("new_user")).thenReturn(sampleUser);
 
 	        String accountNumber = "1234567890";
-	        int count = 1;
+	        int count = 2;
 
 	        
 	        List<Transaction> allTransactions = Arrays.asList(sampleTransaction1, sampleTransaction2);
-
-	        when(transactionRepository.findAllByAccountNumber(accountNumber)).thenReturn(allTransactions);
+	        when(accountRepository.getByAccountNumber(accountNumber)).thenReturn(new Account());
+	        when(transactionRepository.findAllByAccountNumber(accountNumber,PageRequest.of(0,10))).thenReturn(allTransactions);
 
 	        
-	        List<Transaction> result = transactionService.getNumberOfTransactions(accountNumber, count, samplePrincipal);
+	        List<Transaction> result = transactionService.getTransactionsForAccount(0,10,accountNumber, samplePrincipal);
 
 	        
 	        assertEquals(count, result.size());
-	        assertEquals(Arrays.asList(sampleTransaction1), result);
+	        assertEquals(allTransactions, result);
 	        assertEquals(TransactionType.DEBT, result.get(0).getTransactionType());
 	    }
 

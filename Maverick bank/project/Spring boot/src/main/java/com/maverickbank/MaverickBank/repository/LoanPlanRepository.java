@@ -2,6 +2,7 @@ package com.maverickbank.MaverickBank.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,6 +16,6 @@ public interface LoanPlanRepository extends JpaRepository<LoanPlan, Integer>{
 	LoanPlan getLoanPlanByName(String loanName);
 	
 	@Query("SELECT l FROM LoanPlan l WHERE l.loanType=?1")
-	List<LoanPlan> getByLoanType(LoanType loanType);
+	List<LoanPlan> getByLoanType(LoanType loanType, Pageable pageable);
 
 }

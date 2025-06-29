@@ -7,7 +7,7 @@ const initialState ={
 
 const branchReducer=(state = initialState, action)=>{
 
-    if(action.type === "GET_BY_ID"){
+    if(action.type === "GET_BRANCH_BY_ID"){
         
         return{
             ...state,

@@ -1,16 +1,18 @@
 import { FaUserCircle } from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import {  useNavigate } from "react-router-dom";
+import {  useState } from "react";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { getCustomer } from "../../../store/actions/CustomerAction";
 
 function ViewCustomer() {
-    const location = useLocation();
     const navigate = useNavigate();
-    const initialCustomer = location.state?.customer;
+    const dispatch = useDispatch();
 
-    const [customer, setCustomer] = useState(initialCustomer);
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+
+    const customer = useSelector(state=>state.customerStore.customer);
 
     const getStatusClass = (status) => {
         switch (status?.toUpperCase()) {
@@ -22,25 +24,7 @@ function ViewCustomer() {
         }
     };
 
-    const fetchUpdatedCustomer = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            const headers = { Authorization: "Bearer " + token };
-            const response = await axios.get(
-                `http://localhost:9090/api/customer/get/by-id/${customer.id}`,
-                { headers }
-            );
-            setCustomer(response.data);
-        } catch (err) {
-            console.error(err);
-            if (err.response?.data) {
-                const firstKey = Object.keys(err.response.data)[0];
-                setMessage(err.response.data[firstKey]);
-            } else {
-                setMessage("Something went wrong. Try again.");
-            }
-        }
-    };
+    
 
     const updateStatus = async (newStatus) => {
         try {
@@ -56,7 +40,7 @@ function ViewCustomer() {
             setSuccessMessage(`Customer ${newStatus.toLowerCase()}d successfully`);
             setTimeout(() => setSuccessMessage(""), 3000);
 
-            await fetchUpdatedCustomer(); // refetch from backend
+            getCustomer(dispatch)(customer.id)
         } catch (err) {
             console.error(err);
             if (err.response?.data) {
@@ -76,7 +60,7 @@ function ViewCustomer() {
                     <li className="breadcrumb-item">
                         <span
                             role="button"
-                            onClick={() => navigate("/cio/byCategory")}
+                            onClick={() => navigate("../byCategory")}
                             className="text-decoration-none text-primary"
                             style={{ cursor: "pointer" }}
                         >

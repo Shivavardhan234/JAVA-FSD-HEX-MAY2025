@@ -3,6 +3,7 @@ package com.maverickbank.MaverickBank.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -28,7 +29,7 @@ public interface AccountOpeningApplicationRepository extends JpaRepository<Accou
 
 	@Query("SELECT a FROM AccountOpeningApplication a WHERE a.employeeApprovalStatus=?1")
 	List<AccountOpeningApplication> getAccountOpeningApplicationByEmployeeApprovalStatus(
-			ApplicationStatus employeeApprovalStatus);
+			ApplicationStatus employeeApprovalStatus, Pageable pageable);
 
 
 	@Query("SELECT a FROM AccountOpeningApplication a WHERE a.applicationDateTime BETWEEN ?1 AND ?2")

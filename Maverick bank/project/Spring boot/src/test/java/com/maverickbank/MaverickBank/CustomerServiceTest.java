@@ -17,6 +17,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.Gender;
@@ -24,6 +27,7 @@ import com.maverickbank.MaverickBank.enums.Role;
 import com.maverickbank.MaverickBank.exception.InvalidInputException;
 import com.maverickbank.MaverickBank.exception.ResourceExistsException;
 import com.maverickbank.MaverickBank.exception.ResourceNotFoundException;
+import com.maverickbank.MaverickBank.model.AccountType;
 import com.maverickbank.MaverickBank.model.User;
 import com.maverickbank.MaverickBank.model.users.CIO;
 import com.maverickbank.MaverickBank.model.users.Customer;
@@ -183,7 +187,8 @@ class CustomerServiceTest {
 	    @Test
 	    public void testGetAllCustomer() throws Exception {
 	        when(userRepository.getByUsername("testuser1")).thenReturn(sampleUser1);
-	        when(customerRepository.findAll()).thenReturn(Arrays.asList(sampleCustomer1, sampleCustomer2));
+	        Page<Customer> mockPage = new PageImpl<>(Arrays.asList(sampleCustomer1, sampleCustomer2));
+	        when(customerRepository.findAll(PageRequest.of(0,10))).thenReturn(mockPage);
 
 	        List<Customer> allCustomers = customerService.getAllCustomer(0,10,samplePrincipal1);
 	        assertEquals(2, allCustomers.size());

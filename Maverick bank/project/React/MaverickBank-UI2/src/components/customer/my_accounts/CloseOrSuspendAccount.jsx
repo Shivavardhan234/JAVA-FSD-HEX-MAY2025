@@ -2,8 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Form, Button, Card } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { getBankAccount } from "../../../store/actions/BankAccountAction";
+import {  useSelector } from "react-redux";
 
 function CloseOrSuspendAccount() {
     const navigate = useNavigate();
@@ -15,12 +14,7 @@ function CloseOrSuspendAccount() {
     const [error, setError] = useState("");
 
 
-     const dispatch =useDispatch();
-    const accountId = localStorage.getItem("accountId");
-
-    useEffect(()=>{
-        getBankAccount(dispatch)(accountId);
-    },[])
+    
 
     const account =useSelector(state=> state.bankAccount.account);
 
@@ -36,7 +30,7 @@ function CloseOrSuspendAccount() {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.post(
-                `http://localhost:9090/api/account-request/add/${account.id}/${requestType}/${encodeURIComponent(purpose)}`,
+                `http://localhost:9090/api/account-request/add/${account.id}/${requestType}?purpose=${purpose}`,
                 {},
                 {
                     headers: {
@@ -62,8 +56,6 @@ function CloseOrSuspendAccount() {
 
             if (err.response && err.response.data) {
                 const errorData = err.response.data;
-
-
                 const firstKey = Object.keys(errorData)[0];
                 setError(errorData[firstKey]);
             } else {

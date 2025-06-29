@@ -5,6 +5,8 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.maverickbank.MaverickBank.enums.LoanStatus;
@@ -89,12 +91,30 @@ public class FinancialPerformanceReportService {
 	
 	    
 //------------------------------------------- GET ------------------------------------------------------------------------
-	    public List<FinancialPerformanceReport> getAllReports(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
+	    /**
+	     * @param principal
+	     * @return
+	     * @throws InvalidInputException
+	     * @throws InvalidActionException
+	     * @throws DeletedUserException
+	     */
+	    public List<FinancialPerformanceReport> getAllReports(Integer page, Integer size,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
 	    	 User currentUser = userRepository.getByUsername(principal.getName());
 		        UserValidation.checkActiveStatus(currentUser.getStatus());
-	        return financialPerformanceReportRepository.findAll();
+		        
+		        Pageable pageable = PageRequest.of(page, size);
+	        return financialPerformanceReportRepository.findAll(pageable).getContent();
 	    }
 
+	    /**
+	     * @param id
+	     * @param principal
+	     * @return
+	     * @throws InvalidInputException
+	     * @throws InvalidActionException
+	     * @throws DeletedUserException
+	     * @throws ResourceNotFoundException
+	     */
 	    public FinancialPerformanceReport getReportById(int id, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 	    	 User currentUser = userRepository.getByUsername(principal.getName());
 		        UserValidation.checkActiveStatus(currentUser.getStatus());
@@ -102,12 +122,24 @@ public class FinancialPerformanceReportService {
 	    }
 
 	    
-	    public List<FinancialPerformanceReport> getReportsByDateRange(LocalDate startDate, LocalDate endDate, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+	    /**
+	     * @param startDate
+	     * @param endDate
+	     * @param principal
+	     * @return
+	     * @throws InvalidInputException
+	     * @throws InvalidActionException
+	     * @throws DeletedUserException
+	     * @throws ResourceNotFoundException
+	     */
+	    public List<FinancialPerformanceReport> getReportsByDateRange(Integer page, Integer size,LocalDate startDate, LocalDate endDate, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 	    	User currentUser = userRepository.getByUsername(principal.getName());
 	        UserValidation.checkActiveStatus(currentUser.getStatus());
 	        
-	        List<FinancialPerformanceReport> financialPerformanceReport = financialPerformanceReportRepository.getReportsByDates(startDate, endDate);
-	        if (financialPerformanceReport == null || financialPerformanceReport.isEmpty()) {
+	        Pageable pageable = PageRequest.of(page, size);
+	        
+	        List<FinancialPerformanceReport> financialPerformanceReport = financialPerformanceReportRepository.getReportsByDates(startDate, endDate,pageable);
+	        if (financialPerformanceReport.isEmpty()) {
 	            throw new ResourceNotFoundException("No Financial Performance Reports found between given dates...!!!");
 	        }
 	        return financialPerformanceReport;

@@ -19,6 +19,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.LoanType;
@@ -118,9 +121,10 @@ public class LoanPlanServiceTest {
     @Test
     public void testGetAllLoanPlans() throws Exception {
         when(userRepository.getByUsername("loan_user")).thenReturn(sampleUser);
-        when(loanPlanRepository.findAll()).thenReturn(Arrays.asList(sampleLoanPlan1, sampleLoanPlan2));
+        Page<LoanPlan> mockPage = new PageImpl<>(Arrays.asList(sampleLoanPlan1, sampleLoanPlan2));
+        when(loanPlanRepository.findAll(PageRequest.of(0, 10))).thenReturn(mockPage);
 
-        List<LoanPlan> result = loanPlanService.getAllLoanPlans(samplePrincipal);
+        List<LoanPlan> result = loanPlanService.getAllLoanPlans(0,10,samplePrincipal);
 
         assertEquals(2, result.size());
         assertTrue(result.contains(sampleLoanPlan1));
@@ -152,9 +156,9 @@ public class LoanPlanServiceTest {
     @Test
     public void testGetLoanPlansByType() throws Exception {
         when(userRepository.getByUsername("loan_user")).thenReturn(sampleUser);
-        when(loanPlanRepository.getByLoanType(LoanType.HOME_LOAN)).thenReturn(Arrays.asList(sampleLoanPlan1));
+        when(loanPlanRepository.getByLoanType(LoanType.HOME_LOAN,PageRequest.of(0, 10))).thenReturn(Arrays.asList(sampleLoanPlan1));
 
-        List<LoanPlan> result = loanPlanService.getLoanPlansByType(LoanType.HOME_LOAN, samplePrincipal);
+        List<LoanPlan> result = loanPlanService.getLoanPlansByType(0,10,LoanType.HOME_LOAN, samplePrincipal);
 
         assertEquals(1, result.size());
         assertEquals(sampleLoanPlan1, result.get(0));

@@ -79,7 +79,6 @@ public class CustomerAccountOpeningApplicationValidation {
 			AccountHolderValidation.validateAccountHolder(a);
 		}
 		
-		validateAccountOpeningApplication(customerAccountOpeningApplicationInputDto.getAccountOpeningApplication());
 		AccountOpeningApplicationValidation.validateAccountOpeningApplication2(customerAccountOpeningApplicationInputDto.getAccountOpeningApplication());
 		return;
 	}

@@ -8,22 +8,18 @@ import { getBankAccount } from "../../../store/actions/BankAccountAction";
 function DepositMoney() {
 
     const navigate = useNavigate();
-    const accountId = localStorage.getItem("accountId");
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        getBankAccount(dispatch)(accountId);
-    }, [])
-
-    const account = useSelector(state => state.bankAccount.account);
 
     const [amount, setAmount] = useState("");
     const [medium, setMedium] = useState("UPI");
     const [message, setMessage] = useState("");
-    const [error, setError] = useState("");
+    const [error, setError] = useState("");   
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const account = useSelector(state => state.bankAccount.account);
+
+
+    const handleSubmit = async () => {
         setMessage("");
         setError("");
 
@@ -46,15 +42,31 @@ function DepositMoney() {
             );
 
             setMessage("Deposit successful! ");
+            getBankAccount(dispatch)(account.id);
             setTimeout(() => {
                 setMessage("");
             }, 3000);
 
         } catch (err) {
-            console.error(err);
-            setError(err?.response?.data?.message || "Deposit failed.");
+            handleError(err);
         }
     };
+
+
+
+      const handleError = (err) => {
+        console.log(err);
+        if (err.response && err.response.data) {
+            const errorData = err.response.data;
+            const firstKey = Object.keys(errorData)[0];
+            setMessage(errorData[firstKey]);
+        } else {
+            setMessage("Deposit unsuccessful. Please try again later...");
+        }
+        setTimeout(() => setMessage(""), 3000);
+    };
+
+
 
     return (
         <div className="container-fluid px-3">
@@ -88,7 +100,7 @@ function DepositMoney() {
                     {message && <div className="alert alert-success">{message}</div>}
                     {error && <div className="alert alert-danger">{error}</div>}
 
-                    <Form onSubmit={handleSubmit}>
+                    <Form >
                         {/* Account Number */}
                         <Form.Group className="mb-3">
                             <Form.Label>Account Number</Form.Label>
@@ -116,7 +128,7 @@ function DepositMoney() {
                             </Form.Select>
                         </Form.Group>
 
-                        <Button variant="primary" type="submit">
+                        <Button variant="primary" type="button" onClick={()=> handleSubmit()}>
                             Deposit
                         </Button>
                     </Form>

@@ -2,6 +2,7 @@ package com.maverickbank.MaverickBank.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -22,7 +23,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer>{
 
 	
 	@Query("SELECT e FROM Employee e WHERE e.designation=?1")
-	List<Employee> getEmployeeByDesignation(String designation);
+	List<Employee> getEmployeeByDesignation(String designation, Pageable pageable);
 	
 	@Query("SELECT e FROM Employee e WHERE e.branch=?1")
 	List<Employee> getEmployeeByBranch(String branch);
@@ -32,8 +33,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer>{
 	Employee getEmployeeByUserId(int userId);
 
 	@Query("SELECT e FROM Employee e WHERE e.branch.id=?1")
-	List<Employee> getEmployeeByBranchId(int id);
+	List<Employee> getEmployeeByBranchId(int id, Pageable pageable);
 
 	@Query("SELECT e FROM Employee e WHERE e.user.status=?1")
-	List<Employee> getEmployeeByStatus(ActiveStatus status);
+	List<Employee> getEmployeeByStatus(ActiveStatus status, Pageable pageable);
 }

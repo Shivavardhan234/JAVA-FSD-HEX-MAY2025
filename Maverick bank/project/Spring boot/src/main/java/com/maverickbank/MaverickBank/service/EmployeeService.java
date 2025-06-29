@@ -3,6 +3,8 @@ package com.maverickbank.MaverickBank.service;
 import java.security.Principal;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
@@ -97,18 +99,21 @@ public class EmployeeService {
 //-------------------------------------- GET ----------------------------------------------------------------------------
 
 	/**Gets all the employees
+	 * @param size 
+	 * @param page 
 	 * @param principal 
 	 * @return
 	 * @throws DeletedUserException 
 	 * @throws InvalidActionException 
 	 * @throws InvalidInputException 
 	 */
-	public List<Employee> getAllEmployee(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
+	public List<Employee> getAllEmployee(Integer page, Integer size, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
 		//Check customer is active or not
 		User currentUser= userRepository.getByUsername(principal.getName());
 		UserValidation.checkActiveStatus(currentUser.getStatus());
+		Pageable pageable = PageRequest.of(page, size);
 		//Get all employees
-		return employeeRepository.findAll();
+		return employeeRepository.findAll(pageable).getContent();
 	}
 
 	
@@ -225,29 +230,29 @@ public class EmployeeService {
 
 
 
-	public List<Employee> getEmployeeByDesignation(String designation, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+	public List<Employee> getEmployeeByDesignation(Integer page, Integer size, String designation, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		//Check customer is active or not
 		User currentUser= userRepository.getByUsername(principal.getName());
 		UserValidation.checkActiveStatus(currentUser.getStatus());
-		
+		Pageable pageable = PageRequest.of(page, size);
 		//Fetch the employees
-		List<Employee> employeeList=employeeRepository.getEmployeeByDesignation(designation);
+		List<Employee> employeeList=employeeRepository.getEmployeeByDesignation(designation,pageable);
 		//throw exception if list is empty
-		if(employeeList==null) {
+		if(employeeList.isEmpty()) {
 			throw new ResourceNotFoundException("No employee record found with given designation...!!!");
 		}
 		//return list
 		return employeeList;
 	}
 	
-	public List<Employee> getEmployeeByBranchId(int id, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+	public List<Employee> getEmployeeByBranchId(Integer page, Integer size, int id, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		User currentUser= userRepository.getByUsername(principal.getName());
 		UserValidation.checkActiveStatus(currentUser.getStatus());
-		
+		Pageable pageable = PageRequest.of(page, size);
 		//Fetch the employees
-		List<Employee> employeeList=employeeRepository.getEmployeeByBranchId(id);
+		List<Employee> employeeList=employeeRepository.getEmployeeByBranchId(id,pageable);
 		//throw exception if list is empty
-		if(employeeList==null) {
+		if(employeeList.isEmpty()) {
 			throw new ResourceNotFoundException("No employee record found with given branch id...!!!");
 		}
 		//return list
@@ -256,14 +261,14 @@ public class EmployeeService {
 
 
 
-	public List<Employee> getEmployeeByStatus(ActiveStatus status, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+	public List<Employee> getEmployeeByStatus(Integer page, Integer size, ActiveStatus status, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		User currentUser= userRepository.getByUsername(principal.getName());
 		UserValidation.checkActiveStatus(currentUser.getStatus());
-		
+		Pageable pageable = PageRequest.of(page, size);
 		//Fetch the employees
-		List<Employee> employeeList=employeeRepository.getEmployeeByStatus(status);
+		List<Employee> employeeList=employeeRepository.getEmployeeByStatus(status,pageable);
 		//throw exception if list is empty
-		if(employeeList==null) {
+		if(employeeList.isEmpty()) {
 			throw new ResourceNotFoundException("No employee record found with given activity status...!!!");
 		}
 		//return list
@@ -280,7 +285,7 @@ public class EmployeeService {
 		//Fetch the employees
 		List<Employee> employeeList=employeeRepository.getEmployeeByBranch(branch);
 		//throw exception if list is empty
-		if(employeeList==null) {
+		if(employeeList.isEmpty()) {
 			throw new ResourceNotFoundException("No employee record found with given branch...!!!");
 		}
 		//return list

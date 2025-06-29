@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.maverickbank.MaverickBank.exception.DeletedUserException;
@@ -43,8 +44,9 @@ public class FinancialPerformanceReportController {
 
 	 @GetMapping("/get/all")
 	 @CrossOrigin(origins = "http://localhost:5173")
-	    public List<FinancialPerformanceReport> getAllReports(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
-	        return financialPerformanceReportService.getAllReports(principal);
+	    public List<FinancialPerformanceReport> getAllReports(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+																@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
+	        return financialPerformanceReportService.getAllReports(page,size,principal);
 	    }
 
 	    @GetMapping("/get/by-id/{id}")
@@ -55,8 +57,10 @@ public class FinancialPerformanceReportController {
 
 	    @GetMapping("/get/by-date-range/{startDate}/{endDate}")
 	    @CrossOrigin(origins = "http://localhost:5173")
-	    public List<FinancialPerformanceReport> getReportsByDateRange(@PathVariable LocalDate startDate,@PathVariable LocalDate endDate,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
-	        return financialPerformanceReportService.getReportsByDateRange(startDate, endDate, principal);
+	    public List<FinancialPerformanceReport> getReportsByDateRange(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+																		@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,
+																		@PathVariable LocalDate startDate,@PathVariable LocalDate endDate,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+	        return financialPerformanceReportService.getReportsByDateRange(page,size,startDate, endDate, principal);
 	    }
 	 
 	 

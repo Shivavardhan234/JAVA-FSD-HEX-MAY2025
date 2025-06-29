@@ -40,8 +40,9 @@ public class LoanOpeningApplicationController {
 //--------------------------------------------------- GET ----------------------------------------------------------------
 	@GetMapping("/get/all")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<LoanOpeningApplication> getAllLoanApplications(Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
-	    return loanOpeningApplicationService.getAllLoanApplications(principal);
+	public List<LoanOpeningApplication> getAllLoanApplications(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
+	    return loanOpeningApplicationService.getAllLoanApplications(page,size,principal);
 	}
 	
 	
@@ -54,8 +55,9 @@ public class LoanOpeningApplicationController {
 
 	@GetMapping("/get/by-account-id/{accountId}")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<LoanOpeningApplication> getLoanApplicationsByAccount(@PathVariable int accountId, Principal principal)throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
-	    return loanOpeningApplicationService.getByAccountId(accountId, principal);
+	public List<LoanOpeningApplication> getLoanApplicationsByAccount(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,@PathVariable int accountId, Principal principal)throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
+	    return loanOpeningApplicationService.getByAccountId(page,size,accountId, principal);
 	}
 	
 	
@@ -68,14 +70,16 @@ public class LoanOpeningApplicationController {
 	
 	@GetMapping("/get/by-account-id-status/{accountId}/{status}")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<LoanOpeningApplication> getLoanApplicationsByAccountAndStatus(@PathVariable int accountId,@PathVariable ApplicationStatus status,Principal principal)throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
-	    return loanOpeningApplicationService.getByAccountIdAndStatus(accountId, status, principal);
+	public List<LoanOpeningApplication> getLoanApplicationsByAccountAndStatus(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,@PathVariable int accountId,@PathVariable ApplicationStatus status,Principal principal)throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
+	    return loanOpeningApplicationService.getByAccountIdAndStatus(page,size,accountId, status, principal);
 	}
 	
 	@GetMapping("/get/by-status/{status}")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<LoanOpeningApplication> getLoanApplicationsByStatus(@PathVariable ApplicationStatus status,Principal principal)throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
-	    return loanOpeningApplicationService.getLoanApplicationsByStatus( status, principal);
+	public List<LoanOpeningApplication> getLoanApplicationsByStatus(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,@PathVariable ApplicationStatus status,Principal principal)throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
+	    return loanOpeningApplicationService.getLoanApplicationsByStatus(page,size, status, principal);
 	}
 	
 

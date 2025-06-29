@@ -3,6 +3,8 @@ package com.maverickbank.MaverickBank.service;
 import java.security.Principal;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
@@ -80,13 +82,15 @@ public class BranchService {
 
 
 
-	public List<Branch> getAll(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+	public List<Branch> getAll(Integer page, Integer size, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		//Check user is active
 		User currentUser= userRepository.getByUsername(principal.getName());
 		UserValidation.checkActiveStatus(currentUser.getStatus());
 		
-		List <Branch> branchList=branchRepository.findAll();
-		if(branchList==null) {
+		Pageable pageable = PageRequest.of(page, size);
+		
+		List <Branch> branchList=branchRepository.findAll(pageable).getContent();
+		if(branchList.isEmpty()) {
 			throw new ResourceNotFoundException("No branch records...!!!");
 		}
 				
@@ -96,13 +100,13 @@ public class BranchService {
 
 
 
-	public List<Branch> getByState(String state,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+	public List<Branch> getByState(Integer page, Integer size, String state,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		//Check user is active
 				User currentUser= userRepository.getByUsername(principal.getName());
 				UserValidation.checkActiveStatus(currentUser.getStatus());
-				
-				List <Branch> branchList=branchRepository.getByState(state);
-				if(branchList==null) {
+				Pageable pageable = PageRequest.of(page, size);
+				List <Branch> branchList=branchRepository.getByState(state,pageable);
+				if(branchList.isEmpty()) {
 					throw new ResourceNotFoundException("No branches in the given state...!!!");
 				}
 		
@@ -137,12 +141,12 @@ public class BranchService {
 	}
 
 	
-	public List<Branch> getInactiveBranches(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+	public List<Branch> getInactiveBranches(Integer page, Integer size, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		User currentUser= userRepository.getByUsername(principal.getName());
 		UserValidation.checkActiveStatus(currentUser.getStatus());
-		
-		List <Branch> branchList=branchRepository.getByStatus(ActiveStatus.INACTIVE);
-		if(branchList==null) {
+		Pageable pageable = PageRequest.of(page, size);
+		List <Branch> branchList=branchRepository.getByStatus(ActiveStatus.INACTIVE,pageable);
+		if(branchList.isEmpty()) {
 			throw new ResourceNotFoundException("No INACTIVE branches found...!!!");
 		}
 
@@ -152,11 +156,12 @@ public class BranchService {
 
 
 
-	public List<Branch> getActiveBranches(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+	public List<Branch> getActiveBranches(Integer page, Integer size, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		User currentUser= userRepository.getByUsername(principal.getName());
 		UserValidation.checkActiveStatus(currentUser.getStatus());
-		List <Branch> branchList=branchRepository.getByStatus(ActiveStatus.ACTIVE);
-		if(branchList==null) {
+		Pageable pageable = PageRequest.of(page, size);
+		List <Branch> branchList=branchRepository.getByStatus(ActiveStatus.ACTIVE,pageable);
+		if(branchList.isEmpty()) {
 			throw new ResourceNotFoundException("No ACTIVE branches found...!!!");
 		}
 
@@ -164,11 +169,12 @@ public class BranchService {
 	}
 	
 	
-	public List<Branch> getActiveBranchesByState(String state, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+	public List<Branch> getActiveBranchesByState(Integer page, Integer size, String state, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		User currentUser= userRepository.getByUsername(principal.getName());
 		UserValidation.checkActiveStatus(currentUser.getStatus());
-		List <Branch> branchList=branchRepository.getByStateAndStatus( state,ActiveStatus.ACTIVE);
-		if(branchList==null) {
+		Pageable pageable = PageRequest.of(page, size);
+		List <Branch> branchList=branchRepository.getByStateAndStatus( state,ActiveStatus.ACTIVE,pageable);
+		if(branchList.isEmpty()) {
 			throw new ResourceNotFoundException("No ACTIVE branches found in the given state...!!!");
 		}
 
@@ -178,11 +184,12 @@ public class BranchService {
 
 
 
-	public List<Branch> getgetInactiveBranchesByState(String state, Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
+	public List<Branch> getgetInactiveBranchesByState(Integer page, Integer size, String state, Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
 		User currentUser= userRepository.getByUsername(principal.getName());
 		UserValidation.checkActiveStatus(currentUser.getStatus());
-		List <Branch> branchList=branchRepository.getByStateAndStatus( state,ActiveStatus.INACTIVE);
-		if(branchList==null) {
+		Pageable pageable = PageRequest.of(page, size);
+		List <Branch> branchList=branchRepository.getByStateAndStatus( state,ActiveStatus.INACTIVE,pageable);
+		if(branchList.isEmpty()) {
 			throw new ResourceNotFoundException("No INACTIVE branches found in the given state...!!!");
 		}
 

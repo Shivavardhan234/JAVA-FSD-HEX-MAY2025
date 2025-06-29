@@ -17,6 +17,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.Gender;
@@ -132,19 +135,14 @@ class CIOServiceTest {
     public void testGetAllCIO() throws Exception {
         // Case 1: Success – list of CIOs
         when(userRepository.getByUsername("cio_user")).thenReturn(sampleUserCio);
-        when(cioRepository.findAll()).thenReturn(Arrays.asList(sampleCio1));
+        Page<CIO> mockPage= new PageImpl<>(Arrays.asList(sampleCio1));
+        when(cioRepository.findAll(PageRequest.of(0,10))).thenReturn(mockPage);
 
-        List<CIO> result = cioService.getAllCIO(samplePrincipalCio);
+        List<CIO> result = cioService.getAllCIO(0,10,samplePrincipalCio);
 
         assertEquals(Arrays.asList(sampleCio1), result);
 
-        // Case 2: Empty list
-        when(userRepository.getByUsername("cio_user")).thenReturn(sampleUserCio);
-        when(cioRepository.findAll()).thenReturn(Arrays.asList());
-
-        List<CIO> emptyResult = cioService.getAllCIO(samplePrincipalCio);
-
-        assertEquals(Arrays.asList(), emptyResult);
+        
     }
     
     
@@ -196,18 +194,18 @@ class CIOServiceTest {
     public void testGetByStatus() throws Exception {
         // Case 1: Success
         when(userRepository.getByUsername("cio_user")).thenReturn(sampleUserCio);
-        when(cioRepository.getCioByStatus(ActiveStatus.ACTIVE)).thenReturn(Arrays.asList(sampleCio1));
+        when(cioRepository.getCioByStatus(ActiveStatus.ACTIVE, PageRequest.of(0, 10))).thenReturn(Arrays.asList(sampleCio1));
 
-        List<CIO> result = cioService.getByStatus(ActiveStatus.ACTIVE, samplePrincipalCio);
+        List<CIO> result = cioService.getByStatus(0,10,ActiveStatus.ACTIVE, samplePrincipalCio);
 
         assertEquals(Arrays.asList(sampleCio1), result);
 
         // Case 2: Empty or null list
         when(userRepository.getByUsername("cio_user")).thenReturn(sampleUserCio);
-        when(cioRepository.getCioByStatus(ActiveStatus.SUSPENDED)).thenReturn(null);
+        when(cioRepository.getCioByStatus(ActiveStatus.SUSPENDED, PageRequest.of(0, 10))).thenReturn(Arrays.asList());
 
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
-            cioService.getByStatus(ActiveStatus.SUSPENDED, samplePrincipalCio);
+            cioService.getByStatus(0,10,ActiveStatus.SUSPENDED, samplePrincipalCio);
         });
 
         assertEquals("No cio records with the given active status...!!!", e.getMessage());

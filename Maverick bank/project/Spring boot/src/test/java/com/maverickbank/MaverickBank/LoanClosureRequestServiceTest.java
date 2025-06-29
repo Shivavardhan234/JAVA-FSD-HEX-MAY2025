@@ -21,6 +21,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.ApplicationStatus;
@@ -164,19 +167,20 @@ public class LoanClosureRequestServiceTest {
 
         /* Case 1: requests exist  */
       
+        Page<LoanClosureRequest> mockPage= new PageImpl<>(Arrays.asList(sampleRequest1, sampleRequest2));
+        when(loanClosureRequestRepository.findAll(PageRequest.of(0, 10))).thenReturn(mockPage);
 
-        when(loanClosureRequestRepository.findAll()).thenReturn(Arrays.asList(sampleRequest1, sampleRequest2));
-
-        List<LoanClosureRequest> result = loanClosureRequestService.getAllRequests(samplePrincipal);
+        List<LoanClosureRequest> result = loanClosureRequestService.getAllRequests(0,10,samplePrincipal);
 
         assertEquals(2, result.size());
         assertEquals(sampleRequest1, result.get(0));
         assertEquals(sampleRequest2, result.get(1));
 
         /*  Case 2: no requests  */
-        when(loanClosureRequestRepository.findAll()).thenReturn(Arrays.asList());
-
-        List<LoanClosureRequest> emptyResult = loanClosureRequestService.getAllRequests(samplePrincipal);
+        Page<LoanClosureRequest> emptyMockPage= new PageImpl<>(Arrays.asList());
+        when(loanClosureRequestRepository.findAll(PageRequest.of(0, 10))).thenReturn(emptyMockPage);
+        
+        List<LoanClosureRequest> emptyResult = loanClosureRequestService.getAllRequests(0,10,samplePrincipal);
 
         assertTrue(emptyResult.isEmpty());
     }
@@ -252,22 +256,22 @@ public class LoanClosureRequestServiceTest {
 
         /*  Case 1 - requests found for PENDING status*/
         sampleRequest1.setRequestStatus(ApplicationStatus.PENDING);
-        when(loanClosureRequestRepository.getByRequestStatus(ApplicationStatus.PENDING))
+        when(loanClosureRequestRepository.getByRequestStatus(ApplicationStatus.PENDING,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList(sampleRequest1));
 
         List<LoanClosureRequest> pendingResult =
-                loanClosureRequestService.getByStatus(ApplicationStatus.PENDING, samplePrincipal);
+                loanClosureRequestService.getByStatus(0,10,ApplicationStatus.PENDING, samplePrincipal);
 
         assertEquals(1, pendingResult.size());
         assertEquals(sampleRequest1, pendingResult.get(0));
         assertEquals(ApplicationStatus.PENDING, pendingResult.get(0).getRequestStatus());
 
         /* Case 2 - no requests for ACCEPTED status */
-        when(loanClosureRequestRepository.getByRequestStatus(ApplicationStatus.ACCEPTED))
+        when(loanClosureRequestRepository.getByRequestStatus(ApplicationStatus.ACCEPTED,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList());
 
         ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () -> {
-            loanClosureRequestService.getByStatus(ApplicationStatus.ACCEPTED, samplePrincipal);
+            loanClosureRequestService.getByStatus(0,10,ApplicationStatus.ACCEPTED, samplePrincipal);
         });
         assertEquals("No loan closure requests found for the given status...!!!", ex.getMessage());
     }

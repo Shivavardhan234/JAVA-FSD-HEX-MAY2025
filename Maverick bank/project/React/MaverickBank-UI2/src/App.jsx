@@ -91,6 +91,7 @@ import ViewFinancialPerformanceReport from './components/employee/report_manager
 import ViewRegulatoryReport from './components/employee/report_manager/ViewRegulatoryReport.jsx';
 import JuniorOperationsManagerNavbar from './components/employee/junior_operations_manager/JuniorOperationsManagerNavBar.jsx';
 import SeniorOperationsManagerNavbar from './components/employee/senior_operations_manager/SeniorOperationsManagerNavBar.jsx';
+import EmployeeBranch from './components/cio/employee_accounts/EmployeeBranch.jsx';
 
 
 
@@ -148,7 +149,7 @@ function App() {
         <Route path='/cio' element={<CioNavbar />}>
 
           {/* Customer Accounts */}
-          <Route path='' element={<CustomerAccountsSideBar />}>
+          <Route path='customerAccounts' element={<CustomerAccountsSideBar />}>
             <Route index element={<FindCustomer />}></Route>
             <Route path='byCategory' element={<CustomersByCategory />}></Route>
             <Route path='customerProfile' element={<ViewCustomer />}></Route>
@@ -160,6 +161,7 @@ function App() {
             <Route path="category" element={<EmployeesByCategory />} />
             <Route path="viewEmployee" element={<ViewEmployee />} />
             <Route path="addEmployee" element={<AddEmployee />} />
+            <Route path='employeeBranch' element={<EmployeeBranch/>}></Route>
           </Route>
 
           {/* Cio accounts */}

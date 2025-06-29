@@ -1,27 +1,29 @@
 import { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import axios from "axios";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { getCustomer } from "../../../store/actions/CustomerAction";
 
 function CustomersByCategory() {
     const [customers, setCustomers] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [customersPerPage, setCustomersPerPage] = useState(10);
+    const [page, setPage] = useState(0);
+    const [size, setSize] = useState(10);
     const [filter, setFilter] = useState("ALL");
     const [message, setMessage] = useState("");
 
     const navigate = useNavigate();
-    const { isExpanded } = useOutletContext();
+    const dispatch = useDispatch();
 
-    const indexOfLast = currentPage * customersPerPage;
-    const indexOfFirst = indexOfLast - customersPerPage;
-    const currentCustomers = customers.slice(indexOfFirst, indexOfLast);
-    const totalPages = Math.ceil(customers.length / customersPerPage);
+   
 
     useEffect(() => {
         fetchCustomers();
     }, [filter]);
 
+    useEffect(() => {
+        fetchCustomers();
+    }, [page]);
     
 
     const fetchCustomers = async () => {
@@ -32,10 +34,10 @@ function CustomersByCategory() {
 
             switch (filter) {
                 case "ALL":
-                    url = "http://localhost:9090/api/customer/get/all";
+                    url = `http://localhost:9090/api/customer/get/all?page=${page}&size=${size}`;
                     break;
                 default:
-                    url = `http://localhost:9090/api/customer/get/by-status/${filter}`;
+                    url = `http://localhost:9090/api/customer/get/by-status/${filter}?page=${page}&size=${size}`;
                     break;
             }
 
@@ -44,8 +46,8 @@ function CustomersByCategory() {
             });
 
             setCustomers(response.data);
-            setCurrentPage(1);
         } catch (err) {
+            setCustomers([]);
             console.error(err);
             if (err.response && err.response.data) {
                 const errorData = err.response.data;
@@ -98,7 +100,7 @@ function CustomersByCategory() {
 
                 {/* Body */}
                 <div className="card-body flex-grow-1 overflow-auto border-top border-bottom-0">
-                    {currentCustomers.map((customer, idx) => (
+                    {customers.map((customer, idx) => (
                         <div
                             key={idx}
                             className="list-group-item p-0 mb-3 border rounded overflow-hidden bg-white"
@@ -122,7 +124,7 @@ function CustomersByCategory() {
                                 <Button
                                     variant="outline-primary"
                                     size="sm"
-                                    onClick={() => navigate("/cio/customerProfile", { state: { customer } })}
+                                    onClick={() => {getCustomer(dispatch)(customer.id);    navigate("../customerProfile");}}
                                 >
                                     View Customer
                                 </Button>
@@ -136,10 +138,11 @@ function CustomersByCategory() {
                     <div className="d-flex align-items-center">
                         <span className="me-2">Items per page:</span>
                         <Form.Select
-                            value={customersPerPage}
+                            value={size}
                             onChange={(e) => {
-                                setCurrentPage(1);
-                                setCustomersPerPage(Number(e.target.value));
+                                setSize(Number(e.target.value));
+                                setPage(0);
+                                
                             }}
                             style={{ width: "80px" }}
                         >
@@ -151,23 +154,20 @@ function CustomersByCategory() {
 
                     <nav>
                         <ul className="pagination mb-0">
-                            <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                                <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>&laquo;</button>
+                            <li className="page-item ">
+                                <button className="page-link" onClick={() => setPage(page - 1)}>&laquo;</button>
                             </li>
-                            {[...Array(totalPages).keys()].map(i => (
-                                <li key={i} className={`page-item ${currentPage === i + 1 ? "active" : ""}`}>
-                                    <button className="page-link" onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+                            
+                                <li key={page} className="page-item ">
+                                    <button className="page-link" >{page + 1}</button>
                                 </li>
-                            ))}
-                            <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                                <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)}>&raquo;</button>
+                            <li className="page-item ">
+                                <button className="page-link" onClick={() => setPage(page + 1)}>&raquo;</button>
                             </li>
                         </ul>
                     </nav>
 
-                    <div className="text-muted small">
-                        Page {currentPage} of {totalPages}
-                    </div>
+                    
                 </div>
             </div>
         </div>

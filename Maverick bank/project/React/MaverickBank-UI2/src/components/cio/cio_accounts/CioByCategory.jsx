@@ -4,11 +4,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserDetails } from "../../../store/actions/UserAction";
+import { getCio } from "../../../store/actions/CIOAction";
 
 function CioByCategory() {
     const [cios, setCios] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [ciosPerPage, setCiosPerPage] = useState(10);
+    const [page, setPage] = useState(0);
+    const [size, setSize] = useState(10);
     const [filter, setFilter] = useState("ALL");
     const [message, setMessage] = useState("");
 
@@ -19,14 +20,14 @@ function CioByCategory() {
 
     const currentCio = useSelector(state => state.user.userDetails);
 
-    const indexOfLast = currentPage * ciosPerPage;
-    const indexOfFirst = indexOfLast - ciosPerPage;
-    const currentCios = cios.slice(indexOfFirst, indexOfLast);
-    const totalPages = Math.ceil(cios.length / ciosPerPage);
+    useEffect(() => {
+        fetchCios();
+    }, [page]);
 
     useEffect(() => {
         fetchCios();
     }, [filter]);
+
     useEffect(() => { getUserDetails(dispatch)(); }, []);
 
     
@@ -39,10 +40,10 @@ function CioByCategory() {
 
             switch (filter) {
                 case "ALL":
-                    url = "http://localhost:9090/api/cio/get/all";
+                    url = `http://localhost:9090/api/cio/get/all?page=${page}&size=${size}`;
                     break;
                 default:
-                    url = `http://localhost:9090/api/cio/get/by-status/${filter}`;
+                    url = `http://localhost:9090/api/cio/get/by-status/${filter}?page=${page}&size=${size}`;
                     break;
             }
 
@@ -51,8 +52,8 @@ function CioByCategory() {
             });
 
             setCios(response.data);
-            setCurrentPage(1);
         } catch (err) {
+            setCios([]);
             console.error(err);
             if (err.response && err.response.data) {
                 const errorData = err.response.data;
@@ -68,7 +69,8 @@ function CioByCategory() {
     if (currentCio && selectedCio && selectedCio.id === currentCio.id) {
         navigate("/cio/profile");
     } else {
-        navigate("/cio/cioAccounts/viewCio", { state: { cio: selectedCio } });
+        getCio(dispatch)(selectedCio.id);
+        navigate("../viewCio");
     }
 };
 
@@ -113,7 +115,7 @@ function CioByCategory() {
 
                 {/* Body */}
                 <div className="card-body flex-grow-1 overflow-auto border-top border-bottom-0">
-                    {currentCios.map((cio, idx) => (
+                    {cios.map((cio, idx) => (
                         <div
                             key={idx}
                             className="list-group-item p-0 mb-3 border rounded overflow-hidden bg-white"
@@ -149,10 +151,11 @@ function CioByCategory() {
                     <div className="d-flex align-items-center">
                         <span className="me-2">Items per page:</span>
                         <Form.Select
-                            value={ciosPerPage}
+                            value={size}
                             onChange={(e) => {
-                                setCurrentPage(1);
-                                setCiosPerPage(Number(e.target.value));
+                                setSize(Number(e.target.value));
+                                setPage(0);
+                                
                             }}
                             style={{ width: "80px" }}
                         >
@@ -164,23 +167,21 @@ function CioByCategory() {
 
                     <nav>
                         <ul className="pagination mb-0">
-                            <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                                <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>&laquo;</button>
+                            <li className="page-item">
+                                <button className="page-link" onClick={() => setPage(page - 1)}>&laquo;</button>
                             </li>
-                            {[...Array(totalPages).keys()].map(i => (
-                                <li key={i} className={`page-item ${currentPage === i + 1 ? "active" : ""}`}>
-                                    <button className="page-link" onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+                            
+                                <li key={page} className="page-item">
+                                    <button className="page-link" >{page + 1}</button>
                                 </li>
-                            ))}
-                            <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                                <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)}>&raquo;</button>
+                           
+                            <li className="page-item">
+                                <button className="page-link" onClick={() => setPage(page + 1)}>&raquo;</button>
                             </li>
                         </ul>
                     </nav>
 
-                    <div className="text-muted small">
-                        Page {currentPage} of {totalPages}
-                    </div>
+                    
                 </div>
             </div>
         </div>

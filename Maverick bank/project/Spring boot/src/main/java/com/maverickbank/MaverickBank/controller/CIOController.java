@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
@@ -39,13 +40,15 @@ public class CIOController {
 //----------------------------------------- GET -------------------------------------------------------------------------
 	@GetMapping("/get/all")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<CIO> getAllCIO(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
-		return cioService.getAllCIO(principal);
+	public List<CIO> getAllCIO(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
+		return cioService.getAllCIO(page,size,principal);
 	}
 	@GetMapping("/get/by-status/{status}")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<CIO> getByStatus(@PathVariable ActiveStatus status, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
-		return cioService.getByStatus(status,principal);
+	public List<CIO> getByStatus(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,@PathVariable ActiveStatus status, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+		return cioService.getByStatus(page,size,status,principal);
 	}
 	
 	

@@ -4,27 +4,34 @@ import { BsSearch } from "react-icons/bs";
 import axios from "axios";
 import { FaUniversity } from "react-icons/fa";
 import { Outlet, useNavigate, useOutletContext } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { getBranch } from "../../../store/actions/BranchAction";
 
 function BranchByCategory() {
     const [branches, setBranches] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
+    const [page, setPage] = useState(0);
     const [branchesPerPage, setBranchesPerPage] = useState(10);
     const [filter, setFilter] = useState("ALL");
     const [stateQuery, setStateQuery] = useState("");
     const [message, setMessage] = useState("");
 
-    const navigate = useNavigate();
 
-    const indexOfLast = currentPage * branchesPerPage;
-    const indexOfFirst = indexOfLast - branchesPerPage;
-    const currentBranches = branches.slice(indexOfFirst, indexOfLast);
-    const totalPages = Math.ceil(branches.length / branchesPerPage);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    
+
     const { isExpanded } = useOutletContext();
+
+    useEffect(()=>{
+        fetchBranches();
+    },[page])
 
     useEffect(() => {
         if (!filter.includes("BY_STATE")) {
             fetchBranches();
         }
+        setPage(0);
     }, [filter]);
 
     const fetchBranches = async () => {
@@ -35,22 +42,22 @@ function BranchByCategory() {
 
             switch (filter) {
                 case "ALL":
-                    url = "http://localhost:9090/api/branch/get/all";
+                    url = `http://localhost:9090/api/branch/get/all?page=${page}&size=${branchesPerPage}`;
                     break;
                 case "ACTIVE":
-                    url = "http://localhost:9090/api/branch/get/active";
+                    url = `http://localhost:9090/api/branch/get/active?page=${page}&size=${branchesPerPage}`;
                     break;
                 case "INACTIVE":
-                    url = "http://localhost:9090/api/branch/get/inactive";
+                    url = `http://localhost:9090/api/branch/get/inactive?page=${page}&size=${branchesPerPage}`;
                     break;
                 case "BY_STATE":
-                    url = `http://localhost:9090/api/branch/get/by-state/${stateQuery}`;
+                    url = `http://localhost:9090/api/branch/get/by-state?state=${stateQuery}&page=${page}&size=${branchesPerPage}`;
                     break;
                 case "ACTIVE_BY_STATE":
-                    url = `http://localhost:9090/api/branch/get/active-by-state/${stateQuery}`;
+                    url = `http://localhost:9090/api/branch/get/active-by-state?state=${stateQuery}&page=${page}&size=${branchesPerPage}`;
                     break;
                 case "INACTIVE_BY_STATE":
-                    url = `http://localhost:9090/api/branch/get/inactive-by-state/${stateQuery}`;
+                    url = `http://localhost:9090/api/branch/get/inactive-by-state?state=${stateQuery}&page=${page}&size=${branchesPerPage}`;
                     break;
                 default:
                     return;
@@ -61,8 +68,8 @@ function BranchByCategory() {
             });
 
             setBranches(response.data);
-            setCurrentPage(1);
         } catch (err) {
+            setBranches([]);
             console.error(err);
             if (err.response && err.response.data) {
                 const errorData = err.response.data;
@@ -129,7 +136,7 @@ function BranchByCategory() {
                                         value={stateQuery}
                                         onChange={(e) => setStateQuery(e.target.value)}
                                     />
-                                    <Button variant="primary" onClick={handleSearch}>
+                                    <Button variant="primary" onClick={()=>handleSearch()}>
                                         <BsSearch />
                                     </Button>
                                 </InputGroup>
@@ -142,7 +149,7 @@ function BranchByCategory() {
                         className="card-body flex-grow-1 overflow-auto border-top border-bottom-0"
                         style={{ boxShadow: "none" }}
                     >
-                        {currentBranches.map((branch, idx) => (
+                        {branches.map((branch, idx) => (
                             <div
                                 key={idx}
                                 className="list-group-item p-0 mb-3 border rounded overflow-hidden bg-white"
@@ -173,7 +180,7 @@ function BranchByCategory() {
 
                                     {/* Right: View button */}
                                     <div>
-                                        <Button variant="outline-primary" size="sm" onClick={() => navigate("/cio/cioBranch/branchDetails", { state: { branch } })}>
+                                        <Button variant="outline-primary" size="sm" onClick={() => {getBranch(dispatch)(branch.id);   navigate("../branchDetails");}}>
                                             View Branch
                                         </Button>
                                     </div>
@@ -193,8 +200,9 @@ function BranchByCategory() {
                             <Form.Select
                                 value={branchesPerPage}
                                 onChange={(e) => {
-                                    setCurrentPage(1);
                                     setBranchesPerPage(Number(e.target.value));
+                                    setPage(0);
+                                    
                                 }}
                                 style={{ width: "80px" }}
                             >
@@ -207,24 +215,20 @@ function BranchByCategory() {
                         {/* Pagination */}
                         <nav>
                             <ul className="pagination mb-0">
-                                <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                                    <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>&laquo;</button>
+                                <li className="page-item">
+                                    <button className="page-link" onClick={() => setPage(page - 1)}>&laquo;</button>
                                 </li>
-                                {[...Array(totalPages).keys()].map(i => (
-                                    <li key={i} className={`page-item ${currentPage === i + 1 ? "active" : ""}`}>
-                                        <button className="page-link" onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+                                
+                                    <li key={page} className="page-item">
+                                        <button className="page-link">{page + 1}</button>
                                     </li>
-                                ))}
-                                <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                                    <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)}>&raquo;</button>
+                                
+                                <li className="page-item">
+                                    <button className="page-link" onClick={() => setPage(page + 1)}>&raquo;</button>
                                 </li>
                             </ul>
                         </nav>
 
-                        {/* Page Info */}
-                        <div className="text-muted small">
-                            Page {currentPage} of {totalPages}
-                        </div>
                     </div>
                 </div>
                 <Outlet context={{ isExpanded }} />

@@ -56,7 +56,7 @@ function FindBranch() {
                 const token = localStorage.getItem('token');
                 const baererAuthString = "Bearer " + token;
 
-                const responseByIfsc = await axios.get(`http://localhost:9090/api/branch/get/by-ifsc/${query}`,
+                const responseByIfsc = await axios.get(`http://localhost:9090/api/branch/get/by-ifsc?ifsc=${query}`,
                     { headers: { Authorization: baererAuthString } });
 
                 setBranch(responseByIfsc.data)
@@ -70,7 +70,7 @@ function FindBranch() {
                 const token = localStorage.getItem('token');
                 const baererAuthString = "Bearer " + token;
 
-                const responseByName = await axios.get(`http://localhost:9090/api/branch/get/by-name/${query}`,
+                const responseByName = await axios.get(`http://localhost:9090/api/branch/get/by-name?name=${query}`,
                     { headers: { Authorization: baererAuthString } });
 
                 setBranch(responseByName.data)

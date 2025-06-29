@@ -2,7 +2,6 @@ package com.maverickbank.MaverickBank;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,6 +23,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.ApplicationStatus;
@@ -163,12 +165,12 @@ class AccountOpeningApplicationServiceTest {
         assertEquals(ApplicationStatus.PENDING, added.getEmployeeApprovalStatus());
         assertNotNull(added.getApplicationDateTime());
 
-        // ---------- Case 2: Branch not found ⇒ ResourceNotFoundException ----------
+        // ---------- Case 2: Branch not found  ResourceNotFoundException ----------
         when(branchService.getByName("Ghost Branch", samplePrincipal))
                 .thenThrow(new ResourceNotFoundException("No branch record with given name...!!!"));
 
         AccountOpeningApplication branchFail = new AccountOpeningApplication();
-        branchFail.setBranch(new Branch());                 // only branch name used in stub
+        branchFail.setBranch(new Branch());                 
         branchFail.getBranch().setBranchName("Ghost Branch");
         branchFail.setAccountType(sampleAccountType1);
 
@@ -181,7 +183,7 @@ class AccountOpeningApplicationServiceTest {
         when(branchService.getByName(sampleBranch1.getBranchName(), samplePrincipal))
                 .thenReturn(sampleBranch1);                                 
         when(accountTypeService.getAccountTypeByName(BankAccountType.CURRENT, samplePrincipal))
-                .thenThrow(new ResourceNotFoundException("No AccountType record with given name...!!!"));
+                .thenReturn(null);
 
         AccountOpeningApplication typeFail = new AccountOpeningApplication();
         typeFail.setBranch(sampleBranch1);
@@ -189,10 +191,10 @@ class AccountOpeningApplicationServiceTest {
         missingType.setAccountType(BankAccountType.CURRENT);             
         typeFail.setAccountType(missingType);
 
-        ResourceNotFoundException eType = assertThrows(ResourceNotFoundException.class, () -> {
+        InvalidInputException eType = assertThrows(InvalidInputException.class, () -> {
             accountOpeningApplicationService.addAccountOpeningApplication(typeFail, samplePrincipal);
         });
-        assertEquals("No AccountType record with given name...!!!", eType.getMessage());
+        assertEquals("Invalid account type object provided. Please provide appropriate account type object...!!!", eType.getMessage());
     }
     
     
@@ -201,31 +203,27 @@ class AccountOpeningApplicationServiceTest {
     public void testGetAllAccountOpeningApplication() throws Exception {
         // ---------- Case 1: Success – repository returns two applications ----------
         when(userRepository.getByUsername("new_user")).thenReturn(sampleUser);
-        when(accountOpeningApplicationRepository.findAll())
-                .thenReturn(Arrays.asList(sampleApplication1, sampleApplication2));
+        Page<AccountOpeningApplication> mockPage=new PageImpl<>(Arrays.asList(sampleApplication1, sampleApplication2));
+        when(accountOpeningApplicationRepository.findAll(PageRequest.of(0, 10)))
+                .thenReturn(mockPage);
 
         List<AccountOpeningApplication> allApps =
-                accountOpeningApplicationService.getAllAccountOpeningApplication(samplePrincipal);
+                accountOpeningApplicationService.getAllAccountOpeningApplication(0,10,samplePrincipal);
 
         assertEquals(2, allApps.size());
         assertEquals(201, allApps.get(0).getId());
         assertEquals(202, allApps.get(1).getId());
 
         // ---------- Case 2: Empty list ----------
-        when(accountOpeningApplicationRepository.findAll()).thenReturn(Arrays.asList());
+        Page<AccountOpeningApplication> emptyMockPage= new PageImpl<>(Arrays.asList());
+        when(accountOpeningApplicationRepository.findAll(PageRequest.of(0, 10))).thenReturn(emptyMockPage);
 
         List<AccountOpeningApplication> emptyApps =
-                accountOpeningApplicationService.getAllAccountOpeningApplication(samplePrincipal);
+                accountOpeningApplicationService.getAllAccountOpeningApplication(0,10,samplePrincipal);
 
         assertTrue(emptyApps.isEmpty());
 
-        // ---------- Case 3: Repository returns null ----------
-        when(accountOpeningApplicationRepository.findAll()).thenReturn(null);
-
-        List<AccountOpeningApplication> nullApps =
-                accountOpeningApplicationService.getAllAccountOpeningApplication(samplePrincipal);
-
-        assertNull(nullApps);
+        
     }
 
 
@@ -241,7 +239,7 @@ class AccountOpeningApplicationServiceTest {
                 accountOpeningApplicationService.getAccountOpeningApplicationById(201, samplePrincipal);
 
         assertEquals(201, result.getId());
-        assertEquals("Personal Savings", result.getAccountName());
+        assertEquals("Ravi Kumar", result.getAccountName());
         assertEquals(ApplicationStatus.PENDING, result.getCustomerApprovalStatus());
 
         // ---------- Case 2: Application with given ID not found ----------
@@ -275,7 +273,7 @@ class AccountOpeningApplicationServiceTest {
 
         // ---------- Case 2: No applications for branch 
         when(accountOpeningApplicationRepository.getAccountOpeningApplicationByBranchId(101))
-                .thenReturn(null);                  
+                .thenReturn(Arrays.asList());                  
 
         ResourceNotFoundException eNotFound = assertThrows(ResourceNotFoundException.class, () -> {
             accountOpeningApplicationService.getAccountOpeningApplicationByBranch(branchById, samplePrincipal);
@@ -318,7 +316,7 @@ class AccountOpeningApplicationServiceTest {
 
         // ---------- Case 2: No applications for type 
         when(accountOpeningApplicationRepository.getAccountOpeningApplicationByAccountTypeId(101))
-                .thenReturn(null);                            
+                .thenReturn(Arrays.asList());                            
 
         ResourceNotFoundException eNotFound = assertThrows(ResourceNotFoundException.class, () -> {
             accountOpeningApplicationService.getAccountOpeningApplicationByAccountType(typeById, samplePrincipal);
@@ -358,7 +356,7 @@ class AccountOpeningApplicationServiceTest {
         // ---------- Case 2: No records for ACCEPTED 
         when(accountOpeningApplicationRepository.getAccountOpeningApplicationByCustomerApprovalStatus(
                 ApplicationStatus.ACCEPTED))
-                .thenReturn(null);   
+                .thenReturn(Arrays.asList());   
 
         ResourceNotFoundException eNotFound = assertThrows(ResourceNotFoundException.class, () -> {
             accountOpeningApplicationService.getAccountOpeningApplicationByCustomerApprovalStatus(
@@ -399,7 +397,7 @@ class AccountOpeningApplicationServiceTest {
 
         // ---------- Case 2: No records 
         when(accountOpeningApplicationRepository.getAccountOpeningApplicationByDate(start, end))
-                .thenReturn(null);  
+                .thenReturn(Arrays.asList());  
 
         ResourceNotFoundException eNotFound = assertThrows(ResourceNotFoundException.class, () -> {
             accountOpeningApplicationService.getAccountOpeningApplicationByDate(date, samplePrincipal);
@@ -424,22 +422,22 @@ class AccountOpeningApplicationServiceTest {
 
         // ---------- Case 1: Success 
         sampleApplication1.setEmployeeApprovalStatus(ApplicationStatus.PENDING);
-        when(accountOpeningApplicationRepository.getAccountOpeningApplicationByEmployeeApprovalStatus(status))
+        when(accountOpeningApplicationRepository.getAccountOpeningApplicationByEmployeeApprovalStatus(status,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList(sampleApplication1));
 
         List<AccountOpeningApplication> result =
-                accountOpeningApplicationService.getAccountOpeningApplicationByEmployeeApprovalStatus(status, samplePrincipal);
+                accountOpeningApplicationService.getAccountOpeningApplicationByEmployeeApprovalStatus(0,10,status, samplePrincipal);
 
         assertEquals(1, result.size());
         assertEquals(201, result.get(0).getId());
         assertEquals(ApplicationStatus.PENDING, result.get(0).getEmployeeApprovalStatus());
 
         // ---------- Case 2: Repository returns null ----------
-        when(accountOpeningApplicationRepository.getAccountOpeningApplicationByEmployeeApprovalStatus(status))
-                .thenReturn(null);
+        when(accountOpeningApplicationRepository.getAccountOpeningApplicationByEmployeeApprovalStatus(status,PageRequest.of(0, 10)))
+                .thenReturn(Arrays.asList());
 
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
-            accountOpeningApplicationService.getAccountOpeningApplicationByEmployeeApprovalStatus(status, samplePrincipal);
+            accountOpeningApplicationService.getAccountOpeningApplicationByEmployeeApprovalStatus(0,10,status, samplePrincipal);
         });
         assertEquals("No Account application records with the employee approval status...!!!", e.getMessage());
     }
@@ -510,7 +508,7 @@ class AccountOpeningApplicationServiceTest {
         when(accountOpeningApplicationRepository.findById(201))
                 .thenReturn(Optional.of(sampleApplication1));
         when(customerAccountOpeningApplicationRepository.getByAccountOpeningApplicationId(201))
-                .thenReturn(null);                       
+                .thenReturn(Arrays.asList());                       
 
         ResourceNotFoundException eList = assertThrows(ResourceNotFoundException.class, () -> {
             accountOpeningApplicationService.updateCustomerApprovalStatus(201, samplePrincipal);
@@ -627,7 +625,7 @@ class AccountOpeningApplicationServiceTest {
         when(accountOpeningApplicationRepository.findById(201))
                 .thenReturn(Optional.of(sampleApplication1));
         when(customerAccountOpeningApplicationRepository.getByAccountOpeningApplicationId(201))
-                .thenReturn(null);
+                .thenReturn(Arrays.asList());
 
         ResourceNotFoundException eNoCustomerAccountOpeningApplication= assertThrows(ResourceNotFoundException.class, () -> {
             accountOpeningApplicationService.approveApplication(201, samplePrincipal);

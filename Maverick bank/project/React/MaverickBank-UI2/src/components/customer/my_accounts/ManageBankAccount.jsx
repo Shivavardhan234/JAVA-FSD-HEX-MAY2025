@@ -1,19 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import {  useState } from 'react';
+import {  useSelector } from 'react-redux';
 import {  useNavigate, Outlet } from 'react-router-dom';
-import { useParams } from "react-router-dom";
-import { getBankAccount } from '../../../store/actions/BankAccountAction';
 
 function ManageBankAccount() {
-    const { accountNumber } = useParams();
     const navigate = useNavigate();
     const [showBalance, setShowBalance] = useState(false);
-    const dispatch =useDispatch();
-    const accountId = localStorage.getItem("accountId");
 
-    useEffect(()=>{
-        getBankAccount(dispatch)(accountId);
-    },[accountNumber])
+    
 
     const account =useSelector(state=> state.bankAccount.account);
     

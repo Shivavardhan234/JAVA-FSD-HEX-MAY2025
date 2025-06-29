@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import axios from "axios";
-import { useOutletContext } from "react-router-dom";
-import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getBranch } from "../../../store/actions/BranchAction";
+import { Link, useOutletContext } from "react-router-dom";
 
-function BranchDetails() {
+function EmployeeBranch() {
+    const dispatch = useDispatch();
+
     const [branchName, setBranchName] = useState('');
     const [contactNumber, setContactNumber] = useState('');
     const [email, setEmail] = useState('');
@@ -17,7 +18,7 @@ function BranchDetails() {
     const [showEditOverlay, setShowEditOverlay] = useState(false);
     const { isExpanded } = useOutletContext();
 
-    const dispatch = useDispatch();
+    
 
     const branch = useSelector(state=> state.branchStore.branch);
 
@@ -93,8 +94,8 @@ function BranchDetails() {
             <nav aria-label="breadcrumb" className="mb-3">
                 <ol className="breadcrumb">
                     <li className="breadcrumb-item">
-                        <Link to="../category" className="text-decoration-none">
-                            Branches by Category
+                        <Link to="../viewEmployee" className="text-decoration-none">
+                            View Employee
                         </Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
@@ -202,4 +203,4 @@ function BranchDetails() {
     );
 }
 
-export default BranchDetails;
+export default EmployeeBranch;

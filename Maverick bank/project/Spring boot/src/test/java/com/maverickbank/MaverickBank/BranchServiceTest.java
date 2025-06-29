@@ -16,6 +16,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.Role;
@@ -172,21 +175,23 @@ public class BranchServiceTest {
     public void testGetAll() throws Exception {
         // Case 1 – Success: list returned
         when(userRepository.getByUsername("new_user")).thenReturn(sampleUser);
-        when(branchRepository.findAll()).thenReturn(Arrays.asList(sampleBranch1, sampleBranch2));
+        Page<Branch> mockPage = new PageImpl<>(Arrays.asList(sampleBranch1, sampleBranch2));
+        when(branchRepository.findAll(PageRequest.of(0, 10))).thenReturn(mockPage);
 
-        List<Branch> allBranches = branchService.getAll(samplePrincipal);
-
+        List<Branch> allBranches = branchService.getAll(0,10,samplePrincipal);
+        
         assertEquals(2, allBranches.size());
         assertEquals("Hyderabad Central", allBranches.get(0).getBranchName());
         assertEquals("Mumbai West", allBranches.get(1).getBranchName());
 
         // Case 2 
-        when(branchRepository.findAll()).thenReturn(null);
+        Page<Branch> emptyMockPage = new PageImpl<>(Arrays.asList());
+        when(branchRepository.findAll(PageRequest.of(0, 10))).thenReturn(emptyMockPage);
 
-        ResourceNotFoundException eNull = assertThrows(ResourceNotFoundException.class, () -> {
-            branchService.getAll(samplePrincipal);
+        ResourceNotFoundException eEmpty = assertThrows(ResourceNotFoundException.class, () -> {
+            branchService.getAll(0,10,samplePrincipal);
         });
-        assertEquals("No branch records...!!!", eNull.getMessage());
+        assertEquals("No branch records...!!!", eEmpty.getMessage());
     }
     
     
@@ -195,18 +200,18 @@ public class BranchServiceTest {
     public void testGetByState() throws Exception {
         // Case 1 
         when(userRepository.getByUsername("new_user")).thenReturn(sampleUser);
-        when(branchRepository.getByState("Telangana")).thenReturn(Arrays.asList(sampleBranch1));
+        when(branchRepository.getByState("Telangana",PageRequest.of(0, 10))).thenReturn(Arrays.asList(sampleBranch1));
 
-        List<Branch> telanganaBranches = branchService.getByState("Telangana", samplePrincipal);
+        List<Branch> telanganaBranches = branchService.getByState(0,10,"Telangana", samplePrincipal);
 
         assertEquals(1, telanganaBranches.size());
         assertEquals("Hyderabad Central", telanganaBranches.get(0).getBranchName());
 
         // Case 2 
-        when(branchRepository.getByState("Kerala")).thenReturn(null);
+        when(branchRepository.getByState("Kerala",PageRequest.of(0, 10))).thenReturn(Arrays.asList());
 
         ResourceNotFoundException eNotFound = assertThrows(ResourceNotFoundException.class, () -> {
-            branchService.getByState("Kerala", samplePrincipal);
+            branchService.getByState(0,10,"Kerala", samplePrincipal);
         });
         assertEquals("No branches in the given state...!!!", eNotFound.getMessage());
     }
@@ -231,24 +236,29 @@ public class BranchServiceTest {
         });
         assertEquals("No branch record with given Id...!!!", eNotFound.getMessage());
     }
+    
+    
+    
+    
+    
     @Test
     public void testGetInactiveBranches() throws Exception {
         // Case 1 – Success: inactive branches exist
         when(userRepository.getByUsername("new_user")).thenReturn(sampleUser);
-        when(branchRepository.getByStatus(ActiveStatus.INACTIVE))
+        when(branchRepository.getByStatus(ActiveStatus.INACTIVE,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList(sampleBranch2));
 
-        List<Branch> inactive = branchService.getInactiveBranches(samplePrincipal);
+        List<Branch> inactive = branchService.getInactiveBranches(0,10,samplePrincipal);
 
         assertEquals(1, inactive.size());
         assertEquals(102, inactive.get(0).getId());
         assertEquals(ActiveStatus.INACTIVE, inactive.get(0).getStatus());
 
         // Case 2 – Repository returns null → ResourceNotFoundException expected
-        when(branchRepository.getByStatus(ActiveStatus.INACTIVE)).thenReturn(null);
+        when(branchRepository.getByStatus(ActiveStatus.INACTIVE,PageRequest.of(0, 10))).thenReturn(Arrays.asList());
 
         ResourceNotFoundException eNotFound = assertThrows(ResourceNotFoundException.class, () -> {
-            branchService.getInactiveBranches(samplePrincipal);
+            branchService.getInactiveBranches(0,10,samplePrincipal);
         });
         assertEquals("No INACTIVE branches found...!!!", eNotFound.getMessage());
     }
@@ -259,20 +269,20 @@ public class BranchServiceTest {
     public void testGetActiveBranches() throws Exception {
         // Case 1 
         when(userRepository.getByUsername("new_user")).thenReturn(sampleUser);
-        when(branchRepository.getByStatus(ActiveStatus.ACTIVE))
+        when(branchRepository.getByStatus(ActiveStatus.ACTIVE,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList(sampleBranch1));
 
-        List<Branch> active = branchService.getActiveBranches(samplePrincipal);
+        List<Branch> active = branchService.getActiveBranches(0,10,samplePrincipal);
 
         assertEquals(1, active.size());
         assertEquals(101, active.get(0).getId());
         assertEquals(ActiveStatus.ACTIVE, active.get(0).getStatus());
 
         // Case 2 
-        when(branchRepository.getByStatus(ActiveStatus.ACTIVE)).thenReturn(null);
+        when(branchRepository.getByStatus(ActiveStatus.ACTIVE,PageRequest.of(0, 10))).thenReturn(Arrays.asList());
 
         ResourceNotFoundException eNotFound = assertThrows(ResourceNotFoundException.class, () -> {
-            branchService.getActiveBranches(samplePrincipal);
+            branchService.getActiveBranches(0,10,samplePrincipal);
         });
         assertEquals("No ACTIVE branches found...!!!", eNotFound.getMessage());
     }
@@ -283,10 +293,10 @@ public class BranchServiceTest {
     public void testGetActiveBranchesByState() throws Exception {
         // Case 1
         when(userRepository.getByUsername("new_user")).thenReturn(sampleUser);
-        when(branchRepository.getByStateAndStatus("Telangana", ActiveStatus.ACTIVE))
+        when(branchRepository.getByStateAndStatus("Telangana", ActiveStatus.ACTIVE,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList(sampleBranch1));
 
-        List<Branch> telanganaActive = branchService.getActiveBranchesByState("Telangana", samplePrincipal);
+        List<Branch> telanganaActive = branchService.getActiveBranchesByState(0,10,"Telangana", samplePrincipal);
 
         assertEquals(1, telanganaActive.size());
         assertEquals(101, telanganaActive.get(0).getId());
@@ -294,10 +304,10 @@ public class BranchServiceTest {
         assertEquals(ActiveStatus.ACTIVE, telanganaActive.get(0).getStatus());
 
         // Case 2 
-        when(branchRepository.getByStateAndStatus("Kerala", ActiveStatus.ACTIVE)).thenReturn(null);
+        when(branchRepository.getByStateAndStatus("Kerala", ActiveStatus.ACTIVE,PageRequest.of(0, 10))).thenReturn(Arrays.asList());
 
         ResourceNotFoundException eNotFound = assertThrows(ResourceNotFoundException.class, () -> {
-            branchService.getActiveBranchesByState("Kerala", samplePrincipal);
+            branchService.getActiveBranchesByState(0,10,"Kerala", samplePrincipal);
         });
         assertEquals("No ACTIVE branches found in the given state...!!!", eNotFound.getMessage());
     }
@@ -307,10 +317,10 @@ public class BranchServiceTest {
     public void testGetgetInactiveBranchesByState() throws Exception {
         // Case 1 
         when(userRepository.getByUsername("new_user")).thenReturn(sampleUser);
-        when(branchRepository.getByStateAndStatus("Maharashtra", ActiveStatus.INACTIVE))
+        when(branchRepository.getByStateAndStatus("Maharashtra", ActiveStatus.INACTIVE,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList(sampleBranch2));
 
-        List<Branch> maharashtraInactive = branchService.getgetInactiveBranchesByState("Maharashtra", samplePrincipal);
+        List<Branch> maharashtraInactive = branchService.getgetInactiveBranchesByState(0,10,"Maharashtra", samplePrincipal);
 
         assertEquals(1, maharashtraInactive.size());
         assertEquals(102, maharashtraInactive.get(0).getId());
@@ -318,10 +328,10 @@ public class BranchServiceTest {
         assertEquals(ActiveStatus.INACTIVE, maharashtraInactive.get(0).getStatus());
 
         // Case 2 
-        when(branchRepository.getByStateAndStatus("Kerala", ActiveStatus.INACTIVE)).thenReturn(null);
+        when(branchRepository.getByStateAndStatus("Kerala", ActiveStatus.INACTIVE,PageRequest.of(0, 10))).thenReturn(Arrays.asList());
 
         ResourceNotFoundException eNotFound = assertThrows(ResourceNotFoundException.class, () -> {
-            branchService.getgetInactiveBranchesByState("Kerala", samplePrincipal);
+            branchService.getgetInactiveBranchesByState(0,10,"Kerala", samplePrincipal);
         });
         assertEquals("No INACTIVE branches found in the given state...!!!", eNotFound.getMessage());
     }
@@ -399,7 +409,7 @@ public class BranchServiceTest {
 
         // Case 3 – Invalid contact number ⇒ InvalidInputException
         InvalidInputException eInvalid = assertThrows(InvalidInputException.class, () -> {
-            branchService.updateBranchContactNumber(101, "123", samplePrincipal); // too short / invalid
+            branchService.updateBranchContactNumber(101, "123", samplePrincipal); 
         });
         assertEquals(
                 "Contact number is Invalid. Please enter appropriate 10 digit Contact number...!!!",

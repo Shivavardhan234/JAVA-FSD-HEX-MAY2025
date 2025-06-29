@@ -35,15 +35,6 @@ function Profile() {
     //--------------------------------------------------------- GET CIO DETAILS FROM REDUX STORE --------------------------------------------
     let cio = useSelector(state => state.user.userDetails);
 
-    //------ if refreshed get the details again --------------------------------
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            getUserDetails(dispatch)(); // dispatch again on refresh
-        } else {
-            navigate("/"); // or redirect to login if no token
-        }
-    }, []);
 
     //--------------------------------------------------------- IF CIO IS NOT NULL DISPLAY THE VALUES ----------------------------------------
     useEffect(() => {
@@ -92,7 +83,7 @@ function Profile() {
         const baererAuthString = "Bearer " + token;
         try {
             const response = await axios.put(
-                `http://localhost:9090/api/user/update/password/${currentPassword}/${newPassword}`,
+                `http://localhost:9090/api/user/update/password?oldPassword=${currentPassword}&newPassword=${newPassword}`,
                 {},
                 { headers: { Authorization: baererAuthString } }
             );
@@ -161,7 +152,7 @@ function Profile() {
         try {
             //if username is changed update username
             if (username !== newUsername) {
-                const usernameResponse = await axios.put(`http://localhost:9090/api/user/update/username/${newUsername}`,
+                const usernameResponse = await axios.put(`http://localhost:9090/api/user/update/username?username=${newUsername}`,
                     {},
                     { headers: { Authorization: baererAuthString } }
                 );
@@ -234,7 +225,7 @@ function Profile() {
 
         try {
             await axios.put(
-                `http://localhost:9090/api/user/update/deactivate/${currentPassword}`,
+                `http://localhost:9090/api/user/update/deactivate?password=${currentPassword}`,
                 {},
                 { headers: { Authorization: baererAuthString } }
             );
@@ -402,7 +393,6 @@ function Profile() {
                                 <input
                                     type="password"
                                     className="form-control"
-                                    value={currentPassword}
                                     onChange={(e) => setCurrentPassword(e.target.value)}
                                     placeholder="Enter your current password"
                                 />

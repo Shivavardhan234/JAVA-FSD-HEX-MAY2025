@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.maverickbank.MaverickBank.enums.ApplicationStatus;
@@ -31,9 +32,9 @@ public class LoanClosureRequestController {
 	
 //-------------------------------------------------- POST ----------------------------------------------------------------
 	
-	@PostMapping("/add/{loanId}/{purpose}")
+	@PostMapping("/add/{loanId}")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public LoanClosureRequest createLoanClosureRequest(@PathVariable int loanId, @PathVariable String purpose,Principal principal)
+	public LoanClosureRequest createLoanClosureRequest(@PathVariable int loanId, @RequestParam String purpose,Principal principal)
 	        throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 
 	    return loanClosureRequestService.createLoanClosureRequest(loanId, purpose, principal);
@@ -42,8 +43,9 @@ public class LoanClosureRequestController {
 //----------------------------------------------------- GET --------------------------------------------------------------
 	 @GetMapping("/get/all")
 	 @CrossOrigin(origins = "http://localhost:5173")
-	    public List<LoanClosureRequest> getAllRequests(Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
-	        return loanClosureRequestService.getAllRequests(principal);
+	    public List<LoanClosureRequest> getAllRequests(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+														@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
+	        return loanClosureRequestService.getAllRequests(page,size,principal);
 	    }
 
 	    @GetMapping("/get/by-id/{id}")
@@ -60,9 +62,10 @@ public class LoanClosureRequestController {
 	    
 	    @GetMapping("/get/by-status/{status}")
 	    @CrossOrigin(origins = "http://localhost:5173")
-	    public List<LoanClosureRequest> getByStatus(@PathVariable ApplicationStatus status, Principal principal)
+	    public List<LoanClosureRequest> getByStatus(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+													@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,@PathVariable ApplicationStatus status, Principal principal)
 	            throws DeletedUserException, ResourceNotFoundException, InvalidInputException, InvalidActionException {
-	        return loanClosureRequestService.getByStatus(status, principal);
+	        return loanClosureRequestService.getByStatus(page,size,status, principal);
 	    }
 
 	    @GetMapping("/get/by-loan-id-status/{loanId}/{status}")

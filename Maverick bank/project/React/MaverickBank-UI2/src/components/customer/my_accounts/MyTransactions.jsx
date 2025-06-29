@@ -1,9 +1,8 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Form, Table } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { getBankAccount } from "../../../store/actions/BankAccountAction";
+import { useSelector } from "react-redux";
 
 function MyTransactions() {
     const navigate = useNavigate();
@@ -17,13 +16,6 @@ function MyTransactions() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-
-    const dispatch = useDispatch();
-    const accountId = localStorage.getItem("accountId");
-
-    useEffect(() => {
-        getBankAccount(dispatch)(accountId);
-    }, [])
 
     const account = useSelector(state => state.bankAccount.account);
 
@@ -40,13 +32,12 @@ function MyTransactions() {
             const headers = { Authorization: `Bearer ${token}` };
 
             const res = await axios.get(
-                `http://localhost:9090/api/transaction/get/last-transactions/${account.accountNumber}/${count}`,
+                `http://localhost:9090/api/transaction/get/transactions-for-account?accountNumber=${account.accountNumber}`,
                 { headers }
             );
             setTransactions(res.data);
         } catch (err) {
-            console.error(err);
-            setError("Failed to fetch transactions.");
+            handleError(err);
         } finally {
             setLoading(false);
         }
@@ -69,12 +60,25 @@ function MyTransactions() {
             );
             setTransactions(res.data);
         } catch (err) {
-            console.error(err);
-            setError("Failed to fetch transactions by date.");
+            handleError(err);
         } finally {
             setLoading(false);
         }
     };
+
+
+       const handleError = (err) => {
+        console.log(err);
+        if (err.response && err.response.data) {
+            const errorData = err.response.data;
+            const firstKey = Object.keys(errorData)[0];
+            setError(errorData[firstKey]);
+        } else {
+            setError("Something went wrong. Please try again later...");
+        }
+        setTimeout(() => setMessage(""), 3000);
+    };
+
 
     return (
         <div className="p-3">
@@ -87,7 +91,7 @@ function MyTransactions() {
                         <span
                             role="button"
                             onClick={() =>
-                                navigate(`/customer/myAccounts/manageBankAccount/${account?.accountNumber}`)
+                                navigate(`../manageBankAccount/${account?.accountNumber}`)
                             }
                             className="text-decoration-none text-primary"
                         >

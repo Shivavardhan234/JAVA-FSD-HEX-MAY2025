@@ -1,6 +1,6 @@
 package com.maverickbank.MaverickBank.exception;
 
-public class IdentityNotMatchException extends Exception {
+public class IdentityNotMatchException extends RuntimeException {
 
 	/**
 	 * 

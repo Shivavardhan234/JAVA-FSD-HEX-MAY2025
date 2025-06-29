@@ -1,9 +1,8 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import {  useNavigate } from "react-router-dom";
+import {  useState } from "react";
 import axios from "axios";
 import { Form, Button, Card } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { getLoan } from "../../../../store/actions/LoanAction";
+import {  useSelector } from "react-redux";
 
 function LoanClosureRequest() {
     const navigate = useNavigate();
@@ -14,12 +13,6 @@ function LoanClosureRequest() {
     const [error, setError] = useState("");
 
 
-     const dispatch =useDispatch();
-    const loanId = localStorage.getItem("loanId");
-
-    useEffect(()=>{
-        getLoan(dispatch)(loanId);
-    },[])
 
     const loan =useSelector(state=> state.loanStore.loan);
 
@@ -35,7 +28,7 @@ function LoanClosureRequest() {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.post(
-                `http://localhost:9090/api/loan-closure/add/${loanId}/${purpose}`,
+                `http://localhost:9090/api/loan-closure/add/${loan.id}?purpose=${purpose}`,
                 {},
                 {
                     headers: {
@@ -120,7 +113,7 @@ function LoanClosureRequest() {
                 </Card.Body>
 
                 <Card.Footer className="text-end">
-                    <Button variant="danger" onClick={handleSubmit}>
+                    <Button variant="danger" onClick={()=>{handleSubmit()}}>
                         Submit Request
                     </Button>
                 </Card.Footer>

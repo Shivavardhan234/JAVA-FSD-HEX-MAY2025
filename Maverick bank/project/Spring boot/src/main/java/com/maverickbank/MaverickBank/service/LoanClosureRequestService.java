@@ -3,6 +3,8 @@ package com.maverickbank.MaverickBank.service;
 import java.security.Principal;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.maverickbank.MaverickBank.enums.ApplicationStatus;
@@ -64,17 +66,21 @@ public class LoanClosureRequestService {
 //------------------------------------------ GET --------------------------------------------------------------------------
 
 	/**
+	 * @param size 
+	 * @param page 
 	 * @param principal
 	 * @return
 	 * @throws DeletedUserException
 	 * @throws InvalidActionException 
 	 * @throws InvalidInputException 
 	 */
-	public List<LoanClosureRequest> getAllRequests(Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
+	public List<LoanClosureRequest> getAllRequests(Integer page, Integer size, Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
         User currentUser = userRepository.getByUsername(principal.getName());
         UserValidation.checkActiveStatus(currentUser.getStatus());
+        
+        Pageable pageable = PageRequest.of(page, size);
 
-        return loanClosureRequestRepository.findAll();
+        return loanClosureRequestRepository.findAll(pageable).getContent();
     }
 	
 	
@@ -93,6 +99,7 @@ public class LoanClosureRequestService {
     public LoanClosureRequest getRequestById(int id, Principal principal)throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
         User currentUser = userRepository.getByUsername(principal.getName());
         UserValidation.checkActiveStatus(currentUser.getStatus());
+        
 
         return loanClosureRequestRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No closure request found with the provided ID...!!!"));
     }
@@ -124,6 +131,8 @@ public class LoanClosureRequestService {
 
 
 	/**
+	 * @param size 
+	 * @param page 
 	 * @param status
 	 * @param principal
 	 * @return
@@ -132,12 +141,13 @@ public class LoanClosureRequestService {
 	 * @throws InvalidActionException
 	 * @throws DeletedUserException
 	 */
-	public List<LoanClosureRequest> getByStatus(ApplicationStatus status, Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
+	public List<LoanClosureRequest> getByStatus(Integer page, Integer size, ApplicationStatus status, Principal principal) throws ResourceNotFoundException, InvalidInputException, InvalidActionException, DeletedUserException {
 		User currentUser = userRepository.getByUsername(principal.getName());
 	    UserValidation.checkActiveStatus(currentUser.getStatus());
 
+	    Pageable pageable = PageRequest.of(page, size);
 
-	    List<LoanClosureRequest> loanClosureRequestList = loanClosureRequestRepository.getByRequestStatus(status);
+	    List<LoanClosureRequest> loanClosureRequestList = loanClosureRequestRepository.getByRequestStatus(status,pageable);
 	    if (loanClosureRequestList.isEmpty()) {
 	        throw new ResourceNotFoundException("No loan closure requests found for the given status...!!!");
 	    }

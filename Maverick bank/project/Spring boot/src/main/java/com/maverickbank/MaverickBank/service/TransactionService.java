@@ -6,6 +6,8 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.maverickbank.MaverickBank.enums.PaymentMedium;
@@ -75,16 +77,20 @@ public class TransactionService {
 	
 	
     /**
+     * @param size 
+     * @param page 
      * @param principal
      * @return
      * @throws DeletedUserException
      * @throws InvalidInputException
      * @throws InvalidActionException
      */
-    public List<Transaction> getAllTransactions(Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
+    public List<Transaction> getAllTransactions(Integer page, Integer size, Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
     	 User currentUser = userRepository.getByUsername(principal.getName());
  	    UserValidation.checkActiveStatus(currentUser.getStatus());
-        return transactionRepository.findAll();
+ 	    
+ 	    Pageable pageable = PageRequest.of(page, size);
+        return transactionRepository.findAll(pageable).getContent();
     }
 
     
@@ -106,6 +112,8 @@ public class TransactionService {
 
   
     /**
+     * @param size 
+     * @param page 
      * @param accountNumber
      * @param startDate
      * @param endDate
@@ -116,15 +124,23 @@ public class TransactionService {
      * @throws ResourceNotFoundException
      * @throws InvalidActionException
      */
-    public List<Transaction> getTransactionsByDateRange(Optional<String> accountNumber, LocalDate startDate, LocalDate endDate, Principal principal)
+    public List<Transaction> getTransactionsByDateRange(Integer page, Integer size, Optional<String> accountNumber, LocalDate startDate, LocalDate endDate, Principal principal)
             throws DeletedUserException, InvalidInputException, ResourceNotFoundException, InvalidActionException {
     	 User currentUser = userRepository.getByUsername(principal.getName());
  	    UserValidation.checkActiveStatus(currentUser.getStatus());
+ 	    
+ 	   if (startDate.isAfter(endDate)) {
+ 		    throw new InvalidInputException("Start date cannot be after end date.");
+ 		}
+
+ 	   Pageable pageable = PageRequest.of(page, size);
+ 	   
         if (accountNumber.isPresent()) {
             validateAccountNumber(accountNumber.get());
             
-            List<Transaction> transactionList=transactionRepository.findByAccountNumberAndDateRange(accountNumber.get(), startDate, endDate);
-            transactionList.parallelStream().forEach(t->{
+            
+            List<Transaction> transactionList=transactionRepository.findByAccountNumberAndDateRange(accountNumber.get(), startDate, endDate, pageable);
+            transactionList.stream().forEach(t->{
             	    if (accountNumber.get().equals(t.getFromDetails())) {
             	        try {
 							t.setTransactionType(TransactionType.DEBT);
@@ -141,7 +157,7 @@ public class TransactionService {
             	});
             return transactionList;
         } else {
-            return transactionRepository.findByDateRange(startDate, endDate);
+            return transactionRepository.findByDateRange(startDate, endDate, pageable);
         }
     }
 
@@ -157,12 +173,15 @@ public class TransactionService {
      * @throws ResourceNotFoundException
      * @throws InvalidActionException
      */
-    public List<Transaction> getCreditTransactions(String accountNumber, LocalDate startDate, LocalDate endDate, Principal principal)
+    public List<Transaction> getCreditTransactions(Integer page, Integer size,String accountNumber, LocalDate startDate, LocalDate endDate, Principal principal)
             throws DeletedUserException, InvalidInputException, ResourceNotFoundException, InvalidActionException {
     	 User currentUser = userRepository.getByUsername(principal.getName());
  	    UserValidation.checkActiveStatus(currentUser.getStatus());
         validateAccountNumber(accountNumber);
-        List<Transaction> transactionList=transactionRepository.findCredits(accountNumber, startDate, endDate);
+        
+        Pageable pageable = PageRequest.of(page, size);
+        
+        List<Transaction> transactionList=transactionRepository.findCredits(accountNumber, startDate, endDate,pageable);
         transactionList.parallelStream().forEach(t->{
 			try {
 				t.setTransactionType(TransactionType.CREDIT);
@@ -185,12 +204,15 @@ public class TransactionService {
      * @throws ResourceNotFoundException
      * @throws InvalidActionException
      */
-    public List<Transaction> getDebitTransactions(String accountNumber, LocalDate startDate, LocalDate endDate, Principal principal)
+    public List<Transaction> getDebitTransactions(Integer page, Integer size,String accountNumber, LocalDate startDate, LocalDate endDate, Principal principal)
             throws DeletedUserException, InvalidInputException, ResourceNotFoundException, InvalidActionException {
     	 User currentUser = userRepository.getByUsername(principal.getName());
  	    UserValidation.checkActiveStatus(currentUser.getStatus());
         validateAccountNumber(accountNumber);
-        List<Transaction> transactionList=transactionRepository.findDebits(accountNumber, startDate, endDate);
+        
+        Pageable pageable = PageRequest.of(page, size);
+        
+        List<Transaction> transactionList=transactionRepository.findDebits(accountNumber, startDate, endDate,pageable);
         transactionList.parallelStream().forEach(t->{
 			try {
 				t.setTransactionType(TransactionType.DEBT);
@@ -205,6 +227,8 @@ public class TransactionService {
 
     
     /**
+     * @param size 
+     * @param page 
      * @param accountNumber
      * @param count
      * @param principal
@@ -214,14 +238,16 @@ public class TransactionService {
      * @throws ResourceNotFoundException
      * @throws InvalidActionException
      */
-    public List<Transaction> getNumberOfTransactions(String accountNumber, int count, Principal principal)
+    public List<Transaction> getTransactionsForAccount(Integer page, Integer size, String accountNumber, Principal principal)
             throws DeletedUserException, InvalidInputException, ResourceNotFoundException, InvalidActionException {
         
         User currentUser = userRepository.getByUsername(principal.getName());
         UserValidation.checkActiveStatus(currentUser.getStatus());
         validateAccountNumber(accountNumber);
 
-        List<Transaction> transactionList = transactionRepository.findAllByAccountNumber(accountNumber);
+        Pageable pageable = PageRequest.of(page, size);
+        
+        List<Transaction> transactionList = transactionRepository.findAllByAccountNumber(accountNumber,pageable);
         transactionList.parallelStream().forEach(t->{
     	    if (accountNumber.equals(t.getFromDetails())) {
     	        try {
@@ -237,11 +263,7 @@ public class TransactionService {
 				}
     	    }
     	});
-        if (transactionList.size() <= count) {
-            return transactionList;
-        } else {
-            return transactionList.subList(0, count);
-        }
+        return transactionList;
     }
 
 
@@ -265,6 +287,12 @@ public class TransactionService {
         
        
     }
+
+//================================================ DELETE =====================================
+	public void deleteTransaction(int id) {
+		transactionRepository.deleteById(id);
+		return ;
+	}
 
 
 }

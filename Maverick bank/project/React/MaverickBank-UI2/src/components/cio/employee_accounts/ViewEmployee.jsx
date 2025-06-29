@@ -1,16 +1,21 @@
 import { FaUserCircle } from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import {  useNavigate } from "react-router-dom";
+import { useState } from "react";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { getEmployee } from "../../../store/actions/EmployeeAction";
+import { getBranch } from "../../../store/actions/BranchAction";
 
 function ViewEmployee() {
-    const location = useLocation();
     const navigate = useNavigate();
-    const initialEmployee = location.state?.emp;
+    const dispatch = useDispatch();
 
-    const [employee, setEmployee] = useState(initialEmployee);
+    const employee = useSelector(state=> state.employeeStore.employee);
+    
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+
+    
 
     const getStatusClass = (status) => {
         switch (status?.toUpperCase()) {
@@ -22,25 +27,7 @@ function ViewEmployee() {
         }
     };
 
-    const fetchUpdatedEmployee = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            const headers = { Authorization: "Bearer " + token };
-            const response = await axios.get(
-                `http://localhost:9090/api/employee/get/by-id/${employee.id}`,
-                { headers }
-            );
-            setEmployee(response.data);
-        } catch (err) {
-            console.error(err);
-            if (err.response?.data) {
-                const firstKey = Object.keys(err.response.data)[0];
-                setErrorMessage(err.response.data[firstKey]);
-            } else {
-                setErrorMessage("Something went wrong. Try again.");
-            }
-        }
-    };
+   
 
     const updateStatus = async (newStatus) => {
         try {
@@ -55,7 +42,7 @@ function ViewEmployee() {
 
             setSuccessMessage(`Employee ${newStatus.toLowerCase()}d successfully`);
             setTimeout(() => setSuccessMessage(""), 3000);
-            await fetchUpdatedEmployee();
+            getEmployee(dispatch)(employee.id);
         } catch (err) {
             console.error(err);
             if (err.response?.data) {
@@ -75,7 +62,7 @@ function ViewEmployee() {
                     <li className="breadcrumb-item">
                         <span
                             role="button"
-                            onClick={() => navigate("/cio/employeeAccounts/category")}
+                            onClick={() => navigate("../category")}
                             className="text-decoration-none text-primary"
                             style={{ cursor: "pointer" }}
                         >
@@ -97,7 +84,7 @@ function ViewEmployee() {
                         </div>
 
                         <div className="card-body">
-                            {employee ? (
+                            {employee && employee?.user ? (
                                 <div className="d-flex">
                                     {/* Icon */}
                                     <div className="d-flex align-items-center justify-content-center me-4" style={{ minWidth: "200px" }}>
@@ -126,7 +113,7 @@ function ViewEmployee() {
                                             <div className="col-md-12 mb-2">
                                                 <button
                                                     className="btn btn-outline-secondary btn-sm"
-                                                    onClick={() => navigate("/cio/cioBranch/branchDetails", { state: { branch: employee.branch } })}
+                                                    onClick={() =>{ getBranch(dispatch)(employee.branch.id); navigate("../employeeBranch");}}
                                                 >
                                                     View Branch
                                                 </button>

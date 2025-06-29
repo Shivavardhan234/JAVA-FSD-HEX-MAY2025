@@ -3,6 +3,8 @@ package com.maverickbank.MaverickBank.service;
 import java.security.Principal;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.maverickbank.MaverickBank.enums.LoanType;
@@ -53,17 +55,21 @@ public class LoanPlanService {
 //------------------------------------------------------- GET ------------------------------------------------------------
 	
 	/**
+	 * @param size 
+	 * @param page 
 	 * @param principal
 	 * @return
 	 * @throws DeletedUserException
 	 * @throws InvalidInputException
 	 * @throws InvalidActionException
 	 */
-	public List<LoanPlan> getAllLoanPlans(Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
+	public List<LoanPlan> getAllLoanPlans(Integer page, Integer size, Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
 	    User currentUser = userRepository.getByUsername(principal.getName());
 	    UserValidation.checkActiveStatus(currentUser.getStatus());
+	    
+	    Pageable pageable = PageRequest.of(page, size);
 
-	    return loanPlanRepository.findAll();
+	    return loanPlanRepository.findAll(pageable).getContent();
 	}
 	
 	
@@ -89,6 +95,8 @@ public class LoanPlanService {
 	
 	
 	/**
+	 * @param size 
+	 * @param page 
 	 * @param loanType
 	 * @param principal
 	 * @return
@@ -96,13 +104,13 @@ public class LoanPlanService {
 	 * @throws InvalidActionException 
 	 * @throws InvalidInputException 
 	 */
-	public List<LoanPlan> getLoanPlansByType(LoanType loanType, Principal principal)
+	public List<LoanPlan> getLoanPlansByType(Integer page, Integer size, LoanType loanType, Principal principal)
 	        throws DeletedUserException, InvalidInputException, InvalidActionException {
 	    
 	    User currentUser = userRepository.getByUsername(principal.getName());
 	    UserValidation.checkActiveStatus(currentUser.getStatus());
-
-	    return loanPlanRepository.getByLoanType(loanType);
+	    Pageable pageable = PageRequest.of(page, size);
+	    return loanPlanRepository.getByLoanType(loanType,pageable);
 	}
 
 

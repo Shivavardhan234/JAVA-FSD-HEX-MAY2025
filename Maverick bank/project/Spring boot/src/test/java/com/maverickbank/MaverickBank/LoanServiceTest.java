@@ -22,6 +22,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.maverickbank.MaverickBank.enums.AccountStatus;
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
@@ -202,10 +205,10 @@ class LoanServiceTest {
         loan2.setCleared(false);
 
         List<Loan> loanList = Arrays.asList(loan1, loan2);
+        Page<Loan> mockPage = new PageImpl<>(loanList);
+        when(loanRepository.findAll(PageRequest.of(0,10))).thenReturn(mockPage);
 
-        when(loanRepository.findAll()).thenReturn(loanList);
-
-        List<Loan> result = loanService.getAllLoans(samplePrincipal);
+        List<Loan> result = loanService.getAllLoans(0,10,samplePrincipal);
         assertEquals(2, result.size());
         assertEquals(loan1.getId(), result.get(0).getId());
         assertEquals(loan2.getId(), result.get(1).getId());
@@ -325,22 +328,22 @@ class LoanServiceTest {
         activeLoan.setDueDate(LocalDate.now().plusMonths(12));
         activeLoan.setCleared(false);
 
-        when(loanRepository.getByStatus(LoanStatus.ACTIVE))
+        when(loanRepository.getByStatus(LoanStatus.ACTIVE,PageRequest.of(0,10)))
                 .thenReturn(Arrays.asList(activeLoan));
 
         List<Loan> activeLoans =
-                loanService.getLoansByStatus(LoanStatus.ACTIVE, samplePrincipal);
+                loanService.getLoansByStatus(0,10,LoanStatus.ACTIVE, samplePrincipal);
 
         assertEquals(1, activeLoans.size());
         assertEquals(activeLoan, activeLoans.get(0));
         assertEquals(LoanStatus.ACTIVE, activeLoans.get(0).getStatus());
 
         /*Case 2: repository returns empty list  */
-        when(loanRepository.getByStatus(LoanStatus.CLOSED))
+        when(loanRepository.getByStatus(LoanStatus.CLOSED,PageRequest.of(0,10)))
                 .thenReturn(Arrays.asList());
 
         ResourceNotFoundException ex1 = assertThrows(ResourceNotFoundException.class, () -> {
-            loanService.getLoansByStatus(LoanStatus.CLOSED, samplePrincipal);
+            loanService.getLoansByStatus(0,10,LoanStatus.CLOSED, samplePrincipal);
         });
         assertEquals("No loan found with the given status...!!!", ex1.getMessage());
 

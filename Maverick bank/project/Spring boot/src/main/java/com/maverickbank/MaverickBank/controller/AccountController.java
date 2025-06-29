@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.maverickbank.MaverickBank.enums.AccountStatus;
@@ -41,8 +42,9 @@ public class AccountController {
 //-------------------------------------------------- GET -----------------------------------------------------------------
 	@GetMapping("/get/all")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<Account> getAllAccounts(Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException, ResourceNotFoundException {
-	    return accountService.getAllAccounts(principal);
+	public List<Account> getAllAccounts(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException, ResourceNotFoundException {
+	    return accountService.getAllAccounts(page,size,principal);
 	}
 
 	@GetMapping("/get/by-id/{id}")
@@ -51,38 +53,41 @@ public class AccountController {
 	    return accountService.getAccountById(id, principal);
 	}
 
-	@GetMapping("/get/by-account-number/{accountNumber}")
+	@GetMapping("/get/by-account-number")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public Account getAccountByAccountNumber(@PathVariable String accountNumber, Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
+	public Account getAccountByAccountNumber(@RequestParam String accountNumber, Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 	    return accountService.getAccountByAccountNumber(accountNumber, principal);
 	}
 
 	@GetMapping("/get/by-branch-id/{id}")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<Account> getAccountsByBranchId(@PathVariable int id, Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
-	    return accountService.getAccountsByBranchId(id, principal);
+	public List<Account> getAccountsByBranchId(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,@PathVariable int id, Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
+	    return accountService.getAccountsByBranchId(page,size,id, principal);
 	}
 
 	@GetMapping("/get/by-account-status/{accountStatus}")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<Account> getAccountsByStatus(@PathVariable AccountStatus accountStatus, Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
-	    return accountService.getAccountsByStatus(accountStatus, principal);
+	public List<Account> getAccountsByStatus(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,@PathVariable AccountStatus accountStatus, Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
+	    return accountService.getAccountsByStatus(page,size,accountStatus, principal);
 	}
 
 	
 	@GetMapping("/get/by-account-type-id/{id}")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<Account> getAccountsByAccountTypeId(@PathVariable int id, Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
-	    return accountService.getAccountsByAccountTypeId(id, principal);
+	public List<Account> getAccountsByAccountTypeId(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,@PathVariable int id, Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
+	    return accountService.getAccountsByAccountTypeId(page,size,id, principal);
 	}
 	
 	
 //-------------------------------------------------- PUT -----------------------------------------------------------------
 
 	
-	@PutMapping("/update/name/{accountId}/{newName}")
+	@PutMapping("/update/name/{accountId}")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public Account updateAccountName(@PathVariable int accountId,@PathVariable String newName,Principal principal) throws DeletedUserException, InvalidInputException, ResourceNotFoundException, InvalidActionException {
+	public Account updateAccountName(@PathVariable int accountId,@RequestParam String newName,Principal principal) throws DeletedUserException, InvalidInputException, ResourceNotFoundException, InvalidActionException {
 	    return accountService.updateAccountName(accountId, newName, principal);
 	}
 	
@@ -103,9 +108,9 @@ public class AccountController {
 	
 	
 	
-	@PutMapping("/update/withdraw/{accountId}/{amount}/{medium}/{pin}")
+	@PutMapping("/update/withdraw/{accountId}/{amount}/{medium}")
 	@CrossOrigin(origins = "http://localhost:5173")
-    public Account withdraw(@PathVariable int accountId,@PathVariable BigDecimal amount,@PathVariable PaymentMedium medium,@PathVariable String pin,Principal principal) throws DeletedUserException, InvalidInputException, ResourceNotFoundException, InvalidActionException, NotEnoughFundsException {
+    public Account withdraw(@PathVariable int accountId,@PathVariable BigDecimal amount,@PathVariable PaymentMedium medium,@RequestParam String pin,Principal principal) throws DeletedUserException, InvalidInputException, ResourceNotFoundException, InvalidActionException, NotEnoughFundsException {
         return accountService.withdraw(accountId, amount, medium, pin,principal);
     }
 
@@ -115,9 +120,9 @@ public class AccountController {
         return accountService.deposit(accountId, amount, medium, principal);
     }
 
-    @PutMapping("/update/transfer/{fromAccountId}/{toAccountNumber}/{amount}/{pin}")
+    @PutMapping("/update/transfer/{fromAccountId}/{amount}")
     @CrossOrigin(origins = "http://localhost:5173")
-    public Account transfer(@PathVariable int fromAccountId, @PathVariable String toAccountNumber,@PathVariable BigDecimal amount,@PathVariable String pin,Principal principal) throws DeletedUserException, InvalidInputException, ResourceNotFoundException, InvalidActionException, NotEnoughFundsException {
+    public Account transfer(@PathVariable int fromAccountId, @RequestParam String toAccountNumber,@PathVariable BigDecimal amount,@RequestParam String pin,Principal principal) throws DeletedUserException, InvalidInputException, ResourceNotFoundException, InvalidActionException, NotEnoughFundsException {
         return accountService.transfer(fromAccountId, toAccountNumber, amount, pin,principal);
     }
     

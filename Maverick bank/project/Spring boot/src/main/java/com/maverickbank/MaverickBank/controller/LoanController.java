@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.maverickbank.MaverickBank.enums.LoanStatus;
@@ -40,8 +41,9 @@ public class LoanController {
 //------------------------------------------------ GET --------------------------------------------------------------------
 	@GetMapping("/get/all")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<Loan> getAllLoans(Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
-	    return loanService.getAllLoans(principal);
+	public List<Loan> getAllLoans(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+									@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
+	    return loanService.getAllLoans(page,size,principal);
 	}
 
 	
@@ -65,9 +67,11 @@ public class LoanController {
 
 	@GetMapping("/get/by-status/{status}")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<Loan> getLoansByStatus(@PathVariable LoanStatus status, Principal principal)
+	public List<Loan> getLoansByStatus(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+										@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,
+										@PathVariable LoanStatus status, Principal principal)
 	        throws DeletedUserException, InvalidInputException, InvalidActionException, ResourceNotFoundException {
-	    return loanService.getLoansByStatus(status, principal);
+	    return loanService.getLoansByStatus(page,size,status, principal);
 	}
 	
 	

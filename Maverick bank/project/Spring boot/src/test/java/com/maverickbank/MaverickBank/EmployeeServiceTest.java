@@ -17,6 +17,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.Gender;
@@ -193,10 +196,11 @@ class EmployeeServiceTest {
     public void testGetAllEmployee() throws Exception {
         
         when(userRepository.getByUsername(samplePrincipalEmployee.getName())).thenReturn(sampleUserEmployee);
-        when(employeeRepository.findAll()).thenReturn(Arrays.asList(sampleEmployee1, sampleEmployee2));
+        Page<Employee> mockPage = new PageImpl<>(Arrays.asList(sampleEmployee1, sampleEmployee2));
+        when(employeeRepository.findAll(PageRequest.of(0,10))).thenReturn(mockPage);
 
         List<Employee> expectedList=Arrays.asList(sampleEmployee1, sampleEmployee2);
-        List<Employee> actualList = employeeService.getAllEmployee(samplePrincipalEmployee);
+        List<Employee> actualList = employeeService.getAllEmployee(0,10,samplePrincipalEmployee);
 
        
         assertEquals(expectedList, actualList);
@@ -336,21 +340,21 @@ class EmployeeServiceTest {
     public void testGetEmployeeByDesignation() throws Exception {
         // Case 1: Success
         when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
-        when(employeeRepository.getEmployeeByDesignation("LOAN_OFFICER"))
+        when(employeeRepository.getEmployeeByDesignation("LOAN_OFFICER",PageRequest.of(0,10)))
             .thenReturn(Arrays.asList(sampleEmployee1));
 
-        List<Employee> result = employeeService.getEmployeeByDesignation("LOAN_OFFICER", samplePrincipalEmployee);
+        List<Employee> result = employeeService.getEmployeeByDesignation(0,10,"LOAN_OFFICER", samplePrincipalEmployee);
 
         
         assertEquals(Arrays.asList(sampleEmployee1), result);
 
         // Case 2: Employee list is null
         when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
-        when(employeeRepository.getEmployeeByDesignation("ACCOUNT_MANAGER"))
-            .thenReturn(null);
+        when(employeeRepository.getEmployeeByDesignation("ACCOUNT_MANAGER",PageRequest.of(0,10)))
+            .thenReturn(Arrays.asList());
 
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
-            employeeService.getEmployeeByDesignation("ACCOUNT_MANAGER", samplePrincipalEmployee);
+            employeeService.getEmployeeByDesignation(0,10,"ACCOUNT_MANAGER", samplePrincipalEmployee);
         });
 
         assertEquals("No employee record found with given designation...!!!", e.getMessage());
@@ -362,19 +366,19 @@ class EmployeeServiceTest {
     public void testGetEmployeeByBranchId() throws Exception {
         // Case 1: Success
         when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
-        when(employeeRepository.getEmployeeByBranchId(1))
+        when(employeeRepository.getEmployeeByBranchId(1,PageRequest.of(0,10)))
             .thenReturn(Arrays.asList(sampleEmployee1,sampleEmployee2));
 
-        List<Employee> result = employeeService.getEmployeeByBranchId(1, samplePrincipalEmployee);
+        List<Employee> result = employeeService.getEmployeeByBranchId(0,10,1, samplePrincipalEmployee);
 
         assertEquals(Arrays.asList(sampleEmployee1,sampleEmployee2), result);
 
         // Case 2: Employee list is null
         when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
-        when(employeeRepository.getEmployeeByBranchId(99)).thenReturn(null);
+        when(employeeRepository.getEmployeeByBranchId(99,PageRequest.of(0,10))).thenReturn(Arrays.asList());
 
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
-            employeeService.getEmployeeByBranchId(99, samplePrincipalEmployee);
+            employeeService.getEmployeeByBranchId(0,10,99, samplePrincipalEmployee);
         });
 
         assertEquals("No employee record found with given branch id...!!!", e.getMessage());
@@ -385,20 +389,20 @@ class EmployeeServiceTest {
     public void testGetEmployeeByStatus() throws Exception {
         // Case 1: Success (ACTIVE)
         when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
-        when(employeeRepository.getEmployeeByStatus(ActiveStatus.ACTIVE))
+        when(employeeRepository.getEmployeeByStatus(ActiveStatus.ACTIVE,PageRequest.of(0,10)))
             .thenReturn(Arrays.asList(sampleEmployee1));
 
-        List<Employee> result = employeeService.getEmployeeByStatus(ActiveStatus.ACTIVE, samplePrincipalEmployee);
+        List<Employee> result = employeeService.getEmployeeByStatus(0,10,ActiveStatus.ACTIVE, samplePrincipalEmployee);
 
         assertEquals(Arrays.asList(sampleEmployee1), result);
 
         // Case 2: No employee found for status
         when(userRepository.getByUsername("empuser1")).thenReturn(sampleUserEmployee);
-        when(employeeRepository.getEmployeeByStatus(ActiveStatus.SUSPENDED))
-            .thenReturn(null);
+        when(employeeRepository.getEmployeeByStatus(ActiveStatus.SUSPENDED,PageRequest.of(0,10)))
+            .thenReturn(Arrays.asList());
 
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () -> {
-            employeeService.getEmployeeByStatus(ActiveStatus.SUSPENDED, samplePrincipalEmployee);
+            employeeService.getEmployeeByStatus(0,10,ActiveStatus.SUSPENDED, samplePrincipalEmployee);
         });
 
         assertEquals("No employee record found with given activity status...!!!", e.getMessage());

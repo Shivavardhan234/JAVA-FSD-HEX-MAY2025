@@ -56,6 +56,7 @@ function FindBankAccount() {
         if(account.accountStatus==="CLOSED"){
             return;
         }
+        
         const token = localStorage.getItem("token");
         const newStatus = account.accountStatus === "OPEN" ? "SUSPENDED" : "OPEN";
 

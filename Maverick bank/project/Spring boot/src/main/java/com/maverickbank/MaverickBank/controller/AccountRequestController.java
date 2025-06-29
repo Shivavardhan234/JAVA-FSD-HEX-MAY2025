@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.maverickbank.MaverickBank.enums.ApplicationStatus;
@@ -31,17 +32,18 @@ public class AccountRequestController {
 	
 	
 //------------------------------------------------------- POST -----------------------------------------------------------
-	 @PostMapping("/add/{accountId}/{requestType}/{purpose}")
+	 @PostMapping("/add/{accountId}/{requestType}")
 	 @CrossOrigin(origins = "http://localhost:5173")
-	    public AccountRequest createAccountRequest(@PathVariable int accountId, @PathVariable RequestType requestType,@PathVariable String purpose,Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidActionException, InvalidInputException {
+	    public AccountRequest createAccountRequest(@PathVariable int accountId, @PathVariable RequestType requestType,@RequestParam String purpose,Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidActionException, InvalidInputException {
 	        return accountRequestService.createRequest(accountId, requestType,purpose, principal);
 	    }
 	
 //--------------------------------------------------------- GET ----------------------------------------------------------
 	 @GetMapping("/get/all")
 	 @CrossOrigin(origins = "http://localhost:5173")
-	 public List<AccountRequest> getAllRequests(Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
-	     return accountRequestService.getAllRequests(principal);
+	 public List<AccountRequest> getAllRequests(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+				@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
+	     return accountRequestService.getAllRequests(page,size,principal);
 	 }
 
 	 
@@ -59,8 +61,9 @@ public class AccountRequestController {
 
 	 @GetMapping("/get/by-status/{status}")
 	 @CrossOrigin(origins = "http://localhost:5173")
-	 public List<AccountRequest> getRequestsByStatus(@PathVariable ApplicationStatus status, Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
-	     return accountRequestService.getRequestsByStatus(status, principal);
+	 public List<AccountRequest> getRequestsByStatus(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+				@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,@PathVariable ApplicationStatus status, Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
+	     return accountRequestService.getRequestsByStatus(page,size,status, principal);
 	 }
 	 
 	 

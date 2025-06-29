@@ -2,6 +2,7 @@ package com.maverickbank.MaverickBank.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -25,5 +26,5 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 	Customer getByUserId(int id);
 
 	@Query("SELECT c FROM Customer c WHERE c.user.status=?1")
-	List<Customer> getCustomerByStatus(ActiveStatus status);
+	List<Customer> getCustomerByStatus(ActiveStatus status, Pageable pageable);
 }

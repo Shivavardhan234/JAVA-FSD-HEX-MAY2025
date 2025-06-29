@@ -2,6 +2,7 @@ package com.maverickbank.MaverickBank.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,7 +16,7 @@ public interface BranchRepository extends JpaRepository<Branch, Integer>{
 
 	
 	@Query("SELECT b FROM Branch b WHERE LOWER(b.address) LIKE  LOWER(CONCAT('%' ,?1,'%'))")
-	List<Branch> getByState(String state);
+	List<Branch> getByState(String state, Pageable pageable);
 	
 	@Query("SELECT b FROM Branch b WHERE LOWER(b.email)=LOWER(?1)")
 	Branch getByEmail(String email);
@@ -27,10 +28,10 @@ public interface BranchRepository extends JpaRepository<Branch, Integer>{
 	Branch getBranchByIfsc(String ifsc);
 
 	@Query("SELECT b FROM Branch b WHERE b.status=?1")
-	List<Branch> getByStatus(ActiveStatus status);
+	List<Branch> getByStatus(ActiveStatus status, Pageable pageable);
 	
 	@Query("SELECT b FROM Branch b WHERE b.status=?2 AND LOWER(b.address) LIKE  LOWER(CONCAT('%' ,?1,'%')) ")
-	List<Branch> getByStateAndStatus(String state,ActiveStatus status);
+	List<Branch> getByStateAndStatus(String state,ActiveStatus status, Pageable pageable);
 
 
 	

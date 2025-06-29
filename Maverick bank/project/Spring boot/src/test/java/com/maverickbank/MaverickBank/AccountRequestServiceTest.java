@@ -19,6 +19,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.maverickbank.MaverickBank.enums.AccountStatus;
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
@@ -187,9 +190,10 @@ class AccountRequestServiceTest {
 
        
         List<AccountRequest> requestList = Arrays.asList(sampleRequest1, sampleRequest2);
-        when(accountRequestRepository.findAll()).thenReturn(requestList);
+        Page<AccountRequest> mockPage = new PageImpl<>(requestList);
+        when(accountRequestRepository.findAll(PageRequest.of(0, 10))).thenReturn(mockPage);
 
-        List<AccountRequest> result = accountRequestService.getAllRequests(samplePrincipal);
+        List<AccountRequest> result = accountRequestService.getAllRequests(0,10,samplePrincipal);
 
         assertEquals(2, result.size());
         assertEquals(sampleRequest1, result.get(0));
@@ -259,22 +263,22 @@ class AccountRequestServiceTest {
 
         /* ---------- Case 1 : requests found for given status ---------- */
         // sampleRequest1 is PENDING, sampleRequest2 is APPROVED
-        when(accountRequestRepository.findByRequestStatus(ApplicationStatus.PENDING))
+        when(accountRequestRepository.findByRequestStatus(ApplicationStatus.PENDING,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList(sampleRequest1));
 
         List<AccountRequest> pendingRequests =
-                accountRequestService.getRequestsByStatus(ApplicationStatus.PENDING, samplePrincipal);
+                accountRequestService.getRequestsByStatus(0,10,ApplicationStatus.PENDING, samplePrincipal);
 
         assertEquals(1, pendingRequests.size());
         assertEquals(sampleRequest1, pendingRequests.get(0));
         assertEquals(ApplicationStatus.PENDING, pendingRequests.get(0).getRequestStatus());
 
         /* ---------- Case 2 : no requests for given status ---------- */
-        when(accountRequestRepository.findByRequestStatus(ApplicationStatus.REJECTED))
+        when(accountRequestRepository.findByRequestStatus(ApplicationStatus.REJECTED,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList());
 
         List<AccountRequest> rejectedRequests =
-                accountRequestService.getRequestsByStatus(ApplicationStatus.REJECTED, samplePrincipal);
+                accountRequestService.getRequestsByStatus(0,10,ApplicationStatus.REJECTED, samplePrincipal);
 
         assertTrue(rejectedRequests.isEmpty());
     }

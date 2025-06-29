@@ -20,6 +20,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
 import com.maverickbank.MaverickBank.enums.LoanStatus;
@@ -175,18 +178,20 @@ class FinancialPerformanceReportServiceTest {
         // Case 1 – two reports returned
         when(userRepository.getByUsername("john.doe")).thenReturn(sampleUser);
         List<FinancialPerformanceReport> reportList = Arrays.asList(sampleReport1, sampleReport2);
-        when(financialPerformanceReportRepository.findAll()).thenReturn(reportList);
+        Page<FinancialPerformanceReport> mockPage = new PageImpl<>(reportList);
+        when(financialPerformanceReportRepository.findAll(PageRequest.of(0, 10))).thenReturn(mockPage);
 
-        List<FinancialPerformanceReport> result = financialPerformanceReportService.getAllReports(samplePrincipal);
+        List<FinancialPerformanceReport> result = financialPerformanceReportService.getAllReports(0,10,samplePrincipal);
 
         assertEquals(2, result.size());
         assertEquals(sampleReport1, result.get(0));
         assertEquals(sampleReport2, result.get(1));
 
         // Case 2 – no reports in the DB
-        when(financialPerformanceReportRepository.findAll()).thenReturn(Arrays.asList());
+        Page<FinancialPerformanceReport> emptyMockPage = new PageImpl<>(Arrays.asList());
+        when(financialPerformanceReportRepository.findAll(PageRequest.of(0, 10))).thenReturn(emptyMockPage);
 
-        List<FinancialPerformanceReport> emptyResult = financialPerformanceReportService.getAllReports(samplePrincipal);
+        List<FinancialPerformanceReport> emptyResult = financialPerformanceReportService.getAllReports(0,10,samplePrincipal);
 
         assertTrue(emptyResult.isEmpty());
     }
@@ -227,33 +232,26 @@ class FinancialPerformanceReportServiceTest {
 
         // Case 1 – reports found within range
         List<FinancialPerformanceReport> reportsInRange = Arrays.asList(sampleReport1, sampleReport2);
-        when(financialPerformanceReportRepository.getReportsByDates(startDate, endDate))
+        when(financialPerformanceReportRepository.getReportsByDates(startDate, endDate, PageRequest.of(0, 10)))
                 .thenReturn(reportsInRange);
 
         List<FinancialPerformanceReport> result =
-                financialPerformanceReportService.getReportsByDateRange(startDate, endDate, samplePrincipal);
+                financialPerformanceReportService.getReportsByDateRange(0,10,startDate, endDate, samplePrincipal);
 
         assertEquals(2, result.size());
         assertEquals(sampleReport1, result.get(0));
         assertEquals(sampleReport2, result.get(1));
 
         // Case 2 – no reports found (empty list)
-        when(financialPerformanceReportRepository.getReportsByDates(startDate, endDate))
+        when(financialPerformanceReportRepository.getReportsByDates(startDate, endDate, PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList());
 
         ResourceNotFoundException e1 = assertThrows(ResourceNotFoundException.class, () -> {
-            financialPerformanceReportService.getReportsByDateRange(startDate, endDate, samplePrincipal);
+            financialPerformanceReportService.getReportsByDateRange(0,10,startDate, endDate, samplePrincipal);
         });
         assertEquals("No Financial Performance Reports found between given dates...!!!", e1.getMessage());
 
-        // Case 3 – repository returns null
-        when(financialPerformanceReportRepository.getReportsByDates(startDate, endDate))
-                .thenReturn(null);
-
-        ResourceNotFoundException e2 = assertThrows(ResourceNotFoundException.class, () -> {
-            financialPerformanceReportService.getReportsByDateRange(startDate, endDate, samplePrincipal);
-        });
-        assertEquals("No Financial Performance Reports found between given dates...!!!", e2.getMessage());
+       
     }
 
 

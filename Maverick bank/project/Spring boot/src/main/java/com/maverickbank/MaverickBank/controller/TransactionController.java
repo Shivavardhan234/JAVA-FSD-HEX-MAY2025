@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,8 +44,9 @@ public class TransactionController {
 	
 	@GetMapping("/get/all")
 	@CrossOrigin(origins = "http://localhost:5173")
-    public List<Transaction> getAllTransactions(Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
-        return transactionService.getAllTransactions(principal);
+    public List<Transaction> getAllTransactions(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+												@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
+        return transactionService.getAllTransactions(page,size,principal);
     }
 
     @GetMapping("/get/by-id/{id}")
@@ -53,37 +55,66 @@ public class TransactionController {
         return transactionService.getById(id, principal);
     }
 
+    
+    
+    
+    
     @GetMapping("/get/by-date-range/{startDate}/{endDate}")
     @CrossOrigin(origins = "http://localhost:5173")
-    public List<Transaction> getTransactionsByDateRange(@PathVariable LocalDate startDate,@PathVariable LocalDate endDate,@RequestParam(name = "accountNumber", required = false) Optional<String> accountNumber,Principal principal)
+    public List<Transaction> getTransactionsByDateRange(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			   											@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,
+			   											@PathVariable LocalDate startDate,@PathVariable LocalDate endDate,
+			   											@RequestParam(name = "accountNumber", required = false) Optional<String> accountNumber,Principal principal)
     		throws DeletedUserException, InvalidInputException, ResourceNotFoundException, InvalidActionException {
-        return transactionService.getTransactionsByDateRange(accountNumber, startDate, endDate, principal);
+        return transactionService.getTransactionsByDateRange(page,size,accountNumber, startDate, endDate, principal);
     }
+    
+    
+    
+    
+    
 
 
-    @GetMapping("/get/credits/{startDate}/{endDate}/{accountNumber}")
+    @GetMapping("/get/credits/{startDate}/{endDate}")
     @CrossOrigin(origins = "http://localhost:5173")
-    public List<Transaction> getCreditTransactions(@PathVariable LocalDate startDate,@PathVariable LocalDate endDate,@PathVariable String accountNumber,Principal principal)
+    public List<Transaction> getCreditTransactions(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+													@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,@PathVariable LocalDate startDate,@PathVariable LocalDate endDate,
+													@RequestParam String accountNumber,Principal principal)
      throws DeletedUserException, InvalidInputException, ResourceNotFoundException, InvalidActionException {
-        return transactionService.getCreditTransactions(accountNumber, startDate, endDate, principal);
+        return transactionService.getCreditTransactions(page,size,accountNumber, startDate, endDate, principal);
     }
 
-    @GetMapping("/get/debits/{startDate}/{endDate}/{accountNumber}")
+    @GetMapping("/get/debits/{startDate}/{endDate}")
     @CrossOrigin(origins = "http://localhost:5173")
-    public List<Transaction> getDebitTransactions(@PathVariable LocalDate startDate,@PathVariable LocalDate endDate,@PathVariable String accountNumber,Principal principal)
+    public List<Transaction> getDebitTransactions(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+													@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,
+													@PathVariable LocalDate startDate,@PathVariable LocalDate endDate,
+													@RequestParam String accountNumber,Principal principal)
     		throws DeletedUserException, InvalidInputException, ResourceNotFoundException, InvalidActionException {
-        return transactionService.getDebitTransactions(accountNumber, startDate, endDate, principal);
+        return transactionService.getDebitTransactions(page,size,accountNumber, startDate, endDate, principal);
     }
     
     
    
 
     
-    @GetMapping("/get/last-transactions/{accountNumber}/{count}")
+    @GetMapping("/get/transactions-for-account")
     @CrossOrigin(origins = "http://localhost:5173")
-    public List<Transaction> getNumberOfTransactions(@PathVariable String accountNumber, @PathVariable int count, Principal principal)
+    public List<Transaction> getTransactionsForAccount(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+														@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,
+														@RequestParam String accountNumber,  Principal principal)
             throws DeletedUserException, InvalidInputException, ResourceNotFoundException, InvalidActionException {
-        return transactionService.getNumberOfTransactions(accountNumber, count, principal);
+        return transactionService.getTransactionsForAccount(page,size,accountNumber, principal);
+    }
+    
+    
+    
+//======================================== DELETE TRANSACTION ==================================
+    @DeleteMapping("/delete/{id}")
+    public void deleteTransactionById(@PathVariable int id) {
+    	 transactionService.deleteTransaction(id);
+    	 return;
+    	
     }
 
 }

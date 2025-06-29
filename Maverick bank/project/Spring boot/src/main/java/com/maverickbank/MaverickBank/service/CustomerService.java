@@ -188,11 +188,14 @@ public CustomerService(CustomerRepository customerRepository, UserRepository use
 		return currentCustomer;
 	}
 	
-	public List<Customer> getCustomerByStatus(ActiveStatus status, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+	public List<Customer> getCustomerByStatus(Integer page, Integer size, ActiveStatus status, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		User currentUser= userRepository.getByUsername(principal.getName());
 		UserValidation.checkActiveStatus(currentUser.getStatus());
-		List<Customer> customerList = customerRepository.getCustomerByStatus(status);
-		if(customerList==null || customerList.isEmpty()) {
+		
+		Pageable pageable = PageRequest.of(page, size);
+		
+		List<Customer> customerList = customerRepository.getCustomerByStatus(status,pageable);
+		if(customerList.isEmpty()) {
 			throw new ResourceNotFoundException("No customer records with the given active status...!!!");
 		}
 		

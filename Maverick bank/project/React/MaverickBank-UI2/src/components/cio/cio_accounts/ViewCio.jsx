@@ -1,16 +1,20 @@
 import { FaUserCircle } from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import {  Link, useNavigate } from "react-router-dom";
+import {  useState } from "react";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { getCio } from "../../../store/actions/CIOAction";
 
 function ViewCio() {
-    const location = useLocation();
     const navigate = useNavigate();
-    const initialCio = location.state?.cio;
+    const dispatch = useDispatch();
 
-    const [cio, setCio] = useState(initialCio);
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+
+
+    const cio=useSelector(state=>state.cioStore.cio);
+
 
     const getStatusClass = (status) => {
         switch (status?.toUpperCase()) {
@@ -22,25 +26,7 @@ function ViewCio() {
         }
     };
 
-    const fetchUpdatedCio = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            const headers = { Authorization: "Bearer " + token };
-            const response = await axios.get(
-                `http://localhost:9090/api/cio/get/by-id/${cio.id}`,
-                { headers }
-            );
-            setCio(response.data);
-        } catch (err) {
-            console.error(err);
-            if (err.response?.data) {
-                const firstKey = Object.keys(err.response.data)[0];
-                setErrorMessage(err.response.data[firstKey]);
-            } else {
-                setErrorMessage("Something went wrong. Try again.");
-            }
-        }
-    };
+
 
     const updateStatus = async (newStatus) => {
         try {
@@ -56,7 +42,7 @@ function ViewCio() {
             setSuccessMessage(`CIO ${newStatus.toLowerCase()}d successfully`);
             setTimeout(() => setSuccessMessage(""), 3000);
 
-            await fetchUpdatedCio();
+            getCio(dispatch)(cio.id);
         } catch (err) {
             console.error(err);
             if (err.response?.data) {
@@ -73,14 +59,9 @@ function ViewCio() {
             <nav aria-label="breadcrumb" className="mb-3">
                 <ol className="breadcrumb">
                     <li className="breadcrumb-item">
-                        <span
-                            role="button"
-                            onClick={() => navigate("/cio/cioAccounts/category")}
-                            className="text-decoration-none text-primary"
-                            style={{ cursor: "pointer" }}
-                        >
-                            CIOs by Category
-                        </span>
+                        <Link to="../category" className="text-decoration-none">
+                            CIO's By Category
+                        </Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
                         CIO Profile

@@ -3,6 +3,8 @@ package com.maverickbank.MaverickBank.service;
 import java.security.Principal;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.maverickbank.MaverickBank.enums.ApplicationStatus;
@@ -83,20 +85,34 @@ public LoanOpeningApplicationService(LoanOpeningApplicationRepository loanOpenin
 	
 	
 	/**
+	 * @param size 
+	 * @param page 
 	 * @param principal
 	 * @return
 	 * @throws DeletedUserException
 	 * @throws InvalidInputException
 	 * @throws InvalidActionException
 	 */
-	public List<LoanOpeningApplication> getAllLoanApplications(Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
+	public List<LoanOpeningApplication> getAllLoanApplications(Integer page, Integer size, Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
 	    User currentUser = userRepository.getByUsername(principal.getName());
 	    UserValidation.checkActiveStatus(currentUser.getStatus());
-	    return loanOpeningApplicationRepository.findAll();
+	    
+	    Pageable pageable = PageRequest.of(page, size);
+	    
+	    return loanOpeningApplicationRepository.findAll(pageable).getContent();
 	}
 
 	
 	
+	/**
+	 * @param id
+	 * @param principal
+	 * @return
+	 * @throws ResourceNotFoundException
+	 * @throws DeletedUserException
+	 * @throws InvalidInputException
+	 * @throws InvalidActionException
+	 */
 	public LoanOpeningApplication getById(int id, Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 	    User currentUser = userRepository.getByUsername(principal.getName());
 	    UserValidation.checkActiveStatus(currentUser.getStatus());
@@ -108,17 +124,36 @@ public LoanOpeningApplicationService(LoanOpeningApplicationRepository loanOpenin
 	
 	
 	
-	public List<LoanOpeningApplication> getByAccountId(int accountId, Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
+	/**
+	 * @param accountId
+	 * @param principal
+	 * @return
+	 * @throws ResourceNotFoundException
+	 * @throws DeletedUserException
+	 * @throws InvalidInputException
+	 * @throws InvalidActionException
+	 */
+	public List<LoanOpeningApplication> getByAccountId(Integer page, Integer size,int accountId, Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 	    User currentUser = userRepository.getByUsername(principal.getName());
 	    UserValidation.checkActiveStatus(currentUser.getStatus());
-
+	    Pageable pageable = PageRequest.of(page, size);
 	    accountRepository.findById(accountId)
 	            .orElseThrow(() -> new ResourceNotFoundException("No account record found with the given id...!!!"));
 	    
-	    return loanOpeningApplicationRepository.getByAccountId(accountId);
+	    return loanOpeningApplicationRepository.getByAccountId(accountId,pageable);
 	}
 
 	
+	
+	/**
+	 * @param loanPlanId
+	 * @param principal
+	 * @return
+	 * @throws ResourceNotFoundException
+	 * @throws DeletedUserException
+	 * @throws InvalidInputException
+	 * @throws InvalidActionException
+	 */
 	public List<LoanOpeningApplication> getByLoanPlanId(int loanPlanId, Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 	    User currentUser = userRepository.getByUsername(principal.getName());
 	    UserValidation.checkActiveStatus(currentUser.getStatus());
@@ -135,22 +170,43 @@ public LoanOpeningApplicationService(LoanOpeningApplicationRepository loanOpenin
 	
 	
 	
-	public List<LoanOpeningApplication> getByAccountIdAndStatus(int accountId, ApplicationStatus status, Principal principal)
+	/**
+	 * @param accountId
+	 * @param status
+	 * @param principal
+	 * @return
+	 * @throws ResourceNotFoundException
+	 * @throws DeletedUserException
+	 * @throws InvalidInputException
+	 * @throws InvalidActionException
+	 */
+	public List<LoanOpeningApplication> getByAccountIdAndStatus(Integer page, Integer size,int accountId, ApplicationStatus status, Principal principal)
 	        throws ResourceNotFoundException, DeletedUserException, InvalidInputException, InvalidActionException {
 
 	    User currentUser = userRepository.getByUsername(principal.getName());
 	    UserValidation.checkActiveStatus(currentUser.getStatus());
+	    Pageable pageable = PageRequest.of(page, size);
 
 	    accountRepository.findById(accountId).orElseThrow(() -> new ResourceNotFoundException("No account record was found with the given id...!!!"));
 
-	    return loanOpeningApplicationRepository.getByAccountIdAndStatus(accountId, status);
+	    return loanOpeningApplicationRepository.getByAccountIdAndStatus(accountId, status, pageable);
 	}
 
-	public List<LoanOpeningApplication> getLoanApplicationsByStatus(ApplicationStatus status, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
+	/**
+	 * @param size 
+	 * @param page 
+	 * @param status
+	 * @param principal
+	 * @return
+	 * @throws InvalidInputException
+	 * @throws InvalidActionException
+	 * @throws DeletedUserException
+	 */
+	public List<LoanOpeningApplication> getLoanApplicationsByStatus(Integer page, Integer size, ApplicationStatus status, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
 		 User currentUser = userRepository.getByUsername(principal.getName());
 		    UserValidation.checkActiveStatus(currentUser.getStatus());
-
-		    return loanOpeningApplicationRepository.getByStatus(status);
+		    Pageable pageable = PageRequest.of(page, size);
+		    return loanOpeningApplicationRepository.getByStatus(status,pageable);
 	}
 	
 	

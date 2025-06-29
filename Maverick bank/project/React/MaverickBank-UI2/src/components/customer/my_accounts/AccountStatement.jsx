@@ -1,29 +1,26 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { useRef } from "react";
 import html2pdf from "html2pdf.js";
-import { useDispatch, useSelector } from "react-redux";
-import { getBankAccount } from "../../../store/actions/BankAccountAction";
+import {  useSelector } from "react-redux";
 
 function AccountStatement() {
+    const navigate=useNavigate();
 
+    const statementRef = useRef();//used to wrap around a component and convert it to pdf
 
-    const statementRef = useRef();
-
-    const [duration, setDuration] = useState("1");
+    const [duration, setDuration] = useState("1");//in months
     const [transactions, setTransactions] = useState([]);
     const [generated, setGenerated] = useState(false);
-    const generationDate = new Date().toLocaleDateString();
     const [totals, setTotals] = useState({ inbound: 0, outbound: 0 });
 
-    const dispatch = useDispatch();
-    const accountId = localStorage.getItem("accountId");
+    
+    const generationDate = new Date().toLocaleDateString();//today
 
-    useEffect(() => {
-        getBankAccount(dispatch)(accountId);
-    }, [])
+    const formatDate = (date) => {return date.toISOString().split("T")[0]};
+    
 
     const account = useSelector(state => state.bankAccount.account);
 
@@ -37,7 +34,7 @@ function AccountStatement() {
         const startDate = new Date();
         startDate.setMonth(endDate.getMonth() - parseInt(duration));
 
-        const formatDate = (date) => date.toISOString().split("T")[0];
+        
 
         try {
             const response = await axios.get(
@@ -99,8 +96,7 @@ function AccountStatement() {
                     <li className="breadcrumb-item">
                         <span
                             role="button"
-                            onClick={() =>
-                                window.history.back()
+                            onClick={() =>navigate(-1)
                             }
                             className="text-decoration-none text-primary"
                         >

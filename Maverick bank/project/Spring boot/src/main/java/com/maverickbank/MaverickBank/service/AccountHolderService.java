@@ -96,7 +96,7 @@ public class AccountHolderService {
 				UserValidation.checkActiveStatus(currentUser.getStatus());
 				AccountHolderValidation.validateEmail(email);
 				List<AccountHolder> accountHolderList= accountHolderRepository.getByEmail(email);
-				if(accountHolderList==null) {
+				if(accountHolderList.isEmpty()) {
 					throw new ResourceNotFoundException("No Account holder record with goven email...!!!");
 				}
 		return accountHolderList;
@@ -119,7 +119,7 @@ public class AccountHolderService {
 		
 		AccountHolderValidation.validateContactNumber(contactNumber);
 		List<AccountHolder> accountHolderList= accountHolderRepository.getByContactNumber(contactNumber);
-		if(accountHolderList==null) {
+		if(accountHolderList.isEmpty()) {
 			throw new ResourceNotFoundException("No Account holder record with goven contact number...!!!");
 		}
 		return accountHolderList;
@@ -142,7 +142,7 @@ public class AccountHolderService {
 				
 				AccountHolderValidation.validateAadharNumber(aadharNumber);
 				List<AccountHolder> accountHolderList= accountHolderRepository.getByAadharNumber(aadharNumber);
-				if(accountHolderList==null) {
+				if(accountHolderList.isEmpty()) {
 					throw new ResourceNotFoundException("No Account holder record with goven aadhar number...!!!");
 				}
 		return accountHolderList;
@@ -166,7 +166,7 @@ public class AccountHolderService {
 				AccountHolderValidation.validatePanCardNumber(panCardNumber);
 				List<AccountHolder> accountHolderList= accountHolderRepository.getByPancardNumber(panCardNumber);
 				
-				if(accountHolderList==null) {
+				if(accountHolderList.isEmpty()) {
 					throw new ResourceNotFoundException("No Account holder record with goven pan card number...!!!");
 				}
 		return accountHolderList;

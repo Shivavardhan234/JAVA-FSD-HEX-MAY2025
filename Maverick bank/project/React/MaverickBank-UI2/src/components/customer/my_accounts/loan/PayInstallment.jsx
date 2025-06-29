@@ -7,12 +7,13 @@ import { getLoan } from "../../../../store/actions/LoanAction";
 function PayInstallment() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const loanId = localStorage.getItem("loanId");
-    const loan = useSelector(state => state.loanStore.loan);
-
+    
     const [penalty, setPenalty] = useState(0);
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
+
+    
+    const loan = useSelector(state => state.loanStore.loan);
 
     const handleError = (err) => {
         console.log(err);
@@ -26,15 +27,18 @@ function PayInstallment() {
         setTimeout(() => setError(""), 3000);
     };
 
-    useEffect(() => {
-        getLoan(dispatch)(loanId);
-    }, []);
+    
 
     useEffect(() => {
-        const fetchPenalty = async () => {
+       
+        if (loan?.id) {fetchPenalty()};
+    }, [loan]);
+
+
+     const fetchPenalty = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get(`http://localhost:9090/api/loan-payment/get/penalty/${loanId}`, {
+                const response = await axios.get(`http://localhost:9090/api/loan-payment/get/penalty/${loan.id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setPenalty(response.data);
@@ -43,15 +47,12 @@ function PayInstallment() {
             }
         };
 
-        if (loanId) fetchPenalty();
-    }, [loanId]);
-
     const handlePay = async () => {
         try {
             const token = localStorage.getItem("token");
             const total = parseFloat(loan.loanPlan.installmentAmount) + parseFloat(penalty);
 
-            await axios.post(`http://localhost:9090/api/loan-payment/add/${loanId}/${total}`, {}, {
+            await axios.post(`http://localhost:9090/api/loan-payment/add/${loan.id}/${total}`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -59,7 +60,7 @@ function PayInstallment() {
             setTimeout(() => {
                 setMessage("");
             }, 2500);
-            getLoan(dispatch)(loanId);
+            getLoan(dispatch)(loan.id);
         } catch (err) {
             handleError(err);
         }
@@ -130,7 +131,7 @@ function PayInstallment() {
                             <button
                                 className="btn btn-outline-success rounded-circle d-flex justify-content-center align-items-center mx-auto"
                                 style={{ width: '80px', height: '80px' }}
-                                onClick={handlePay}
+                                onClick={()=>handlePay()}
                             >
                                 <i className="bi bi-currency-rupee fs-4"></i>
                             </button>

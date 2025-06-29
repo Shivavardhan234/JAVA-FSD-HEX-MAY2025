@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.maverickbank.MaverickBank.exception.DeletedUserException;
@@ -41,19 +42,26 @@ public class RegulatoryReportController {
 	
 	@GetMapping("/get/all")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<RegulatoryReport> getAllReports(Principal principal) throws DeletedUserException, InvalidActionException, InvalidInputException {
-	    return regulatoryReportService.getAllReports(principal);
+	public List<RegulatoryReport> getAllReports(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,Principal principal) throws DeletedUserException, InvalidActionException, InvalidInputException {
+	    return regulatoryReportService.getAllReports(page,size,principal);
 	}
+	
 	@GetMapping("/get/by-id/{id}")
 	@CrossOrigin(origins = "http://localhost:5173")
 	public RegulatoryReport getReportById(@PathVariable int id,Principal principal) throws ResourceNotFoundException, DeletedUserException, InvalidActionException, InvalidInputException {
 	    return regulatoryReportService.getReportById(id, principal);
 	}
+	
+	
+	
 	@GetMapping("/get/by-date-range/{startDate}/{endDate}")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<RegulatoryReport> getReportsByDateRange(@PathVariable LocalDate startDate,@PathVariable LocalDate endDate, Principal principal) throws DeletedUserException, InvalidActionException, InvalidInputException, ResourceNotFoundException {
+	public List<RegulatoryReport> getReportsByDateRange(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+														@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,
+														@PathVariable LocalDate startDate,@PathVariable LocalDate endDate, Principal principal) throws DeletedUserException, InvalidActionException, InvalidInputException, ResourceNotFoundException {
 
-	    return regulatoryReportService.getReportsByDateRange(startDate, endDate,principal);
+	    return regulatoryReportService.getReportsByDateRange(page,size,startDate, endDate,principal);
 	}
 
 	

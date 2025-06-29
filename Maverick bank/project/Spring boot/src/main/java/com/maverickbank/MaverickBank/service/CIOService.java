@@ -3,6 +3,8 @@ package com.maverickbank.MaverickBank.service;
 import java.security.Principal;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
@@ -80,18 +82,22 @@ public class CIOService {
 //------------------------------------------------ GET -------------------------------------------------------------------
 
 	/**Fetches all the CIO's
+	 * @param size 
+	 * @param page 
 	 * @return
 	 * @throws DeletedUserException 
 	 * @throws InvalidActionException 
 	 * @throws InvalidInputException 
 	 */
-	public List<CIO> getAllCIO(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
+	public List<CIO> getAllCIO(Integer page, Integer size, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
 		//Check user is active or not
 		User currentUser= userRepository.getByUsername(principal.getName());
 		UserValidation.checkActiveStatus(currentUser.getStatus());
 		
+		Pageable pageable = PageRequest.of(page, size);
+		
 		//Return the list
-		return cioRepository.findAll();
+		return cioRepository.findAll(pageable).getContent();
 	}
 
 
@@ -117,11 +123,12 @@ public class CIOService {
 		return cio;
 	}
 	
-	public List<CIO> getByStatus(ActiveStatus status, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
+	public List<CIO> getByStatus(Integer page, Integer size, ActiveStatus status, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException {
 		User currentUser= userRepository.getByUsername(principal.getName());
 		UserValidation.checkActiveStatus(currentUser.getStatus());
-		List<CIO> cioList = cioRepository.getCioByStatus(status);
-		if(cioList==null || cioList.isEmpty()) {
+		Pageable pageable = PageRequest.of(page, size);
+		List<CIO> cioList = cioRepository.getCioByStatus(status,pageable);
+		if(cioList.isEmpty()) {
 			throw new ResourceNotFoundException("No cio records with the given active status...!!!");
 		}
 		

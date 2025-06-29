@@ -19,6 +19,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.maverickbank.MaverickBank.enums.AccountStatus;
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
@@ -189,9 +192,10 @@ class LoanOpeningApplicationServiceTest {
 
         /* Case 1: success with existing applications */
         List<LoanOpeningApplication> appList = Arrays.asList(sampleApplication1, sampleApplication2);
-        when(loanOpeningApplicationRepository.findAll()).thenReturn(appList);
+        Page<LoanOpeningApplication> mockPage = new PageImpl<>(appList);
+        when(loanOpeningApplicationRepository.findAll(PageRequest.of(0, 10))).thenReturn(mockPage);
 
-        List<LoanOpeningApplication> result = loanOpeningApplicationService.getAllLoanApplications(samplePrincipal);
+        List<LoanOpeningApplication> result = loanOpeningApplicationService.getAllLoanApplications(0,10,samplePrincipal);
 
         assertEquals(2, result.size());
         assertEquals(sampleApplication1, result.get(0));
@@ -240,22 +244,22 @@ class LoanOpeningApplicationServiceTest {
         when(accountRepository.findById(sampleAccount1.getId()))
                 .thenReturn(Optional.of(sampleAccount1));
         List<LoanOpeningApplication> appList = Arrays.asList(sampleApplication1, sampleApplication2);
-        when(loanOpeningApplicationRepository.getByAccountId(sampleAccount1.getId()))
+        when(loanOpeningApplicationRepository.getByAccountId(sampleAccount1.getId(),PageRequest.of(0, 10)))
                 .thenReturn(appList);
 
         List<LoanOpeningApplication> result =
-                loanOpeningApplicationService.getByAccountId(sampleAccount1.getId(), samplePrincipal);
+                loanOpeningApplicationService.getByAccountId(0,10,sampleAccount1.getId(), samplePrincipal);
 
         assertEquals(2, result.size());
         assertEquals(sampleApplication1, result.get(0));
         assertEquals(sampleApplication2, result.get(1));
 
         /* Case 2: account exists, no applications */
-        when(loanOpeningApplicationRepository.getByAccountId(sampleAccount1.getId()))
+        when(loanOpeningApplicationRepository.getByAccountId(sampleAccount1.getId(),PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList());
 
         List<LoanOpeningApplication> emptyResult =
-                loanOpeningApplicationService.getByAccountId(sampleAccount1.getId(), samplePrincipal);
+                loanOpeningApplicationService.getByAccountId(0,10,sampleAccount1.getId(), samplePrincipal);
 
         assertTrue(emptyResult.isEmpty());
 
@@ -264,7 +268,7 @@ class LoanOpeningApplicationServiceTest {
         when(accountRepository.findById(unknownAccountId)).thenReturn(Optional.empty());
 
         ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () -> {
-            loanOpeningApplicationService.getByAccountId(unknownAccountId, samplePrincipal);
+            loanOpeningApplicationService.getByAccountId(0,10,unknownAccountId, samplePrincipal);
         });
         assertEquals("No account record found with the given id...!!!", ex.getMessage());
     }
@@ -323,12 +327,12 @@ class LoanOpeningApplicationServiceTest {
         List<LoanOpeningApplication> pendingApps =
                 Arrays.asList(sampleApplication1);          // PENDING
         when(loanOpeningApplicationRepository.getByAccountIdAndStatus(
-                sampleAccount1.getId(), ApplicationStatus.PENDING))
+                sampleAccount1.getId(), ApplicationStatus.PENDING,PageRequest.of(0, 10)))
                 .thenReturn(pendingApps);
 
         List<LoanOpeningApplication> result =
                 loanOpeningApplicationService.getByAccountIdAndStatus(
-                        sampleAccount1.getId(), ApplicationStatus.PENDING, samplePrincipal);
+                		0,10,sampleAccount1.getId(), ApplicationStatus.PENDING, samplePrincipal);
 
         assertEquals(1, result.size());
         assertEquals(sampleApplication1, result.get(0));
@@ -336,12 +340,12 @@ class LoanOpeningApplicationServiceTest {
 
         /* Case 2: account exists, but no applications for status */
         when(loanOpeningApplicationRepository.getByAccountIdAndStatus(
-                sampleAccount1.getId(), ApplicationStatus.ACCEPTED))
+                sampleAccount1.getId(), ApplicationStatus.ACCEPTED,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList());
 
         List<LoanOpeningApplication> emptyResult =
                 loanOpeningApplicationService.getByAccountIdAndStatus(
-                        sampleAccount1.getId(), ApplicationStatus.ACCEPTED, samplePrincipal);
+                		0,10,sampleAccount1.getId(), ApplicationStatus.ACCEPTED, samplePrincipal);
 
         assertTrue(emptyResult.isEmpty());
 
@@ -351,7 +355,7 @@ class LoanOpeningApplicationServiceTest {
 
         ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () -> {
             loanOpeningApplicationService.getByAccountIdAndStatus(
-                    unknownAccountId, ApplicationStatus.PENDING, samplePrincipal);
+            		0,10,unknownAccountId, ApplicationStatus.PENDING, samplePrincipal);
         });
         assertEquals("No account record was found with the given id...!!!", ex.getMessage());
     }
@@ -368,24 +372,24 @@ class LoanOpeningApplicationServiceTest {
         sampleApplication1.setStatus(ApplicationStatus.PENDING);
         List<LoanOpeningApplication> pendingApps = Arrays.asList(sampleApplication1);
 
-        when(loanOpeningApplicationRepository.getByStatus(ApplicationStatus.PENDING))
+        when(loanOpeningApplicationRepository.getByStatus(ApplicationStatus.PENDING,PageRequest.of(0, 10)))
                 .thenReturn(pendingApps);
 
         List<LoanOpeningApplication> resultPending =
                 loanOpeningApplicationService.getLoanApplicationsByStatus(
-                        ApplicationStatus.PENDING, samplePrincipal);
+                		0,10,ApplicationStatus.PENDING, samplePrincipal);
 
         assertEquals(1, resultPending.size());
         assertEquals(sampleApplication1, resultPending.get(0));
         assertEquals(ApplicationStatus.PENDING, resultPending.get(0).getStatus());
 
         /* Case 2: no applications for ACCEPTED status*/
-        when(loanOpeningApplicationRepository.getByStatus(ApplicationStatus.ACCEPTED))
+        when(loanOpeningApplicationRepository.getByStatus(ApplicationStatus.ACCEPTED,PageRequest.of(0, 10)))
                 .thenReturn(Arrays.asList());
 
         List<LoanOpeningApplication> resultAccepted =
                 loanOpeningApplicationService.getLoanApplicationsByStatus(
-                        ApplicationStatus.ACCEPTED, samplePrincipal);
+                		0,10,ApplicationStatus.ACCEPTED, samplePrincipal);
 
         assertTrue(resultAccepted.isEmpty());
     }

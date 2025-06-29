@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.maverickbank.MaverickBank.enums.LoanType;
@@ -39,8 +40,9 @@ public class LoanPlanController {
 	
 	@GetMapping("/get/all")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<LoanPlan> getAllLoanPlans(Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
-	    return loanPlanService.getAllLoanPlans(principal);
+	public List<LoanPlan> getAllLoanPlans(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
+	    return loanPlanService.getAllLoanPlans(page,size,principal);
 	}
 
 	
@@ -54,9 +56,11 @@ public class LoanPlanController {
 	
 	@GetMapping("/get/by-loan-type/{loanType}")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<LoanPlan> getLoanPlansByType(@PathVariable LoanType loanType, Principal principal)
+	public List<LoanPlan> getLoanPlansByType(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+											@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,
+											@PathVariable LoanType loanType, Principal principal)
 	        throws DeletedUserException, InvalidInputException, InvalidActionException {
-	    return loanPlanService.getLoanPlansByType(loanType, principal);
+	    return loanPlanService.getLoanPlansByType(page,size,loanType, principal);
 	}
 
 	

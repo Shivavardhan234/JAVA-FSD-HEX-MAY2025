@@ -6,14 +6,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getBankAccount } from '../../../store/actions/BankAccountAction';
 
 function TransferMoney() {
-    const accountId = localStorage.getItem("accountId");
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        getBankAccount(dispatch)(accountId);
-    }, [])
-
-    const account = useSelector(state => state.bankAccount.account);
 
     const [toAccountNumber, setToAccountNumber] = useState('');
     const [amount, setAmount] = useState('');
@@ -21,7 +16,9 @@ function TransferMoney() {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
 
-    const navigate = useNavigate();
+    const account = useSelector(state => state.bankAccount.account);
+
+    
 
 
     const handleError = (err) => {
@@ -41,8 +38,7 @@ function TransferMoney() {
     }
 
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         setMessage('');
         setError('');
 
@@ -53,12 +49,14 @@ function TransferMoney() {
             };
 
             await axios.put(
-                `http://localhost:9090/api/account/update/transfer/${account.id}/${toAccountNumber}/${amount}/${pin}`,
+                `http://localhost:9090/api/account/update/transfer/${account.id}/${amount}?pin=${pin}&toAccountNumber=${toAccountNumber}`,
                 {},
                 { headers }
             );
 
             setMessage("Money transferred successfully!");
+            
+            getBankAccount(dispatch)(account.id);
             setToAccountNumber('');
             setAmount('');
             setPin('');
@@ -96,7 +94,7 @@ function TransferMoney() {
                 {message && <div className="alert alert-success">{message}</div>}
                 {error && <div className="alert alert-danger">{error}</div>}
 
-                <Form onSubmit={handleSubmit}>
+                <Form >
                     {/* From Account Number */}
                     <Form.Group className="mb-3">
                         <Form.Label>From Account Number</Form.Label>
@@ -140,7 +138,7 @@ function TransferMoney() {
                         />
                     </Form.Group>
 
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary" type="button" onClick={()=>handleSubmit()}>
                         Transfer
                     </Button>
                 </Form>

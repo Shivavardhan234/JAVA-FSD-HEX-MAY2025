@@ -106,7 +106,7 @@ class AccountHolderServiceTest {
         assertEquals("ABCPT1234Q", added.getPanCardNumber());
         assertEquals("123456789012", added.getAadharNumber());
 
-        // ---------- Case 2: Null object ⇒ InvalidInputException ----------
+        // ---------- Case 2: Null object  InvalidInputException ----------
         InvalidInputException eNull = assertThrows(InvalidInputException.class, () -> {
             accountHolderService.addAccountHolder(null, samplePrincipal);
         });
@@ -185,15 +185,15 @@ class AccountHolderServiceTest {
         assertEquals("Ravi Kumar", found.get(0).getName());
         assertEquals("ravi.kumar@example.com", found.get(0).getEmail());
 
-        // ---------- Case 2: No record ⇒ ResourceNotFoundException ----------
-        when(accountHolderRepository.getByEmail("ghost@example.com")).thenReturn(null);
+        // ---------- Case 2: No record  ResourceNotFoundException ----------
+        when(accountHolderRepository.getByEmail("ghost@example.com")).thenReturn(Arrays.asList());
 
         ResourceNotFoundException eNotFound = assertThrows(ResourceNotFoundException.class, () -> {
             accountHolderService.getAccountHolderByEmail("ghost@example.com", samplePrincipal);
         });
         assertEquals("No Account holder record with goven email...!!!", eNotFound.getMessage());
 
-        // ---------- Case 3: Invalid email ⇒ InvalidInputException ----------
+        // ---------- Case 3: Invalid email  InvalidInputException ----------
         InvalidInputException eInvalid = assertThrows(InvalidInputException.class, () -> {
             accountHolderService.getAccountHolderByEmail("bad-email", samplePrincipal);
         });
@@ -204,7 +204,7 @@ class AccountHolderServiceTest {
     
     @Test
     public void testGetAccountHolderByContactNumber() throws Exception {
-        // ---------- Case 1: Success – holders with given contact number ----------
+        // ---------- Case 1: Success  holders with given contact number ----------
         when(userRepository.getByUsername("new_user")).thenReturn(sampleUser);
         when(accountHolderRepository.getByContactNumber(sampleHolder1.getContactNumber()))
                 .thenReturn(Arrays.asList(sampleHolder1));
@@ -217,15 +217,15 @@ class AccountHolderServiceTest {
         assertEquals("Ravi Kumar", found.get(0).getName());
         assertEquals("9876543210", found.get(0).getContactNumber());
 
-        // ---------- Case 2: No record ⇒ ResourceNotFoundException ----------
-        when(accountHolderRepository.getByContactNumber("0000000000")).thenReturn(null);
+        // ---------- Case 2: No record  ResourceNotFoundException ----------
+        when(accountHolderRepository.getByContactNumber("0000000000")).thenReturn(Arrays.asList());
 
         ResourceNotFoundException eNotFound = assertThrows(ResourceNotFoundException.class, () -> {
             accountHolderService.getAccountHolderByContactNumber("0000000000", samplePrincipal);
         });
         assertEquals("No Account holder record with goven contact number...!!!", eNotFound.getMessage());
 
-        // ---------- Case 3: Invalid contact number ⇒ InvalidInputException ----------
+        // ---------- Case 3: Invalid contact number  InvalidInputException ----------
         InvalidInputException eInvalid = assertThrows(InvalidInputException.class, () -> {
             accountHolderService.getAccountHolderByContactNumber("123", samplePrincipal);  // too short / invalid
         });
@@ -253,15 +253,15 @@ class AccountHolderServiceTest {
         assertEquals("Ravi Kumar", found.get(0).getName());
         assertEquals("123456789012", found.get(0).getAadharNumber());
 
-        // ---------- Case 2: No record ⇒ ResourceNotFoundException ----------
-        when(accountHolderRepository.getByAadharNumber("111111111111")).thenReturn(null);
+        // ---------- Case 2: No record  ResourceNotFoundException ----------
+        when(accountHolderRepository.getByAadharNumber("111111111111")).thenReturn(Arrays.asList());
 
         ResourceNotFoundException eNotFound = assertThrows(ResourceNotFoundException.class, () -> {
             accountHolderService.getAccountHolderByAadharNumber("111111111111", samplePrincipal);
         });
         assertEquals("No Account holder record with goven aadhar number...!!!", eNotFound.getMessage());
 
-        // ---------- Case 3: Invalid Aadhar ⇒ InvalidInputException ----------
+        // ---------- Case 3: Invalid Aadhar  InvalidInputException ----------
         InvalidInputException eInvalid = assertThrows(InvalidInputException.class, () -> {
             accountHolderService.getAccountHolderByAadharNumber("123", samplePrincipal);  // too short / invalid
         });
@@ -276,7 +276,7 @@ class AccountHolderServiceTest {
     
     @Test
     public void testGetAccountHolderByPanCardNumber() throws Exception {
-        // ---------- Case 1: Success – list returned ----------
+        // ---------- Case 1: Success  list returned ----------
         when(userRepository.getByUsername("new_user")).thenReturn(sampleUser);
         when(accountHolderRepository.getByPancardNumber(sampleHolder1.getPanCardNumber()))
                 .thenReturn(Arrays.asList(sampleHolder1));
@@ -289,15 +289,15 @@ class AccountHolderServiceTest {
         assertEquals("Ravi Kumar", found.get(0).getName());
         assertEquals("ABCPT1234Q", found.get(0).getPanCardNumber());
 
-        // ---------- Case 2: No record ⇒ ResourceNotFoundException ----------
-        when(accountHolderRepository.getByPancardNumber("ZZZPA9999Z")).thenReturn(null);
+        // ---------- Case 2: No record  ResourceNotFoundException ----------
+        when(accountHolderRepository.getByPancardNumber("ZZZPA9999Z")).thenReturn(Arrays.asList());
 
         ResourceNotFoundException eNotFound = assertThrows(ResourceNotFoundException.class, () -> {
             accountHolderService.getAccountHolderByPanCardNumber("ZZZPA9999Z", samplePrincipal);
         });
         assertEquals("No Account holder record with goven pan card number...!!!", eNotFound.getMessage());
 
-        // ---------- Case 3: Invalid PAN ⇒ InvalidInputException ----------
+        // ---------- Case 3: Invalid PAN  InvalidInputException ----------
         InvalidInputException eInvalid = assertThrows(InvalidInputException.class, () -> {
             accountHolderService.getAccountHolderByPanCardNumber("BADPAN123", samplePrincipal); // invalid pattern
         });
@@ -312,7 +312,7 @@ class AccountHolderServiceTest {
     
     @Test
     public void testUpdateAccountHolder() throws Exception {
-        // ---------- Case 1: Success – selective fields updated ----------
+        // ---------- Case 1: Success  selective fields updated ----------
         when(userRepository.getByUsername("new_user")).thenReturn(sampleUser);
         when(accountHolderRepository.findById(101)).thenReturn(Optional.of(sampleHolder1));
         when(accountHolderRepository.save(sampleHolder1)).thenReturn(sampleHolder1);
@@ -331,7 +331,7 @@ class AccountHolderServiceTest {
         assertEquals("ravi.kumar@update.com", updated.getEmail());
         assertEquals("9999999999", updated.getContactNumber());
 
-        // ---------- Case 2: ID not found ⇒ ResourceNotFoundException ----------
+        // ---------- Case 2: ID not found  ResourceNotFoundException ----------
         when(accountHolderRepository.findById(555)).thenReturn(Optional.empty());
 
         AccountHolder notFoundRequest = new AccountHolder();

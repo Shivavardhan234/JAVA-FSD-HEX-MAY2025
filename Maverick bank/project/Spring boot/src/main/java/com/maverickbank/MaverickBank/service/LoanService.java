@@ -6,6 +6,8 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.maverickbank.MaverickBank.enums.ApplicationStatus;
@@ -101,17 +103,19 @@ public LoanService(LoanRepository loanRepository, UserRepository userRepository,
 	
 	
 	/**
+	 * @param size 
+	 * @param page 
 	 * @param principal
 	 * @return
 	 * @throws DeletedUserException
 	 * @throws InvalidInputException
 	 * @throws InvalidActionException
 	 */
-	public List<Loan> getAllLoans(Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
+	public List<Loan> getAllLoans(Integer page, Integer size, Principal principal) throws DeletedUserException, InvalidInputException, InvalidActionException {
 	    User currentUser = userRepository.getByUsername(principal.getName());
 	    UserValidation.checkActiveStatus(currentUser.getStatus());
-
-	    return loanRepository.findAll();
+	    Pageable pageable = PageRequest.of(page, size);
+	    return loanRepository.findAll(pageable).getContent();
 	}
 	
 	
@@ -142,7 +146,7 @@ public LoanService(LoanRepository loanRepository, UserRepository userRepository,
 	    List<Loan> loanList =loanRepository.getByAccountId(accountId);
 	    
 	    
-	    if(loanList.isEmpty()||loanList==null) {
+	    if(loanList.isEmpty()) {
 	    	throw new ResourceNotFoundException("No loan found with the given account id...!!!");
 	    }
 	    return loanList;
@@ -152,6 +156,8 @@ public LoanService(LoanRepository loanRepository, UserRepository userRepository,
 	
 	
 	/**
+	 * @param size 
+	 * @param page 
 	 * @param status
 	 * @param principal
 	 * @return
@@ -160,15 +166,17 @@ public LoanService(LoanRepository loanRepository, UserRepository userRepository,
 	 * @throws InvalidInputException 
 	 * @throws ResourceNotFoundException 
 	 */
-	public List<Loan> getLoansByStatus(LoanStatus status, Principal principal)
+	public List<Loan> getLoansByStatus(Integer page, Integer size, LoanStatus status, Principal principal)
 	        throws DeletedUserException, InvalidInputException, InvalidActionException, ResourceNotFoundException {
 	    User currentUser = userRepository.getByUsername(principal.getName());
 	    UserValidation.checkActiveStatus(currentUser.getStatus());
 
-	    List<Loan> loanList =loanRepository.getByStatus(status);
+	    Pageable pageable = PageRequest.of(page, size);
+	    
+	    List<Loan> loanList =loanRepository.getByStatus(status,pageable);
 	    
 	    
-	    if(loanList.isEmpty()||loanList==null) {
+	    if(loanList.isEmpty()) {
 	    	throw new ResourceNotFoundException("No loan found with the given status...!!!");
 	    }
 	    return loanList;
@@ -192,7 +200,7 @@ public LoanService(LoanRepository loanRepository, UserRepository userRepository,
 	    List<Loan> loanList =loanRepository.getByAccountIdAndStatus(accountId,status);
 	    
 	    
-	    if(loanList.isEmpty()||loanList==null) {
+	    if(loanList.isEmpty()) {
 	    	throw new ResourceNotFoundException("No loan found with the given account number and status...!!!");
 	    }
 	    return loanList;

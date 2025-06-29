@@ -4,20 +4,20 @@ import axios from "axios";
 import { Card, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { getBankAccount } from "../../../../store/actions/BankAccountAction";
+import { getLoan } from "../../../../store/actions/LoanAction";
 
 function MyLoans() {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const accountId = localStorage.getItem("accountId");
-    const account = useSelector(state => state.bankAccount.account);
+
     const [loans, setLoans] = useState([]);
+
+    const account = useSelector(state => state.bankAccount.account);
 
 
     
-    useEffect(() => {
-        getBankAccount(dispatch)(accountId);
-    }, [])
+    
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -33,18 +33,9 @@ function MyLoans() {
                 console.log(err);
                 setLoans([]); 
             });
-    }, [account.id]);
+    }, [account]);
 
 
-    const handleManageLoan = (loan)=>{
-          if (localStorage.getItem("loanId")) {
-                localStorage.removeItem("loanId");
-            }
-            localStorage.setItem("loanId", loan.id);
-
-            navigate(`/customer/myAccounts/manageLoan`);
-            return;
-    }
 
     return (
         <div className="container mt-3">
@@ -102,7 +93,7 @@ function MyLoans() {
                                         <td>
                                             <button
                                                 className="btn btn-outline-info"
-                                                onClick={() => handleManageLoan(loan)}>
+                                                onClick={() =>{ getLoan(dispatch)(loan.id);    navigate(`/customer/myAccounts/manageLoan`);  }}>
                                                 Manage Loan
                                             </button>
                                         </td>

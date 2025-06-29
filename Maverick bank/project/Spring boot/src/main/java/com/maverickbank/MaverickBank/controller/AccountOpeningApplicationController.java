@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.maverickbank.MaverickBank.enums.ApplicationStatus;
@@ -43,8 +44,9 @@ public class AccountOpeningApplicationController {
 //--------------------------------------------- GET ----------------------------------------------------------------------
 	@GetMapping("/get/all")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<AccountOpeningApplication> getAllAccountOpeningApplication(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException{
-		return accountOpeningApplicationService.getAllAccountOpeningApplication(principal);
+	public List<AccountOpeningApplication> getAllAccountOpeningApplication(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException{
+		return accountOpeningApplicationService.getAllAccountOpeningApplication(page,size,principal);
 		
 	}
 	
@@ -77,8 +79,10 @@ public class AccountOpeningApplicationController {
 	
 	@GetMapping("/get/by-employee-approval-status/{employeeApprovalStatus}")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<AccountOpeningApplication> getAccountOpeningApplicationByEmployeeApprovalStatus(@PathVariable ApplicationStatus employeeApprovalStatus,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
-		return accountOpeningApplicationService.getAccountOpeningApplicationByEmployeeApprovalStatus(employeeApprovalStatus,principal);
+	public List<AccountOpeningApplication> getAccountOpeningApplicationByEmployeeApprovalStatus(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+																								@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,
+																								@PathVariable ApplicationStatus employeeApprovalStatus,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException, ResourceNotFoundException{
+		return accountOpeningApplicationService.getAccountOpeningApplicationByEmployeeApprovalStatus(page,size,employeeApprovalStatus,principal);
 		
 	}
 	

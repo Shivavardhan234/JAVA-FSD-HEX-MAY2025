@@ -8,6 +8,9 @@ import accountRequestReducer from "./reducers/AccountRequestReducer";
 import branchReducer from "./reducers/BranchReducer";
 import financialPerformanceReportReducer from "./reducers/FinancialPerformanceReducer";
 import regulatoryReportReducer from "./reducers/RegulatoryReportReducer";
+import employeeReducer from "./reducers/EmployeeReducer";
+import customerReducer from "./reducers/CustomerReducer";
+import cioReducer from "./reducers/CIOReducer";
 
 
 const store = configureStore({
@@ -20,7 +23,10 @@ const store = configureStore({
         accountRequestStore: accountRequestReducer,
         branchStore: branchReducer,
         financialPerformanceStore: financialPerformanceReportReducer,
-        regulatoryReportStore: regulatoryReportReducer
+        regulatoryReportStore: regulatoryReportReducer,
+        customerStore: customerReducer,
+        employeeStore: employeeReducer,
+        cioStore: cioReducer
 
     }
 })

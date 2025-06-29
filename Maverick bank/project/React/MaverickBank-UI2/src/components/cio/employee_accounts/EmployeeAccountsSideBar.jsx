@@ -146,7 +146,7 @@ function EmployeeAccountsSideBar() {
                                     whiteSpace: 'nowrap',
                                 }}
                             >
-                                Find Employee
+                                ADD Employee
                             </span>
                         </Link>
                     </li>
@@ -164,7 +164,7 @@ function EmployeeAccountsSideBar() {
                     width: '100%',
                 }}
             >
-                <Outlet />
+                <Outlet context={{ isExpanded }}/>
             </div>
         </div>
     );

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.maverickbank.MaverickBank.Util.JwtUtil;
@@ -115,16 +116,16 @@ public class UserController {
 	 * @throws DeletedUserException 
 	 * @throws InvalidActionException 
 	 */
-	@PutMapping("/update/username/{username}")
+	@PutMapping("/update/username")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public User updateUsername(@PathVariable String username, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException{
+	public User updateUsername(@RequestParam String username, Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException{
 		return userService.updateUsername(username,principal);
 		
 	}
 	
-	@PutMapping("/update/password/{oldPassword}/{newPassword}")
+	@PutMapping("/update/password")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public User updatePassword(@PathVariable String oldPassword,@PathVariable String newPassword, Principal principal) throws InvalidInputException, InvalidCredentialsException, InvalidActionException, DeletedUserException  {
+	public User updatePassword(@RequestParam String oldPassword,@RequestParam String newPassword, Principal principal) throws InvalidInputException, InvalidCredentialsException, InvalidActionException, DeletedUserException  {
 		return userService.updatePassword(oldPassword,newPassword,principal);
 		
 	}
@@ -136,9 +137,9 @@ public class UserController {
 	}
 	
 	
-	@PutMapping("/update/deactivate/{password}")
+	@PutMapping("/update/deactivate")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public User deactivateUserAccount(@PathVariable String password,Principal principal) throws InvalidInputException, InvalidActionException, InvalidCredentialsException, DeletedUserException{
+	public User deactivateUserAccount(@RequestParam String password,Principal principal) throws InvalidInputException, InvalidActionException, InvalidCredentialsException, DeletedUserException{
 		return userService.deactivateUserAccount(password,principal);
 		
 	}
@@ -160,9 +161,9 @@ public class UserController {
 	
 //-------------------------------UPDATE but Marking as DELETE -------------------------------------
 	
-	@PutMapping("/update/delete/{password}")
+	@PutMapping("/update/delete")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public User deleteUserAccount(@PathVariable String password,Principal principal) throws InvalidInputException, InvalidActionException, InvalidCredentialsException, DeletedUserException{
+	public User deleteUserAccount(@RequestParam String password,Principal principal) throws InvalidInputException, InvalidActionException, InvalidCredentialsException, DeletedUserException{
 		return userService.deleteUserAccount(password,principal);
 		
 	}
@@ -177,7 +178,6 @@ public class UserController {
 	@GetMapping("/token/v1")
 	@CrossOrigin(origins = "http://localhost:5173")
 	public String getTokenV1(Principal principal) {
-		System.out.println("I am in the API method");
 		
 		JwtUtil jwtUtil = new JwtUtil();
 		return jwtUtil.createToken(principal.getName()); 

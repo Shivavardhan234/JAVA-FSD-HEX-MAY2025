@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.maverickbank.MaverickBank.enums.ActiveStatus;
@@ -40,20 +41,23 @@ public class EmployeeController {
 //-------------------------------------------- GET -----------------------------------------------------------------------
 	@GetMapping("/get/all")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<Employee> getAllEmployee(Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
-		return employeeService.getAllEmployee(principal);
+	public List<Employee> getAllEmployee(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,Principal principal) throws InvalidInputException, InvalidActionException, DeletedUserException {
+		return employeeService.getAllEmployee(page,size,principal);
 	}
 	
 	@GetMapping("/get/by-branch-id/{id}")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<Employee> getEmployeeByBranchId(@PathVariable int id, Principal principal) throws InvalidInputException, ResourceNotFoundException, InvalidActionException, DeletedUserException{
-		return employeeService.getEmployeeByBranchId(id,principal);
+	public List<Employee> getEmployeeByBranchId(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,@PathVariable int id, Principal principal) throws InvalidInputException, ResourceNotFoundException, InvalidActionException, DeletedUserException{
+		return employeeService.getEmployeeByBranchId(page,size,id,principal);
 	}
 	
 	@GetMapping("/get/by-status/{status}")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<Employee> getEmployeeByStatus(@PathVariable ActiveStatus status, Principal principal) throws InvalidInputException, ResourceNotFoundException, InvalidActionException, DeletedUserException{
-		return employeeService.getEmployeeByStatus(status,principal);
+	public List<Employee> getEmployeeByStatus(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,@PathVariable ActiveStatus status, Principal principal) throws InvalidInputException, ResourceNotFoundException, InvalidActionException, DeletedUserException{
+		return employeeService.getEmployeeByStatus(page,size,status,principal);
 	}
 	
 	@GetMapping("/get/by-id/{id}")
@@ -69,34 +73,36 @@ public class EmployeeController {
 	}
 	
 	
-	@GetMapping("/get/by-designation/{designation}")
+	@GetMapping("/get/by-designation")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<Employee> getEmployeeByDesignation(@PathVariable String designation, Principal principal) throws InvalidInputException, ResourceNotFoundException, InvalidActionException, DeletedUserException{
-		return employeeService.getEmployeeByDesignation(designation,principal);
+	public List<Employee> getEmployeeByDesignation(@RequestParam (name="page",required = false,defaultValue = "0") Integer page,
+			@RequestParam(name="size",required = false, defaultValue = "100000") Integer size,
+			@RequestParam String designation, Principal principal) throws InvalidInputException, ResourceNotFoundException, InvalidActionException, DeletedUserException{
+		return employeeService.getEmployeeByDesignation(page,size,designation,principal);
 	}
 	
-	@GetMapping("/get/by-branch/{branch}")
+	@GetMapping("/get/by-branch")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public List<Employee> getEmployeeByBranch(@PathVariable String branch, Principal principal) throws InvalidInputException, ResourceNotFoundException, InvalidActionException, DeletedUserException{
+	public List<Employee> getEmployeeByBranch(@RequestParam String branch, Principal principal) throws InvalidInputException, ResourceNotFoundException, InvalidActionException, DeletedUserException{
 		return employeeService.getEmployeeByBranch(branch,principal);
 	}
 	
 	
-	@GetMapping("/get/by-username/{username}")
+	@GetMapping("/get/by-username")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public Employee getEmployeeByUsername(@PathVariable String username, Principal principal) throws InvalidInputException, ResourceNotFoundException, InvalidActionException, DeletedUserException{
+	public Employee getEmployeeByUsername(@RequestParam String username, Principal principal) throws InvalidInputException, ResourceNotFoundException, InvalidActionException, DeletedUserException{
 		return employeeService.getEmployeeByUsername(username,principal);
 	}
 	
-	@GetMapping("/get/by-email/{email}")
+	@GetMapping("/get/by-email")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public Employee getEmployeeByEmail(@PathVariable String email, Principal principal) throws InvalidInputException, ResourceNotFoundException, InvalidActionException, DeletedUserException {
+	public Employee getEmployeeByEmail(@RequestParam String email, Principal principal) throws InvalidInputException, ResourceNotFoundException, InvalidActionException, DeletedUserException {
 		return employeeService.getEmployeeByEmail(email,principal);
 	}
 	
-	@GetMapping("/get/by-contactNumber/{contactNumber}")
+	@GetMapping("/get/by-contactNumber")
 	@CrossOrigin(origins = "http://localhost:5173")
-	public Employee getEmployeeByContactNumber(@PathVariable String contactNumber, Principal principal) throws InvalidInputException, ResourceNotFoundException, InvalidActionException, DeletedUserException {
+	public Employee getEmployeeByContactNumber(@RequestParam String contactNumber, Principal principal) throws InvalidInputException, ResourceNotFoundException, InvalidActionException, DeletedUserException {
 		return employeeService.getEmployeeByContactNumber(contactNumber,principal);
 	}
 	
